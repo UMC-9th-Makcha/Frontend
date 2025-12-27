@@ -164,7 +164,7 @@ src/
 
 ### 🌕 Yellow Palette
 | Name | Hex Code |
-| :--- | :--- | :--- |
+| :--- | :--- |
 | `makcha-yellow-500` | `#FFC300` |
 | `makcha-yellow-400` | `#FFCE2F` |
 | `makcha-yellow-300` | `#FFDC69` |
