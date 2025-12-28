@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 import Dashboard from "./index"; 
 import MobileHeader from "./MobileHeader";
 
-const SidebarLayout = () => {
+const DashboardLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
@@ -24,4 +24,4 @@ const SidebarLayout = () => {
   );
 };
 
-export default SidebarLayout;
+export default DashboardLayout;

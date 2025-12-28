@@ -1,8 +1,9 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
 import { X } from 'lucide-react';
 import { NAV_MENUS } from './constants';
 import type { DashboardProps } from '../../types/dashboard';
+import DashboardItem from './DashboardItem';
+import DashboardFooter from './DashboardFooter';
 
 const Dashboard = ({ isOpen, setIsOpen }: DashboardProps) => {
   return (
@@ -42,50 +43,22 @@ const Dashboard = ({ isOpen, setIsOpen }: DashboardProps) => {
       </div>
 
       {/* 네비게이션 */}
-      <nav className="flex-1 px-4 py-2 custom-scrollbar">
-        {NAV_MENUS.map(({ id, label, path, icon: Icon, divider }) => (
-          <React.Fragment key={id}>
-            {divider && <div className="mx-2 my-4 border-t border-gray-100" />}
-            <NavLink
-              to={path}
+      <nav className="flex-1 px-4 py-2 overflow-y-auto custom-scrollbar">
+        {NAV_MENUS.map((menu) => (
+          <React.Fragment key={menu.id}>
+            {menu.divider && <div className="mx-2 my-4 border-t border-gray-100" />}
+            <DashboardItem
+              label={menu.label}
+              path={menu.path}
+              icon={menu.icon}
               onClick={() => setIsOpen(false)}
-              className="group flex items-center space-x-4 px-4 py-3.5 transition-colors"
-            >
-              {({ isActive }) => (
-                <>
-                  <Icon
-                    size={22}
-                    className={`transition-colors duration-200 ${
-                      isActive
-                        ? 'text-makcha-navy-800'
-                        : 'text-gray-400 group-hover:text-gray-600'
-                    }`}
-                  />
-                  <span
-                    className={`text-[15px] tracking-tight transition-colors duration-200 ${
-                      isActive
-                        ? 'text-makcha-navy-900 font-extrabold'
-                        : 'text-gray-500 font-semibold group-hover:text-gray-700'
-                    }`}
-                  >
-                    {label}
-                  </span>
-                </>
-              )}
-            </NavLink>
+            />
           </React.Fragment>
         ))}
       </nav>
 
       {/* 하단 푸터 */}
-      <div className="border-t border-gray-50 p-6 text-center">
-        <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-gray-400">
-          Makcha.
-        </p>
-        <p className="mt-1 text-[10px] leading-tight text-gray-300">
-          Zero Friction, 100% Reliability
-        </p>
-      </div>
+      <DashboardFooter />
     </aside>
   );
 };

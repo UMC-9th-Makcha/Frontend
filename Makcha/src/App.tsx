@@ -8,7 +8,7 @@ import History from "./pages/History";
 import Settings from "./pages/Setting";
 import Download from "./pages/Download";
 
-import SidebarLayout from "./components/dashboard/SidebarLayout";
+import DashboardLayout from "./components/dashboard/DashboardLayout";
 
 function App() {
   return (
@@ -19,7 +19,7 @@ function App() {
           <Route path="/" element={<Main />} />
           
           {/* 대시보드 레이아웃이 적용되는 내부 페이지 그룹 */}
-          <Route element={<SidebarLayout />}>
+          <Route element={<DashboardLayout />}>
             <Route path="/home" element={<Home />} />
             <Route path="/alarm" element={<Alarm />} />
             <Route path="/spot/:type" element={<WaitingSpot />} />
