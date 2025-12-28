@@ -9,7 +9,7 @@ import WaitingSpot from "./pages/WaitingSpot";
 import History from "./pages/History";
 import Settings from "./pages/Setting";
 import Download from "./pages/Download";
-import Dashboard from "./components/dashboard/Dashboard";
+import Dashboard from "./components/dashboard";
 import MobileHeader from "./components/dashboard/MobileHeader";
 
 const SidebarLayout = () => {
