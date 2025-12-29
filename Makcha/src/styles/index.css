@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
   --color-makcha-navy-900: #00163D;
@@ -14,17 +15,21 @@
 }
 
 @layer base {
+  *, ::before, ::after {
+    @apply transition-colors duration-300;
+  }
+
   body {
-    background-color: var(--color-makcha-navy-900);
-    color: white;
+    background-color: white; 
+    color: black;
   }
 }
 
-/* 스크롤바 숨기기 클래스 */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
+.dark body {
+  background-color: var(--color-makcha-navy-900);
+  color: white;
 }
-.no-scrollbar {
-  -ms-overflow-style: none;  /* IE, Edge */
-  scrollbar-width: none;  /* Firefox */
-}
+
+/* 스크롤바 숨기기 */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }

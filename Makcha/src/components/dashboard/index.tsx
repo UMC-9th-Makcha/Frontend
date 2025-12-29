@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { NAV_MENUS } from './constants';
 import type { DashboardProps } from '../../types/dashboard';
 import DashboardItem from './DashboardItem';
 import DashboardFooter from './DashboardFooter';
+import { useUIStore } from '../../store/useUIStore';
 
 const KakaoIcon = ({ className }: { className?: string }) => (
   <div className={`flex items-center justify-center bg-[#FEE500] rounded-full p-[7px] ${className}`}>
@@ -14,15 +15,20 @@ const KakaoIcon = ({ className }: { className?: string }) => (
 );
 
 const Dashboard = ({ isOpen, setIsOpen }: DashboardProps) => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  // Zustand 전역 상태 사용
+  const { isDarkMode, toggleDarkMode } = useUIStore();
 
   return (
     <aside
       className={`
-        fixed left-0 z-50 flex flex-col transition-transform duration-300 ease-in-out
-        bg-gray-50 md:bg-white
-        top-21 bottom-0 w-full ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-        md:sticky md:top-0 md:translate-x-0 md:w-[248px] md:h-screen md:shrink-0 md:border-r md:border-gray-100
+        fixed left-0 z-50 flex flex-col transition-all duration-300 ease-in-out
+        ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+        top-20 bottom-0 w-full
+      bg-white dark:bg-makcha-navy-900
+    
+        md:sticky md:top-0 md:translate-x-0 md:w-[248px] md:h-screen md:shrink-0 md:border-r 
+        md:bg-white dark:md:bg-makcha-navy-900
+        dark:border-makcha-navy-800
       `}
     >
       {/* 로고 영역 */}
@@ -40,11 +46,11 @@ const Dashboard = ({ isOpen, setIsOpen }: DashboardProps) => {
       <div className="flex items-center px-9 h-[60px] md:h-12 mt-8">
         <div className="flex items-center justify-center shrink-0 w-14 h-9 md:w-11 md:h-7">
           <button
-            onClick={() => setIsDarkMode(!isDarkMode)}
+            onClick={toggleDarkMode}
             className={`
               relative inline-flex items-center rounded-full transition-all duration-300
               w-14 h-[30px] md:w-11 md:h-6
-              ${isDarkMode ? 'bg-gray-400' : 'bg-gray-200'}
+              ${isDarkMode ? 'bg-makcha-navy-400' : 'bg-gray-200'}
               border border-gray-300/50 shadow-inner
             `}
           >
@@ -57,7 +63,7 @@ const Dashboard = ({ isOpen, setIsOpen }: DashboardProps) => {
             />
           </button>
         </div>
-        <span className="ml-5 font-medium text-[20px] md:text-[15px] leading-none text-gray-500">
+        <span className="ml-5 font-medium text-[20px] md:text-[15px] leading-none text-gray-500 dark:text-makcha-navy-200">
           다크모드
         </span>
       </div>
@@ -78,7 +84,7 @@ const Dashboard = ({ isOpen, setIsOpen }: DashboardProps) => {
         {NAV_MENUS.map((menu) => (
           <React.Fragment key={menu.id}>
             {menu.divider && (
-              <div className="mx-3 md:mx-5 my-5 border-t border-[#E2E2E2]" />
+              <div className="mx-3 md:mx-5 my-5 border-t border-[#E2E2E2] dark:border-makcha-navy-800" />
             )}
             <DashboardItem
               label={menu.label}

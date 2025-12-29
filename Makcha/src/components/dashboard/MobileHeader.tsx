@@ -5,7 +5,8 @@ import type { DashboardProps } from '../../types/dashboard';
 
 const MobileHeader = ({ isOpen, setIsOpen }: DashboardProps) => {
   return (
-    <header className="sticky top-0 z-100 flex h-21 items-center justify-between px-5 bg-white border-b border-gray-100 md:hidden">
+    <header className="sticky top-0 z-100 flex h-21 items-center justify-between px-5 
+    bg-white dark:bg-makcha-navy-900 border-b border-gray-100 dark:border-makcha-navy-800 md:hidden">
       {/* 로고 */}
       <Link 
         to="/" 
@@ -21,12 +22,13 @@ const MobileHeader = ({ isOpen, setIsOpen }: DashboardProps) => {
       
       {/* ml-auto로 우측 정렬 유지 */}
       <div className="ml-auto flex items-center space-x-3">
-        <span className="text-sm font-semibold text-makcha-navy-800">서막차님</span>
+        <span className="text-sm font-semibold text-makcha-navy-800 dark:text-makcha-navy-200">서막차님</span>
         
         {/* 애니메이션 버튼 컨테이너 */}
         <button 
           onClick={() => setIsOpen(!isOpen)} 
-          className="relative h-10 w-10 flex items-center justify-center text-makcha-navy-900 focus:outline-none"
+          className="relative h-10 w-10 flex items-center justify-center text-makcha-navy-900 dark:text-white 
+          transition-colors duration-300 focus:outline-none"
           aria-label={isOpen ? "메뉴 닫기" : "메뉴 열기"}
         >
           <AnimatePresence mode="popLayout">
