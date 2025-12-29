@@ -9,6 +9,8 @@
 - **axios**: 서버 API 통신을 담당합니다.
 - **@tanstack/react-query**: 서버 데이터 캐싱 및 실시간 데이터 업데이트(Polling)를 최적화합니다.
 - **zustand**: 로그인 상태 및 사용자 설정 등 전역 상태를 관리합니다.
+  * `isDarkMode`: 현재 테마 상태 (boolean)
+  * `toggleDarkMode`: 테마 전환 함수
 
 ### 🔹 Features (기능)
 - **react-kakao-maps-sdk**: 카카오맵 UI 구현 및 마커 표시를 위해 사용합니다.
@@ -97,6 +99,13 @@ src/
 * **Utility-First**: 별도의 CSS 파일 작성 없이 Tailwind 클래스로만 스타일링하는 것을 원칙으로 합니다.
 * **Theme Colors**: 색상 지정 시 하드코딩된 Hex 값 대신 정의된 테마 컬러를 사용합니다. (예: `text-makcha-yellow-500`)
 * **Conditional Styling**: 클래스 결합 시 `clsx` 또는 `tailwind-merge` 라이브러리를 활용합니다.
+* **Dark Mode Implementation**: 
+    * 본 프로젝트는 `class` 전략을 사용합니다. 다크모드 상태는 `UIStore`에서 관리하며, `<html>` 태그에 `.dark` 클래스가 주입됩니다.
+    * **스타일 적용**: `dark:` 프리픽스를 사용하여 다크모드 전용 색상을 지정합니다. 
+        * 예시: `bg-white dark:bg-makcha-navy-900`
+    * **전환 애니메이션**: 테마 변경 시 시각적 일관성을 위해 모든 색상 변화에 `transition-colors duration-300`을 적용합니다. 
+        * index.css의 @layer base에 전역 transition이 적용되어 있어, 개별 컴포넌트에서 transition-colors를 중복 선언하지 않습니다.
+        * 특정 요소에서 더 빠르거나 느린 애니메이션이 필요한 경우에만 개별 클래스(duration-150 등)를 추가합니다.
 
 ### 4. Component Structure (Colocation)
 
