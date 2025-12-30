@@ -1,17 +1,27 @@
-export default function Alarm() {
-    return (
-      <div className="p-4">
-        <h1 className="text-xl font-bold mb-6 text-makcha-yellow-500">막차 알림 설정</h1>
-        <div className="space-y-4">
-          {['막차 10분 전', '막차 5분 전', '정시 도착'].map((item) => (
-            <div key={item} className="p-4 bg-makcha-navy-800 rounded-xl flex justify-between items-center border border-makcha-navy-600">
-              <span>{item}</span>
-              <div className="w-12 h-6 bg-makcha-navy-600 rounded-full relative">
-                <div className="absolute right-1 top-1 w-4 h-4 bg-makcha-yellow-500 rounded-full" />
-              </div>
-            </div>
-          ))}
-        </div>
+import { useState } from "react";
+import AlarmPanel from "./components/AlarmPanel";
+import OriginSearchSheet from "./components/OriginSearchSheet";
+
+const Alarm = () => {
+  const [isOriginOpen, setIsOriginOpen] = useState(false);
+
+  return (
+    <div className="-m-4 md:-m-8 h-[calc(100vh)] overflow-hidden">
+      <div className="relative flex h-full w-full overflow-hidden">
+        {/* 알람 설정 패널 */}
+        <AlarmPanel onOpenOrigin={() => setIsOriginOpen(true)} />
+
+        {/* 지도 */}
+        <section className="min-w-0 flex-1 bg-gray-100" />
+
+        {/* 출발지 검색창 */}
+        <OriginSearchSheet
+          open={isOriginOpen}
+          onClose={() => setIsOriginOpen(false)}
+        />
       </div>
-    );
-  }
+    </div>
+  );
+};
+
+export default Alarm;
