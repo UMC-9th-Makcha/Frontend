@@ -11,6 +11,7 @@ import Settings from "./pages/Setting";
 import Download from "./pages/Download";
 
 import DashboardLayout from "./components/dashboard/DashboardLayout";
+import ErrorPage from "./pages/Error";
 
 function App() {
   // Zustand에서 다크모드 상태 구독
@@ -36,9 +37,8 @@ function App() {
             <Route path="/history" element={<History />} />
             <Route path="/setting" element={<Settings />} />
             <Route path="/download" element={<Download />} />
+            <Route path="*" element={<ErrorPage />} />
           </Route>
-
-          <Route path="*" element={<Main />} />
         </Routes>
       </div>
     </BrowserRouter>
