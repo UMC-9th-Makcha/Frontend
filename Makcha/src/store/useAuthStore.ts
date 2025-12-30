@@ -8,6 +8,7 @@ const initialState = {
   user: null,
 };
 
+// 쿠키 형식이면 수정해야함
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({

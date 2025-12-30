@@ -31,10 +31,11 @@ function App() {
       <div className="min-h-screen min-w-md overflow-x-auto bg-white dark:bg-makcha-navy-900">
         <Routes>
           
+          <Route path="/kakao/callback" element={<KakaoCallback />} />
+
           {/* 비로그인 전용 경로 */}
           <Route element={<PublicRoute />}>
             <Route path="/" element={<Main />} />
-            <Route path="/kakao/callback" element={<KakaoCallback />} />
             <Route path="*" element={<ErrorPage />} />
           </Route>
 
