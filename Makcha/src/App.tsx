@@ -12,9 +12,10 @@ import Download from "./pages/Download";
 
 import DashboardLayout from "./components/dashboard/DashboardLayout";
 import ErrorPage from "./pages/Error";
+import { ProtectedRoute, PublicRoute } from "./components/kakao/KakaoRoute";
+import KakaoCallback from "./components/kakao/KakaoCallback";
 
 function App() {
-  // Zustand에서 다크모드 상태 구독
   const isDarkMode = useUIStore((state) => state.isDarkMode);
 
   useEffect(() => {
@@ -27,18 +28,29 @@ function App() {
 
   return (
     <BrowserRouter>
-      <div className="min-h-screen min-w-md overflow-x-auto">
+      <div className="min-h-screen min-w-md overflow-x-auto bg-white dark:bg-makcha-navy-900">
         <Routes>
-          <Route path="/" element={<Main />} />
-          <Route element={<DashboardLayout />}>
-            <Route path="/home" element={<Home />} />
-            <Route path="/alarm" element={<Alarm />} />
-            <Route path="/spot/:type" element={<WaitingSpot />} />
-            <Route path="/history" element={<History />} />
-            <Route path="/setting" element={<Settings />} />
-            <Route path="/download" element={<Download />} />
+          
+          {/* 비로그인 전용 경로 */}
+          <Route element={<PublicRoute />}>
+            <Route path="/" element={<Main />} />
+            <Route path="/kakao/callback" element={<KakaoCallback />} />
             <Route path="*" element={<ErrorPage />} />
           </Route>
+
+          {/*로그인 경로*/}
+          <Route element={<ProtectedRoute />}>
+            <Route element={<DashboardLayout />}>
+              <Route path="/home" element={<Home />} />
+              <Route path="/alarm" element={<Alarm />} />
+              <Route path="/spot/:type" element={<WaitingSpot />} />
+              <Route path="/history" element={<History />} />
+              <Route path="/setting" element={<Settings />} />
+              <Route path="/download" element={<Download />} />
+              <Route path="*" element={<ErrorPage />} />
+            </Route>
+          </Route>
+
         </Routes>
       </div>
     </BrowserRouter>
