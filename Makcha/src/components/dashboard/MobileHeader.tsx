@@ -2,14 +2,17 @@ import { Link } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { DashboardProps } from '../../types/dashboard';
+import { useAuth } from '../../hooks/useAuth';
 
 const MobileHeader = ({ isOpen, setIsOpen }: DashboardProps) => {
+  const { user } = useAuth();
+
   return (
     <header className="sticky top-0 z-100 flex h-21 items-center justify-between px-5 
     bg-white dark:bg-makcha-navy-900 border-b border-gray-100 dark:border-makcha-navy-800 md:hidden">
       {/* 로고 */}
       <Link 
-        to="/" 
+        to="/home"
         onClick={() => setIsOpen(false)} 
         className="absolute left-[12px] top-1/2 -translate-y-1/2"
       >
@@ -20,11 +23,12 @@ const MobileHeader = ({ isOpen, setIsOpen }: DashboardProps) => {
         />
       </Link>
       
-      {/* ml-auto로 우측 정렬 유지 */}
+      {/* 유저 정보 */}
       <div className="ml-auto flex items-center space-x-3">
-        <span className="text-sm font-semibold text-makcha-navy-800 dark:text-makcha-navy-200">서막차님</span>
+        <span className="text-sm font-semibold text-makcha-navy-800 dark:text-makcha-navy-200">
+          {user?.nickname ?? '게스트'}님
+        </span>
         
-        {/* 애니메이션 버튼 컨테이너 */}
         <button 
           onClick={() => setIsOpen(!isOpen)} 
           className="relative h-10 w-10 flex items-center justify-center text-makcha-navy-900 dark:text-white 
