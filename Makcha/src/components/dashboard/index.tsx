@@ -29,7 +29,7 @@ const Dashboard = ({ isOpen, setIsOpen }: DashboardProps) => {
       <div className="hidden md:block pt-10 pl-9">
         <Link to="/home" onClick={() => setIsOpen(false)} className="inline-block">
           <img
-            src="https://placehold.co/64x64/png"
+            src='makcha.png'
             alt="서비스 로고"
             className="w-[60px] h-[60px] rounded-[18px] object-cover"
           />

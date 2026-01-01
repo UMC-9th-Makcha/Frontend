@@ -17,7 +17,7 @@ const MobileHeader = ({ isOpen, setIsOpen }: DashboardProps) => {
         className="absolute left-[12px] top-1/2 -translate-y-1/2"
       >
         <img
-          src="https://placehold.co/64x64/png"
+          src='makcha.png'
           alt="로고"
           className="w-[60px] h-[60px] rounded-xl object-cover"
         />
