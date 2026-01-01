@@ -4,6 +4,7 @@ import RecentDestinations from "./RecentDestinations";
 import DirectSearchField from "./DirectSearchField";
 import LogoCircle from "../../../assets/icons/Logo-circle.svg";
 
+
 type AlarmPanelProps = {onOpenOrigin: () => void;};
 
 const AlarmPanel = ({ onOpenOrigin }: AlarmPanelProps) => {

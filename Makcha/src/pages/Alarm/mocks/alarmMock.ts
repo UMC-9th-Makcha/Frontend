@@ -26,3 +26,83 @@ export const RECENT_DESTINATIONS = [
     { id: "r3", label: "학교" },
     { id: "r4", label: "회사" },
 ];
+
+export type PlaceItem = {
+    placeId: string;
+    name: string;
+    address: string;
+    lat: number;
+    lng: number;
+};
+
+export const MOCK_PLACES: PlaceItem[] = [
+    {
+        placeId: "p1",
+        name: "서울역 봉구비어",
+        address: "서울 중구 한강대로 405",
+        lat: 37.554722,
+        lng: 126.970833,
+    },
+    {
+        placeId: "p2",
+        name: "강남역",
+        address: "서울 강남구 강남대로 396",
+        lat: 37.497175,
+        lng: 127.027926,
+    },
+    {
+        placeId: "p3",
+        name: "수원역",
+        address: "경기 수원시 팔달구 덕영대로 924",
+        lat: 37.266,
+        lng: 127.000,
+    },
+];
+
+export type AlarmRoute = {
+    id: string;
+    isOptimal: boolean;
+    routeType: "SUBWAY" | "BUS" | "NIGHT_BUS";
+    lines: string[];
+    departureTime: string;
+    timeUntilDeparture: string;
+    totalDurationMin: number;
+    transferCount: number;
+    walkingTimeMin: number;
+};
+
+export const ALARM_ROUTES_MOCK: AlarmRoute[] = [
+    {
+        id: "r1",
+        isOptimal: true,
+        routeType: "SUBWAY",
+        lines: ["2호선", "4호선"],
+        departureTime: "23:55",
+        timeUntilDeparture: "출발까지 12분",
+        totalDurationMin: 45,
+        transferCount: 1,
+        walkingTimeMin: 9,
+    },
+    {
+        id: "r2",
+        isOptimal: false,
+        routeType: "SUBWAY",
+        lines: ["2호선"],
+        departureTime: "01:20",
+        timeUntilDeparture: "출발까지 1시간 30분",
+        totalDurationMin: 50,
+        transferCount: 0,
+        walkingTimeMin: 5,
+    },
+    {
+        id: "r3",
+        isOptimal: false,
+        routeType: "NIGHT_BUS",
+        lines: ["N26"],
+        departureTime: "02:40",
+        timeUntilDeparture: "출발까지 2시간 50분",
+        totalDurationMin: 50,
+        transferCount: 0,
+        walkingTimeMin: 5,
+    },
+];
