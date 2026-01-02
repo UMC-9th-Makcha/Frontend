@@ -1,0 +1,22 @@
+import type { CategoryTabProps } from "../../types/waitingspot";
+import { categories } from "./constants";
+
+export const CategoryTab = ({ selected, onChange }: CategoryTabProps) => {
+  return (
+    <div className="flex rounded-lg gap-[6px]">
+      {categories.map((c) => (
+        <button
+          key={c.key}
+          type="button"
+          onClick={() => onChange(c.key)}
+          className={`h-[35px] px-[18px] text-sm rounded-[20px] shadow-[0_0_5px_0_#88888840] transition 
+            ${selected === c.key
+              ? "text-makcha-navy-600 bg-[#F3F7FF] border border-makcha-navy-400 border-[0.5px]"
+              : "bg-white text-[#5F5F5F] font-medium"
+            }`}>
+          {c.label}
+        </button>
+      ))}
+    </div>
+  );
+};

@@ -1,4 +1,51 @@
 import { useParams } from "react-router-dom";
+import { useState } from "react";
+import { WaitingSpotLayout } from "../../components/waitingspot/WaitingSpotLayout";
+import { WaitingSpotHeader } from "../../components/waitingspot/WaitingSpotHeader";
+import { CategoryTab } from "../../components/waitingspot/CategoryTab";
+import { WaitingSpotMap } from "../../components/waitingspot/WaitingSpotMap";
+import type { CategoryKey, Place } from "../../types/waitingspot";
+import { StartLocationSearch } from "../../components/waitingspot/StartLocationSearch";
+import { PlaceList } from "../../components/waitingspot/PlaceList";
+
+export const mockPlaces: Place[] = [
+  {
+    id: 1,
+    name: "24시 별빛 카페",
+    category: "night-cafe",
+    address: "서울 용산구 한강대로",
+    distanceMeter: 400,
+    durationSeconds: 90,
+    badge: "곧 마감 04:00까지 운영"
+  },
+  {
+    id: 2,
+    name: "용산 PC존",
+    category: "pc-cafe",
+    address: "서울 용산구 이태원로",
+    distanceMeter: 400,
+    durationSeconds: 90,
+    badge: "곧 마감 04:00까지 운영"
+  },
+  {
+    id: 3,
+    name: "한강 사우나",
+    category: "sauna",
+    address: "서울 용산구 서빙고로",
+    distanceMeter: 400,
+    durationSeconds: 90,
+    badge: "곧 마감 04:00까지 운영"
+  },
+  {
+    id: 4,
+    name: "미드나잇 스터디 카페",
+    category: "night-cafe",
+    address: "서울 용산구 후암로",
+    distanceMeter: 400,
+    durationSeconds: 90,
+    badge: "곧 마감 04:00까지 운영"
+  },
+];
 
 export default function WaitingSpot() {
   // 1. 타입을 string으로 받거나, 명시적으로 단언하여 에러를 방지합니다.
@@ -7,40 +54,21 @@ export default function WaitingSpot() {
   // 2. 잘못된 경로(예: /spot/abc)로 들어왔을 때를 대비한 방어 로직
   const isFirst = type === 'first';
   const isLast = type === 'last';
-  
+
   // 첫차도 막차도 아닌 경로일 경우 대시보드로 안내하거나 제목을 기본값으로 설정
   const pageTitle = isFirst ? "첫차 대기 장소" : isLast ? "막차 대기 장소" : "대기 장소 확인";
 
+  const [category, setCategory] = useState<CategoryKey>("all");
+
   return (
-    <div className="p-4 flex flex-col min-h-screen">
-      <header className="flex items-center mb-6 py-2">
-        <button 
-          onClick={() => window.history.back()} 
-          className="mr-4 text-makcha-navy-400"
-        >
-          ←
-        </button>
-        <h1 className="text-xl font-bold text-white">{pageTitle}</h1>
-      </header>
-
-      {/* 실시간 위치 확인 영역 (피그마 3번 프레임 반영) */}
-      <div className="flex-1 w-full bg-makcha-navy-800 rounded-3xl overflow-hidden border border-makcha-navy-600 relative">
-        {/* 실제 지도가 들어갈 자리입니다. */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center space-y-4">
-          <div className="w-12 h-12 border-4 border-makcha-yellow-500 border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-makcha-navy-200 font-medium">
-            {isFirst ? "첫차" : "막차"} 위치 정보를 가져오고 있습니다...
-          </p>
-        </div>
-      </div>
-
-      {/* 하단 안내 문구 */}
-      <div className="mt-6 p-4 bg-makcha-navy-900/50 rounded-2xl border border-dashed border-makcha-navy-600">
-        <p className="text-sm text-makcha-navy-400 leading-relaxed text-center">
-          지도상의 위치는 실시간 교통 상황에 따라<br />
-          실제와 **최대 1~2분** 정도 차이가 날 수 있습니다.
-        </p>
-      </div>
+    <div className="h-full min-h-0 min-w-0">
+      <WaitingSpotLayout
+        header={<WaitingSpotHeader title={pageTitle} />}
+        search={<StartLocationSearch />}
+        controls={<CategoryTab selected={category} onChange={setCategory} />}
+        list={<PlaceList places={mockPlaces}/>}
+        map={<WaitingSpotMap />}
+      />
     </div>
   );
 }
