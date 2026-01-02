@@ -1,4 +1,4 @@
-import SearchIcon from "../../../assets/icons/Search.svg";
+import SearchIcon from "../../../../assets/icons/Search.svg";
 
 type OriginFieldProps = {
     onClick: () => void;

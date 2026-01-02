@@ -1,7 +1,7 @@
-import OriginField from "./OriginField";
-import DestinationCarousel from "./DestinationCarousel";
-import RecentDestinations from "./RecentDestinations";
-import DirectSearchField from "./DirectSearchField";
+import OriginField from "./components/OriginField";
+import DestinationCarousel from "./components/DestinationCarousel";
+import RecentDestinations from "./components/RecentDestinations";
+import DirectSearchField from "./components/DirectSearchField";
 import LogoCircle from "../../../assets/icons/Logo-circle.svg";
 
 

@@ -1,7 +1,7 @@
 import { useRef } from "react";
-import { DESTINATIONS } from "../mocks/alarmMock";
-import { useScrollIndicator } from "../hooks/useScrollIndicator";
-import HomeIcon from "../../../assets/icons/Home.svg";
+import { DESTINATIONS } from "../../mocks/alarmMock";
+import { useScrollIndicator } from "../../hooks/useScrollIndicator";
+import HomeIcon from "../../../../assets/icons/Home.svg";
 
 const DestinationCarousel = () => {
     const scrollerRef = useRef<HTMLDivElement | null>(null);

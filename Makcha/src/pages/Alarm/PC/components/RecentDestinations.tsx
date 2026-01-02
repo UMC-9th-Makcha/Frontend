@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { RECENT_DESTINATIONS } from "../mocks/alarmMock";
+import { RECENT_DESTINATIONS } from "../../mocks/alarmMock";
 
 const RecentDestinationsCarousel = () => {
     const scrollerRef = useRef<HTMLDivElement | null>(null);
