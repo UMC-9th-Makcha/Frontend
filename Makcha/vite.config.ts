@@ -8,36 +8,44 @@ export default defineConfig({
     react(),
     tailwindcss(),
     VitePWA({
+      strategies: 'injectManifest',
+      srcDir: 'src',
+      filename: 'sw.ts',
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
       devOptions: {
-        enabled: true // 개발 환경(localhost/ngrok)에서도 PWA 작동 허용
+        enabled: true,
+        type: 'module', 
       },
       manifest: {
         name: 'Makcha',
         short_name: 'Makcha',
-        description: '막차 알림 서비스',
+        description: '막차 시간을 실시간으로 확인하고 알림을 받으세요.',
         theme_color: '#ffffff',
+        background_color: '#ffffff',
+        display: 'standalone',
+        start_url: '/',
         icons: [
           {
-            src: 'makcha.png', // public 폴더 기준 경로
+            src: 'makcha.png',
             sizes: '192x192',
-            type: 'image/png'   // PNG이므로 image/png로 변경
+            type: 'image/png'
           },
           {
             src: 'makcha.png',
             sizes: '512x512',
             type: 'image/png',
-            purpose: 'any maskable' // 💡 안드로이드에서 아이콘이 꽉 차게 보이게 해줍니다.
+            purpose: 'any maskable'
           }
         ]
+      },
+      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
+      injectManifest: {
+        swDest: 'dist/sw.js',
       }
-        ]
-      }
-    })
+    }),
   ],
   server: {
-    allowedHosts: true, 
+    allowedHosts: true,
     host: true,
   },
 })
