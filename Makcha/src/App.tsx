@@ -28,9 +28,13 @@ function App() {
 
   return (
     <BrowserRouter>
-      <div className="min-h-screen min-w-md overflow-x-auto bg-white dark:bg-makcha-navy-900">
+      {/* 수정 포인트: 
+        1. min-w-md 제거 (모바일 대응 방해)
+        2. w-full 추가 (화면 꽉 채우기)
+        3. overflow-x-hidden (가로 스크롤 절대 방지)
+      */}
+      <div className="min-h-screen w-full overflow-x-hidden bg-white dark:bg-makcha-navy-900">
         <Routes>
-          
           <Route path="/kakao/callback" element={<KakaoCallback />} />
 
           {/* 비로그인 전용 경로 */}
@@ -39,7 +43,7 @@ function App() {
             <Route path="*" element={<ErrorPage />} />
           </Route>
 
-          {/*로그인 경로*/}
+          {/* 로그인 경로 */}
           <Route element={<ProtectedRoute />}>
             <Route element={<DashboardLayout />}>
               <Route path="/home" element={<Home />} />
@@ -51,11 +55,9 @@ function App() {
               <Route path="*" element={<ErrorPage />} />
             </Route>
           </Route>
-
         </Routes>
       </div>
     </BrowserRouter>
   );
 }
-
 export default App;

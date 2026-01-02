@@ -20,15 +20,18 @@ export default defineConfig({
         theme_color: '#ffffff',
         icons: [
           {
-            src: 'vite.svg',
+            src: 'makcha.png', // public 폴더 기준 경로
             sizes: '192x192',
-            type: 'image/svg+xml'
+            type: 'image/png'   // PNG이므로 image/png로 변경
           },
           {
-            src: 'vite.svg',
+            src: 'makcha.png',
             sizes: '512x512',
-            type: 'image/svg+xml'
+            type: 'image/png',
+            purpose: 'any maskable' // 💡 안드로이드에서 아이콘이 꽉 차게 보이게 해줍니다.
           }
+        ]
+      }
         ]
       }
     })
