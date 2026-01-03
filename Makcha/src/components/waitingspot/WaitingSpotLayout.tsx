@@ -28,7 +28,7 @@ export const WaitingSpotLayout = ({header, controls, map, search, list} : Waitin
           <div>
             {controls}
           </div>
-          <div>
+          <div className="mt-5">
             {list}
           </div>
         </div>

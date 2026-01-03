@@ -22,3 +22,10 @@ export type PlaceListProps = {
 export type PlaceCardProps = {
   place: Place;
 };
+
+export type SortValue = "distance" | "open24h";
+
+export type SortToggleProps = {
+  value: SortValue;
+  onChange: (value: "distance" | "open24h") => void;
+};
