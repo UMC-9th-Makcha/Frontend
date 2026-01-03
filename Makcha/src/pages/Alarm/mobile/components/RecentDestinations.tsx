@@ -24,12 +24,12 @@ const RecentDestinations = () => {
                             h-[48px] px-4
                             rounded-[18px]
                             border border-gray-200 dark:border-makcha-navy-700
-                            bg-white dark:bg-makcha-navy-900
+                            bg-white
                             shadow-[0_0_5px_rgba(136,136,136,0.18)]
                             text-left
                             "
                     >
-                        <span className="block max-w-[220px] truncate text-[13px] text-makcha-navy-900 dark:text-white">
+                        <span className="block max-w-[220px] truncate text-[13px] text-makcha-navy-900">
                             {item.label}
                         </span>
                     </button>

@@ -20,7 +20,7 @@ const ROUTE_TYPE_LABEL: Record<AlarmRoute["routeType"], string> = {
 const AlarmSuccessPanel = ({ origin, destination, route, onGoAlarmList }: Props) => {
     return (
         <section className="relative h-full w-100.5 shrink-0 border-r border-gray-200 bg-white dark:border-makcha-navy-800 dark:bg-makcha-navy-900">
-            <div className="flex h-full flex-col px-5 pt-40">
+            <div className="flex h-full flex-col px-5 pt-32">
                 <div className="flex flex-col items-center">
                     <img src={CheckIcon} alt="완료" className="h-15 w-15 opacity-60" />
 
@@ -57,7 +57,7 @@ const AlarmSuccessPanel = ({ origin, destination, route, onGoAlarmList }: Props)
                             ))}
                         </div>
 
-                        <div className="mt-[17px] text-center text-[36px] text-black">
+                        <div className="mt-[17px] text-center text-bold text-[36px] text-black">
                             {route ? route.departureTime : "--:--"}
                         </div>
 

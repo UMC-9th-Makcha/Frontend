@@ -18,7 +18,7 @@ const DirectSearchField = ({ onClick }: Props) => {
                     flex h-[57px] w-full items-center gap-3
                     rounded-[20px]
                     border border-gray-200 dark:border-makcha-navy-700
-                    bg-white dark:bg-makcha-navy-900
+                    bg-white 
                     pl-[14px] pr-[14px]
                     shadow-sm
                     "
@@ -28,7 +28,7 @@ const DirectSearchField = ({ onClick }: Props) => {
                     <span className="absolute inset-1 rounded-full bg-makcha-navy-600" />
                 </span>
 
-                <p className="min-w-0 flex-1 truncate text-left text-[18px] text-[#5F5F5F] dark:text-white/70">
+                <p className="min-w-0 flex-1 truncate text-left text-[18px] text-[#5F5F5F]">
                     도착지
                 </p>
 

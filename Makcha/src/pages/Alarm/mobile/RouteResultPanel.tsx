@@ -4,9 +4,6 @@ import type { OriginSearchItem } from "../mocks/originSearchMock";
 import type { AlarmRoute } from "../mocks/alarmMock";
 
 type Props = {
-    isOpen: boolean;
-    setIsOpen: (v: boolean) => void;
-
     origin: OriginSearchItem | null;
     routes: AlarmRoute[];
     onSelectRoute: (route: AlarmRoute) => void;
@@ -24,9 +21,7 @@ const RouteResultPanelMobile = ({
     onSelectRoute,
 }: Props) => {
     return (
-        <section className="min-h-dvh w-full bg-[#F8FAFF] dark:bg-makcha-navy-950 flex flex-col">
-
-
+        <section className="min-h-dvh w-full bg-white dark:bg-makcha-navy-900 flex flex-col">
             <div className="flex-1 px-5 pt-6 pb-6 overflow-y-auto">
                 {/* 타이틀 */}
                 <div className="flex items-start justify-between">
@@ -45,8 +40,8 @@ const RouteResultPanelMobile = ({
                     <button
                         type="button"
                         className="flex h-[57px] w-full items-center gap-3 rounded-[16px]
-                            border border-gray-200 dark:border-makcha-navy-800
-                            bg-white dark:bg-makcha-navy-900
+                            border border-gray-200 
+                            bg-white 
                             px-4 shadow-sm"
                     >
                         <span className="relative h-4 w-4">
@@ -54,22 +49,21 @@ const RouteResultPanelMobile = ({
                             <span className="absolute inset-1 rounded-full bg-makcha-navy-600" />
                         </span>
 
-                        <p className="flex-1 truncate text-left text-[18px] text-gray-600 dark:text-white/70">
+                        <p className="flex-1 truncate text-left text-[18px] text-gray-600">
                             {origin ? `현위치 : ${origin.title}` : "현위치 : 봉구비어 남영역점"}
                         </p>
 
                         <img
                             src={SearchIcon}
                             alt="검색"
-                            className="h-[25px] w-[25px] opacity-60 dark:opacity-80"
+                            className="h-[25px] w-[25px]"
                         />
                     </button>
 
                     <button
                         type="button"
                         className="flex h-[57px] w-full items-center gap-3 rounded-[16px]
-                            border border-gray-200 dark:border-makcha-navy-800
-                            bg-white dark:bg-makcha-navy-900
+                            border border-gray-200 bg-white 
                             px-4 shadow-sm"
                     >
                         <span className="relative h-4 w-4">
@@ -77,14 +71,14 @@ const RouteResultPanelMobile = ({
                             <span className="absolute inset-1 rounded-full bg-makcha-navy-600" />
                         </span>
 
-                        <p className="flex-1 truncate text-left text-[18px] text-gray-600 dark:text-white/70">
+                        <p className="flex-1 truncate text-left text-[18px] text-gray-600">
                             도착지
                         </p>
 
                         <img
                             src={SearchIcon}
                             alt="검색"
-                            className="h-[25px] w-[25px] opacity-60 dark:opacity-80"
+                            className="h-[25px] w-[25px]"
                         />
                     </button>
                 </div>
@@ -99,8 +93,8 @@ const RouteResultPanelMobile = ({
                             className="
                                 w-full
                                 rounded-[18px]
-                                border border-[#D9D9D9] dark:border-makcha-navy-800
-                                bg-white dark:bg-makcha-navy-900
+                                border border-[#D9D9D9] 
+                                bg-white
                                 px-4 pt-4 pb-3
                                 text-left
                                 shadow-[0_6px_18px_rgba(0,0,0,0.08)]
@@ -112,11 +106,11 @@ const RouteResultPanelMobile = ({
                             <div className="flex items-start justify-between gap-3">
                                 <div className="flex flex-wrap items-center gap-2">
                                     {route.isOptimal ? (
-                                        <span className="rounded-[10px] border border-gray-300 dark:border-makcha-navy-700 px-3 py-1 text-[13px] text-gray-700 dark:text-white/70">
+                                        <span className="rounded-[10px] border border-gray-300 px-3 py-1 text-[13px] text-gray-700">
                                             최적
                                         </span>
                                     ) : (
-                                        <span className="rounded-[10px] border border-gray-300 dark:border-makcha-navy-700 px-3 py-1 text-[13px] text-gray-700 dark:text-white/70">
+                                        <span className="rounded-[10px] border border-gray-300 px-3 py-1 text-[13px] text-gray-700">
                                             {ROUTE_TYPE_LABEL[route.routeType]}
                                         </span>
                                     )}
@@ -124,30 +118,30 @@ const RouteResultPanelMobile = ({
                                     {route.lines.map((l) => (
                                         <span
                                             key={l}
-                                            className="rounded-[10px] border border-gray-300 dark:border-makcha-navy-700 px-3 py-1 text-[13px] text-gray-700 dark:text-white/70"
+                                            className="rounded-[10px] border border-gray-300 px-3 py-1 text-[13px] text-gray-700"
                                         >
                                             {l}
                                         </span>
                                     ))}
                                 </div>
 
-                                <div className="shrink-0 flex items-center gap-1 text-[13px] text-gray-400 dark:text-white/40">
+                                <div className="shrink-0 flex items-center gap-1 text-[13px] text-gray-400">
                                     <span>상세보기</span>
                                     <span className="text-[18px] leading-none">›</span>
                                 </div>
                             </div>
 
                             <div className="py-6 text-center">
-                                <div className="text-[40px] font-bold text-makcha-navy-900 dark:text-white leading-none">
+                                <div className="text-[40px] font-bold text-makcha-navy-900 leading-none">
                                     {route.departureTime} 출발
                                 </div>
-                                <div className="mt-2 text-[16px] font-regular text-[#000000] dark:text-white/70">
+                                <div className="mt-2 text-[16px] font-regular text-[#000000]">
                                     {route.timeUntilDeparture}
                                 </div>
                             </div>
 
                             <div className="border-t border-gray-300/80 dark:border-makcha-navy-800 pt-3">
-                                <div className="grid grid-cols-3 text-center text-[13px] text-gray-600 dark:text-white/60">
+                                <div className="grid grid-cols-3 text-center text-[13px] text-gray-600">
                                     <span>총 {route.totalDurationMin}분 소요</span>
                                     <span>환승 {route.transferCount}회</span>
                                     <span>도보 {route.walkingTimeMin}분</span>

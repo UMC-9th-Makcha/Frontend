@@ -33,23 +33,21 @@ const DestinationCarousel = () => {
                             w-[300px] h-[132px]
                             rounded-[18px]
                             border border-gray-200 dark:border-makcha-navy-700
-                            bg-white dark:bg-makcha-navy-900
-                            p-4
-                            shadow-sm text-left
+                            bg-white p-4 shadow-sm text-left
                             "
                     >
                         <div className="flex items-center gap-2">
                             <img src={HomeIcon} alt="홈" className="h-[18px] w-[18px] opacity-70" />
-                            <span className="text-[13px] font-semibold text-makcha-navy-600 dark:text-makcha-navy-200">
+                            <span className="text-[13px] font-semibold text-makcha-navy-600">
                                 {d.label}
                             </span>
                         </div>
 
-                        <div className="mt-2 text-[28px] font-bold leading-none text-makcha-navy-900 dark:text-white">
+                        <div className="mt-2 text-[28px] font-bold leading-none text-makcha-navy-900">
                             {d.time}
                         </div>
 
-                        <div className="mt-2 truncate text-[12px] text-gray-500 dark:text-white/50">
+                        <div className="mt-2 truncate text-[12px] text-gray-500">
                             {d.address}
                         </div>
                     </button>

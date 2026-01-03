@@ -63,7 +63,7 @@ const Alarm = () => {
         </div>
 
         {/* 지도: md 이상에서만 */}
-        <section className="hidden md:block min-w-0 flex-1 bg-gray-100" />
+        <section className="hidden md:block min-w-0 flex-1 h-dvh bg-gray-100" />
 
         {/* 출발지 검색창 */}
         <div className="hidden md:block">

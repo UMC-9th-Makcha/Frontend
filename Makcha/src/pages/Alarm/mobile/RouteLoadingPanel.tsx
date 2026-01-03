@@ -10,7 +10,7 @@ const RouteLoadingPanel = ({ open }: Props) => {
             className="
                 min-h-dvh w-full
                 flex items-center justify-center
-                bg-[#F8FAFF] dark:bg-makcha-navy-950
+                bg-white dark:bg-makcha-navy-900
             "
         >
             <div className="flex flex-col items-center -translate-y-10">

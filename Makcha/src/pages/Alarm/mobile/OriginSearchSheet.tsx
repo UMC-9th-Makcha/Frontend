@@ -48,9 +48,9 @@ const OriginSearchSheetMobile = ({ open, onClose, onSelectOrigin }: Props) => {
     if (!open) return null;
 
     return createPortal(
-        <div className="fixed inset-0 z-[9999] h-[100dvh] w-[100vw] overflow-hidden overscroll-contain flex flex-col bg-white dark:bg-makcha-navy-950">
+        <div className="fixed inset-0 z-[9999] h-[100dvh] w-[100vw] overflow-hidden overscroll-contain flex flex-col bg-white dark:bg-makcha-navy-900">
             {/* 헤더 */}
-            <header className="sticky top-0 z-10 bg-white dark:bg-makcha-navy-950 px-5 pt-[env(safe-area-inset-top)]">
+            <header className="dark:bg-makcha-navy-900 sticky top-0 z-10 bg-white dark:bg-makcha-navy-950 px-5 pt-[env(safe-area-inset-top)]">
                 <div className="pt-4 pb-4">
                     <div className="relative flex items-center justify-center">
                         <h2 className="text-center text-[40px] font-normal text-makcha-navy-900 dark:text-white">
@@ -75,14 +75,13 @@ const OriginSearchSheetMobile = ({ open, onClose, onSelectOrigin }: Props) => {
                 <div className="border-t border-black dark:border-makcha-navy-800" />
             </header>
 
-
             <main
                 ref={mainRef}
                 className="min-h-0 flex-1 overflow-y-auto pb-[env(safe-area-inset-bottom)]"
             >
                 {/* 검색 input */}
                 <div className="mt-[37px] px-5">
-                    <div className="flex h-[62px] items-center rounded-[10px] border border-[#6D6D6D] bg-white px-4 shadow-sm dark:border-makcha-navy-800 dark:bg-makcha-navy-900">
+                    <div className="flex h-[62px] items-center rounded-[10px] border border-[#6D6D6D] bg-white px-4 shadow-sm">
                         <input
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
@@ -90,7 +89,6 @@ const OriginSearchSheetMobile = ({ open, onClose, onSelectOrigin }: Props) => {
                             className="
                                 flex-1 bg-transparent text-[25px] text-[#6D6D6D] outline-none
                                 placeholder:text-gray-500 caret-gray-900
-                                dark:text-white dark:placeholder:text-white/40 dark:caret-white
                             "
                         />
 

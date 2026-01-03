@@ -9,9 +9,9 @@ type Props = {
 
 const AlarmPanel = ({ onOpenOrigin }: Props) => {
     return (
-        <section className="min-h-dvh w-full bg-[#F8FAFF] dark:bg-makcha-navy-950">
+        <section className="min-h-dvh w-full dark:bg-makcha-navy-900">
             <div className="px-5 pt-7 pb-6">
-                <h1 className="text-[30px] font-bold text-makcha-navy-900 dark:text-white">
+                <h1 className="text-[30px] font-bold  text-makcha-navy-900 dark:text-white">
                     오늘은 어디로 가시나요?
                 </h1>
 
