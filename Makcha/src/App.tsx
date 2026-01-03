@@ -12,7 +12,7 @@ import Download from "./pages/Download";
 
 import DashboardLayout from "./components/dashboard/DashboardLayout";
 import ErrorPage from "./pages/Error";
-import { ProtectedRoute, PublicRoute } from "./components/kakao/KakaoRoute";
+import { ProtectedRoute } from "./components/kakao/KakaoRoute";
 import KakaoCallback from "./components/kakao/KakaoCallback";
 
 function App() {
@@ -28,36 +28,32 @@ function App() {
 
   return (
     <BrowserRouter>
-      {/* 수정 포인트: 
-        1. min-w-md 제거 (모바일 대응 방해)
-        2. w-full 추가 (화면 꽉 채우기)
-        3. overflow-x-hidden (가로 스크롤 절대 방지)
-      */}
       <div className="min-h-screen w-full overflow-x-hidden bg-white dark:bg-makcha-navy-900">
         <Routes>
+          {/* 카카오 콜백은 레이아웃 없이 처리 */}
           <Route path="/kakao/callback" element={<KakaoCallback />} />
 
-          {/* 비로그인 전용 경로 */}
-          <Route element={<PublicRoute />}>
+          <Route element={<DashboardLayout />}>
+            
+            {/* 비로그인 */}
             <Route path="/" element={<Main />} />
-            <Route path="*" element={<ErrorPage />} />
-          </Route>
+            <Route path="/home" element={<Home />} />
+            <Route path="/download" element={<Download />} />
 
-          {/* 로그인 경로 */}
-          <Route element={<ProtectedRoute />}>
-            <Route element={<DashboardLayout />}>
-              <Route path="/home" element={<Home />} />
+            {/* 로그인*/}
+            <Route element={<ProtectedRoute />}>
               <Route path="/alarm" element={<Alarm />} />
               <Route path="/spot/:type" element={<WaitingSpot />} />
               <Route path="/history" element={<History />} />
               <Route path="/setting" element={<Settings />} />
-              <Route path="/download" element={<Download />} />
-              <Route path="*" element={<ErrorPage />} />
             </Route>
+
+            <Route path="*" element={<ErrorPage />} />
           </Route>
         </Routes>
       </div>
     </BrowserRouter>
   );
 }
+
 export default App;
