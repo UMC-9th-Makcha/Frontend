@@ -14,6 +14,7 @@ import DashboardLayout from "./components/dashboard/DashboardLayout";
 import ErrorPage from "./pages/Error";
 import { ProtectedRoute } from "./components/kakao/KakaoRoute";
 import KakaoCallback from "./components/kakao/KakaoCallback";
+import FAB from "./components/common/FAB";
 
 function App() {
   const isDarkMode = useUIStore((state) => state.isDarkMode);
@@ -28,6 +29,7 @@ function App() {
 
   return (
     <BrowserRouter>
+      <FAB />
       <div className="min-h-screen w-full overflow-x-hidden bg-white dark:bg-makcha-navy-900">
         <Routes>
           {/* 카카오 콜백은 레이아웃 없이 처리 */}

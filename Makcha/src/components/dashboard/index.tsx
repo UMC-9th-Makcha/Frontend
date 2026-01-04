@@ -51,7 +51,7 @@ const Dashboard = ({ isOpen, setIsOpen }: DashboardProps) => {
         x: isMobile ? (isOpen ? 0 : "-100%") : 0
       }}
       transition={sidebarSpring}
-      className="fixed inset-y-0 left-0 z-50 flex flex-col bg-gray-50 md:bg-white dark:bg-makcha-navy-900 md:sticky md:top-0 md:h-screen md:border-r md:border-gray-200 dark:md:border-makcha-navy-800"
+      className="fixed inset-y-0 left-0 z-45 flex flex-col bg-gray-50 md:bg-white dark:bg-makcha-navy-900 md:sticky md:top-0 md:h-screen md:border-r md:border-gray-200 dark:md:border-makcha-navy-800"
     >
       {/* 축소 */}
       <div className={`flex w-full mt-6 ${isCollapsed ? 'justify-center' : 'justify-end px-5'}`}>
