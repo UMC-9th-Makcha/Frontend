@@ -15,9 +15,13 @@ const PastSummaryCard = ({ summary, onDetail }: Props) => {
             <div className="flex items-start justify-between">
                 <div>
                     <div className="text-[26px] font-medium text-black">이번 달 택시비로</div>
-                    <div className="mt-[13px] text-[32px] font-medium text-[#262626]">
+                    <div
+                        className={`mt-[13px] text-[32px] font-medium ${thisMonthTaxiCost === 0 ? "text-black" : "text-[#4674C6]"
+                            }`}
+                    >
                         {thisMonthTaxiCost.toLocaleString()}원
                     </div>
+
                     <div className="mt-[13px] text-[16px] text-[#5F5F5F]">
                         {savedCount === 0
                             ? "절약했어요! 막차 알림을 설정하고 택시비를 아껴보세요!"

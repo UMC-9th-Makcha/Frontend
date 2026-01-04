@@ -14,15 +14,15 @@ const CurrentAlarmCard = ({ alarm, onCreate, onCancel, onDetail }: Props) => {
     if (!alarm) {
         return (
             <div className="w-full rounded-[20px] border border-gray-200 bg-white shadow-sm">
-                <h2 className="text-[26px] font-medium text-black">안녕하세요, 막차 님!</h2>
+                <h2 className="px-6 py-[15px] text-[26px] font-medium text-black">안녕하세요, 막차 님!</h2>
 
-                <p className="mt-3.25 text-[14px] text-[#909090]">
+                <p className="px-6 mt-1 text-[16px] text-[#909090]">
                     아래 버튼을 클릭하여 막차 시간 알림을 생성하고
                     <br />
                     카카오톡으로 알림을 확인하세요!
                 </p>
 
-                <div className="mt-7.5 flex justify-end">
+                <div className="mt-7.5 flex justify-end pr-7.75 pb-5">
                     <button
                         type="button"
                         onClick={onCreate}
@@ -84,11 +84,11 @@ const CurrentAlarmCard = ({ alarm, onCreate, onCancel, onDetail }: Props) => {
             </div>
 
             {/* 알람 취소하기 */}
-            <div className="mt-[19px] flex justify-center">
+            <div className="mt-4.75 flex justify-center">
                 <button
                     type="button"
                     onClick={onCancel}
-                    className="h-12.5 w-full max-w-121.5 rounded-[30px] bg-makcha-navy-400 text-[20px] font-medium text-white"
+                    className="h-12.5 w-full rounded-[30px] bg-makcha-navy-400 text-[20px] font-medium text-white"
                 >
                     알림 취소하기
                 </button>

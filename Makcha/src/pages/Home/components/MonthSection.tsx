@@ -14,8 +14,8 @@ const MonthSection = ({ monthLabel, items, onDetail }: Props) => {
     return (
         <div>
             <div className="flex items-end justify-between">
-                <div className="text-[32px] font-medium text-black">{monthLabel}</div>
-                <div className="text-[20px] text-[#5F5F5F]">총 {totalCount}건</div>
+                <div className="text-[32px] font-medium text-black dark:text-white">{monthLabel}</div>
+                <div className="text-[20px] text-[#5F5F5F] dark:text-gray-400">총 {totalCount}건</div>
             </div>
 
             <div className="mt-7">
