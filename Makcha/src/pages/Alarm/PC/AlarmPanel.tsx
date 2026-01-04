@@ -3,11 +3,16 @@ import DestinationCarousel from "./components/DestinationCarousel";
 import RecentDestinations from "./components/RecentDestinations";
 import DirectSearchField from "./components/DirectSearchField";
 import LogoCircle from "../../../assets/icons/Logo-circle.svg";
+import type { OriginSearchItem } from "../mocks/originSearchMock";
 
 
-type AlarmPanelProps = {onOpenOrigin: () => void;};
+type AlarmPanelProps = {
+    onOpenOrigin: () => void;
+    onOpenDestination: () => void;
+    onSelectDestination: (item: OriginSearchItem) => void;
+};
 
-const AlarmPanel = ({ onOpenOrigin }: AlarmPanelProps) => {
+const AlarmPanel = ({ onOpenOrigin, onOpenDestination, onSelectDestination }: AlarmPanelProps) => {
     return (
         <section
             className="
@@ -16,7 +21,7 @@ const AlarmPanel = ({ onOpenOrigin }: AlarmPanelProps) => {
                 border-r border-gray-200 dark:border-makcha-navy-800
                 bg-white dark:bg-makcha-navy-900
             "
-            >
+        >
             <div className="h-full px-[20px] pt-[62px]">
                 <h1 className="text-[32px] font-medium text-makcha-navy-900 dark:text-white">
                     오늘은 어디로 가시나요?
@@ -27,16 +32,16 @@ const AlarmPanel = ({ onOpenOrigin }: AlarmPanelProps) => {
                 </p>
 
                 <OriginField onClick={onOpenOrigin} />
-                <DestinationCarousel />
-                <RecentDestinations />
-                <DirectSearchField />
+                <DestinationCarousel onSelectDestination={onSelectDestination} />
+                <RecentDestinations onSelectDestination={onSelectDestination} />
+                <DirectSearchField onClick={onOpenDestination} />
             </div>
 
             {/* 로고 */}
             <img
                 src={LogoCircle}
                 alt="service logo"
-                className="absolute bottom-[34px] right-[20px]
+                className="absolute bottom-[34px] right-5
                     h-[58px] w-[58px] rounded-full"
             />
         </section>

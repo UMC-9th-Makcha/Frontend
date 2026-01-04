@@ -1,7 +1,12 @@
 import { useRef } from "react";
 import { RECENT_DESTINATIONS } from "../../mocks/alarmMock";
+import type { OriginSearchItem } from "../../mocks/originSearchMock";
 
-const RecentDestinations = () => {
+type Props = {
+    onSelectDestination: (item: OriginSearchItem) => void;
+};
+
+const RecentDestinations = ({ onSelectDestination }: Props) => {
     const scrollerRef = useRef<HTMLDivElement | null>(null);
 
     return (
@@ -19,6 +24,12 @@ const RecentDestinations = () => {
                     <button
                         key={item.id}
                         type="button"
+                        onClick={() => onSelectDestination({
+                            id: String(item.id),
+                            title: item.label,
+                            address: item.label,
+                        })
+                        }
                         className="
                             shrink-0
                             h-[48px] px-4

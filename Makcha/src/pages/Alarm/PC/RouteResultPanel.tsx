@@ -5,6 +5,7 @@ import LogoCircle from "../../../assets/icons/Logo-circle.svg";
 
 type Props = {
     origin: OriginSearchItem | null;
+    destination: OriginSearchItem | null;
     routes: AlarmRoute[];
     onSelectRoute: (route: AlarmRoute) => void;
 };
@@ -15,7 +16,7 @@ const ROUTE_TYPE_LABEL: Record<AlarmRoute["routeType"], string> = {
     NIGHT_BUS: "심야버스",
 };
 
-const RouteResultPanel = ({ routes, onSelectRoute }: Props) => {
+const RouteResultPanel = ({ origin, destination, routes, onSelectRoute }: Props) => {
     return (
         <section className="relative h-full min-h-0 w-[402px] shrink-0 border-r border-gray-200 bg-white dark:border-makcha-navy-800 dark:bg-makcha-navy-900">
             <div className="h-full px-[20px] pt-[62px] flex flex-col min-h-0">
@@ -42,7 +43,7 @@ const RouteResultPanel = ({ routes, onSelectRoute }: Props) => {
                         </span>
 
                         <p className="flex-1 truncate text-left text-sm text-gray-600">
-                            현위치 : 봉구비어 남영역점
+                            {origin ? `출발지 : ${origin.title}` : "출발지"}
                         </p>
 
                         <img src={SearchIcon} alt="검색" className="h-5 w-5 opacity-60" />
@@ -59,7 +60,7 @@ const RouteResultPanel = ({ routes, onSelectRoute }: Props) => {
                         </span>
 
                         <p className="flex-1 truncate text-left text-sm text-gray-600">
-                            도착지
+                            {destination ? `도착지 : ${destination.title}` : "도착지"}
                         </p>
 
                         <img src={SearchIcon} alt="검색" className="h-5 w-5 opacity-60" />

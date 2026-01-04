@@ -15,16 +15,16 @@ const DirectSearchField = ({ onClick }: Props) => {
                 type="button"
                 onClick={onClick}
                 className="
-                    flex h-[57px] w-full items-center gap-3
+                    flex h-14.25 w-full items-center gap-3
                     rounded-[20px]
                     border border-gray-200 dark:border-makcha-navy-700
                     bg-white 
-                    pl-[14px] pr-[14px]
+                    pl-3.5 pr-3.5
                     shadow-sm
                     "
                 >
-                <span className="relative ml-[10px] h-4 w-4 shrink-0">
-                    <span className="absolute inset-0 rounded-full bg-makcha-navy-400 opacity-60 blur-[4px]" />
+                <span className="relative ml-2.5 h-4 w-4 shrink-0">
+                    <span className="absolute inset-0 rounded-full bg-makcha-navy-400 opacity-60 blur-xs" />
                     <span className="absolute inset-1 rounded-full bg-makcha-navy-600" />
                 </span>
 

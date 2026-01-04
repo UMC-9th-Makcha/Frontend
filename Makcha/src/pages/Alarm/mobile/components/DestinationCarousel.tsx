@@ -2,8 +2,13 @@ import { useRef } from "react";
 import { DESTINATIONS } from "../../mocks/alarmMock";
 import { useScrollIndicator } from "../../hooks/useScrollIndicator";
 import HomeIcon from "../../../../assets/icons/Home.svg";
+import type { OriginSearchItem } from "../../mocks/originSearchMock";
 
-const DestinationCarousel = () => {
+type Props = {
+    onSelectDestination: (item: OriginSearchItem) => void;
+};
+
+const DestinationCarousel = ({ onSelectDestination }: Props) => {
     const scrollerRef = useRef<HTMLDivElement | null>(null);
     const indicator = useScrollIndicator(scrollerRef);
 
@@ -28,6 +33,12 @@ const DestinationCarousel = () => {
                     <button
                         key={d.id}
                         type="button"
+                        onClick={() => onSelectDestination({
+                            id: String(d.id),
+                            title: d.label,
+                            address: d.address,
+                        })
+                        }
                         className="
                             shrink-0
                             w-[300px] h-[132px]

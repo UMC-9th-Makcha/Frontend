@@ -5,6 +5,7 @@ import type { AlarmRoute } from "../mocks/alarmMock";
 
 type Props = {
     origin: OriginSearchItem | null;
+    destination: OriginSearchItem | null;
     routes: AlarmRoute[];
     onSelectRoute: (route: AlarmRoute) => void;
 };
@@ -17,6 +18,7 @@ const ROUTE_TYPE_LABEL: Record<AlarmRoute["routeType"], string> = {
 
 const RouteResultPanelMobile = ({
     origin,
+    destination,
     routes,
     onSelectRoute,
 }: Props) => {
@@ -50,7 +52,7 @@ const RouteResultPanelMobile = ({
                         </span>
 
                         <p className="flex-1 truncate text-left text-[18px] text-gray-600">
-                            {origin ? `현위치 : ${origin.title}` : "현위치 : 봉구비어 남영역점"}
+                            {origin ? `출발지 : ${origin.title}` : "출발지"}
                         </p>
 
                         <img
@@ -72,7 +74,7 @@ const RouteResultPanelMobile = ({
                         </span>
 
                         <p className="flex-1 truncate text-left text-[18px] text-gray-600">
-                            도착지
+                            {destination ? `도착지 : ${destination.title}` : "도착지"}
                         </p>
 
                         <img

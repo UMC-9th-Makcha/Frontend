@@ -11,10 +11,10 @@ import {
 type Props = {
     open: boolean;
     onClose: () => void;
-    onSelectOrigin: (item: OriginSearchItem) => void;
+    onSelectDestination: (item: OriginSearchItem) => void
 };
 
-const OriginSearchSheetMobile = ({ open, onClose, onSelectOrigin }: Props) => {
+const DestinationSearchSheet = ({ open, onClose, onSelectDestination }: Props) => {
     const [query, setQuery] = useState("");
     const mainRef = useRef<HTMLElement | null>(null);
 
@@ -54,7 +54,7 @@ const OriginSearchSheetMobile = ({ open, onClose, onSelectOrigin }: Props) => {
                 <div className="pt-4 pb-4">
                     <div className="relative flex items-center justify-center">
                         <h2 className="text-center text-[40px] font-normal text-makcha-navy-900 dark:text-white">
-                            출발지
+                            도착지
                         </h2>
 
                         <button
@@ -129,7 +129,7 @@ const OriginSearchSheetMobile = ({ open, onClose, onSelectOrigin }: Props) => {
                                         <button
                                             type="button"
                                             onClick={() => {
-                                                onSelectOrigin(item);
+                                                onSelectDestination(item);
                                                 onClose();
                                             }}
                                             className="w-full px-5 py-4 text-left active:bg-gray-50 dark:active:bg-white/5"
@@ -181,7 +181,7 @@ const OriginSearchSheetMobile = ({ open, onClose, onSelectOrigin }: Props) => {
                         </div>
 
                         {/* 최근 주소 없음 상태 */}
-                        <div className="px-7 py-[240px] text-center text-[25px] text-black dark:text-white/40">
+                        <div className="px-7 py-60 text-center text-[25px] text-black dark:text-white/40">
                             최근에 선택한 주소가 없습니다.
                         </div>
                     </>
@@ -192,4 +192,4 @@ const OriginSearchSheetMobile = ({ open, onClose, onSelectOrigin }: Props) => {
     );
 };
 
-export default OriginSearchSheetMobile;
+export default DestinationSearchSheet;
