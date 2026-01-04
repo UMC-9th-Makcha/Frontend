@@ -17,6 +17,8 @@ import {
     { id: 'download', label: '막차 앱 다운로드', path: '/download', icon: Download },
   ];
 
+  export const PUBLIC_MENU_IDS = ['home', 'download'];
+
   export const sidebarSpring = {
     type: "spring",
     stiffness: 400,

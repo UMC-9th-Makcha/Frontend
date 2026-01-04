@@ -28,7 +28,7 @@ export interface DashboardItemProps {
   label: string;
   path: string;
   icon: IconType;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent) => void;
   isStatic?: boolean;
   isCollapsed?: boolean;
 }

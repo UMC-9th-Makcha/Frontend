@@ -3,28 +3,27 @@ import LoadingSpinner from "../common/loadingSpinner";
 import { useAuth } from "../../hooks/useAuth";
 import { useAuthStore } from "../../store/useAuthStore";
 
-/**
- * 🔐 ProtectedRoute
- */
+//🔐 ProtectedRoute (로그인 필수)
 export const ProtectedRoute = () => {
   const { isLoggedIn } = useAuth();
   const location = useLocation();
-  
-  // 하이드레이션 체크 (Zustand persist 동기화 대기)
   const isHydrated = useAuthStore.persist.hasHydrated();
 
+  // Zustand persist 동기화 대기
   if (!isHydrated) return <LoadingSpinner />; 
 
-  return isLoggedIn ? (
-    <Outlet />
-  ) : (
-    <Navigate to="/" replace state={{ from: location }} />
-  );
+  if (!isLoggedIn) {
+    // 이미 메인에 있다면 추가 이동이나 리로드 없이 null 반환
+    if (location.pathname === "/") return null;
+    
+    // 메인이 아닌 다른 경로에서 접근했다면 메인으로 이동
+    return <Navigate to="/" replace state={{ from: location }} />;
+  }
+
+  return <Outlet />;
 };
 
-/**
- * 🔓 PublicRoute
- */
+//🔓 PublicRoute (로그인 시 접근 불가 - 예: 로그인 페이지 등)
 export const PublicRoute = () => {
   const { isLoggedIn } = useAuth();
   const location = useLocation();
@@ -32,7 +31,6 @@ export const PublicRoute = () => {
 
   if (!isHydrated) return null;
 
-  // 이미 로그인된 유저가 메인에 접근하면, 가려던 곳이 있다면 그곳으로, 없으면 홈으로
   const from = location.state?.from?.pathname || "/home";
   
   return isLoggedIn ? <Navigate to={from} replace /> : <Outlet />;

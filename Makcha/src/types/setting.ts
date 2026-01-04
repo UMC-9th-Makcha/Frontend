@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import type { ViewType } from "../pages/Setting/constants";
 
 export interface Place {
     id: string;
@@ -22,4 +23,18 @@ export interface PlaceSettingProps {
 
 export interface PhonenumberSettingProps {
   onBack: () => void;
+}
+
+export interface SettingPanelProps {
+  view: ViewType;
+  data: { home: Place; favorites: Place[] }; 
+  onNavigate: (view: ViewType, place?: Place) => void;
+}
+
+export interface SettingAccountProps {
+  onNavigate: (view: ViewType) => void;
+}
+
+export interface SettingPlacesProps {
+  onNavigate: (view: ViewType, place?: Place) => void;
 }
