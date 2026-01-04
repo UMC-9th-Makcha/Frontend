@@ -1,4 +1,5 @@
 import { useParams } from "react-router-dom";
+import LoadingSpinner from "../../components/common/loadingSpinner";
 
 export default function WaitingSpot() {
   // 1. 타입을 string으로 받거나, 명시적으로 단언하여 에러를 방지합니다.
@@ -27,10 +28,7 @@ export default function WaitingSpot() {
       <div className="flex-1 w-full bg-makcha-navy-800 rounded-3xl overflow-hidden border border-makcha-navy-600 relative">
         {/* 실제 지도가 들어갈 자리입니다. */}
         <div className="absolute inset-0 flex flex-col items-center justify-center space-y-4">
-          <div className="w-12 h-12 border-4 border-makcha-yellow-500 border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-makcha-navy-200 font-medium">
-            {isFirst ? "첫차" : "막차"} 위치 정보를 가져오고 있습니다...
-          </p>
+          <LoadingSpinner />
         </div>
       </div>
 

@@ -1,10 +1,12 @@
-import type { LucideIcon } from 'lucide-react';
+import type { LucideIcon } from "lucide-react";
+import type { ComponentType } from "react";
+
 
 export interface MenuItem {
   id: string;
   label: string;
   path: string;
-  icon: LucideIcon;
+  icon: LucideIcon | ComponentType<{ className?: string }>;
   divider?: boolean;
 }
 
@@ -16,7 +18,7 @@ export interface DashboardProps {
 export interface DashboardItemProps {
   label: string;
   path: string;
-  icon: React.ComponentType<{ className?: string }> | LucideIcon;
+  icon: LucideIcon | ComponentType<{ className?: string }>;
   onClick: () => void;
-  isStatic?: boolean; // 활성화 효과를 끄는 옵션
+  isStatic?: boolean;
 }

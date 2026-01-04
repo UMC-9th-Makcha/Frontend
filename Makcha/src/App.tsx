@@ -11,9 +11,11 @@ import Settings from "./pages/Setting";
 import Download from "./pages/Download";
 
 import DashboardLayout from "./components/dashboard/DashboardLayout";
+import ErrorPage from "./pages/Error";
+import { ProtectedRoute, PublicRoute } from "./components/kakao/KakaoRoute";
+import KakaoCallback from "./components/kakao/KakaoCallback";
 
 function App() {
-  // Zustand에서 다크모드 상태 구독
   const isDarkMode = useUIStore((state) => state.isDarkMode);
 
   useEffect(() => {
@@ -26,23 +28,36 @@ function App() {
 
   return (
     <BrowserRouter>
-      <div className="min-h-screen min-w-md overflow-x-auto">
+      {/* 수정 포인트: 
+        1. min-w-md 제거 (모바일 대응 방해)
+        2. w-full 추가 (화면 꽉 채우기)
+        3. overflow-x-hidden (가로 스크롤 절대 방지)
+      */}
+      <div className="min-h-screen w-full overflow-x-hidden bg-white dark:bg-makcha-navy-900">
         <Routes>
-          <Route path="/" element={<Main />} />
-          <Route element={<DashboardLayout />}>
-            <Route path="/home" element={<Home />} />
-            <Route path="/alarm" element={<Alarm />} />
-            <Route path="/spot/:type" element={<WaitingSpot />} />
-            <Route path="/history" element={<History />} />
-            <Route path="/setting" element={<Settings />} />
-            <Route path="/download" element={<Download />} />
+          <Route path="/kakao/callback" element={<KakaoCallback />} />
+
+          {/* 비로그인 전용 경로 */}
+          <Route element={<PublicRoute />}>
+            <Route path="/" element={<Main />} />
+            <Route path="*" element={<ErrorPage />} />
           </Route>
 
-          <Route path="*" element={<Main />} />
+          {/* 로그인 경로 */}
+          <Route element={<ProtectedRoute />}>
+            <Route element={<DashboardLayout />}>
+              <Route path="/home" element={<Home />} />
+              <Route path="/alarm" element={<Alarm />} />
+              <Route path="/spot/:type" element={<WaitingSpot />} />
+              <Route path="/history" element={<History />} />
+              <Route path="/setting" element={<Settings />} />
+              <Route path="/download" element={<Download />} />
+              <Route path="*" element={<ErrorPage />} />
+            </Route>
+          </Route>
         </Routes>
       </div>
     </BrowserRouter>
   );
 }
-
 export default App;
