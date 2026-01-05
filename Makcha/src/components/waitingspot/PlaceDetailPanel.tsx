@@ -1,5 +1,5 @@
 import { X } from "lucide-react";
-import type { Place, PlaceDetail, PlaceDetailProps } from "../../types/waitingspot";
+import type { PlaceDetail, PlaceDetailProps } from "../../types/waitingspot";
 
 const mockPlaceDetails: PlaceDetail[] = [
   {
@@ -64,7 +64,6 @@ export const PlaceDetailPanel = ({ place, onClose }: PlaceDetailProps) => {
 
       {/* 본문 */}
       <div className="flex-1 px-7 pt-6">
-        {/* 타이틀 */}
         <div className="flex items-end gap-3">
           <h2 className="text-[26px] font-extrabold text-gray-900 dark:text-white">
             {place.name}

@@ -5,6 +5,19 @@ export type CategoryTabProps = {
   onChange: (key: CategoryKey) => void;
 };
 
+export type WaitingSpotLayoutProps = {
+  header: React.ReactNode;
+  controls: React.ReactNode;
+  map: React.ReactNode;
+  search: React.ReactNode;
+  list: React.ReactNode;
+  detail?: React.ReactNode;
+}
+
+export type WaitingSpotHeaderProps = {
+  title: string
+}
+
 export type Place = {
   id: number;
   name: string;

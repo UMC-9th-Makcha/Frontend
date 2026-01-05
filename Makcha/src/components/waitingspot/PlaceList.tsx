@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import type { Place, PlaceListProps, SortValue } from "../../types/waitingspot";
+import type { PlaceListProps, SortValue } from "../../types/waitingspot";
 import { PlaceCard } from "./PlaceCard";
 import { SortToggle } from "./SortToggle";
 

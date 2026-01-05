@@ -1,6 +1,5 @@
-type WaitingSpotHeaderProps = {
-  title: string
-}
+import type { WaitingSpotHeaderProps } from "../../types/waitingspot"
+
 export const WaitingSpotHeader = ({ title }: WaitingSpotHeaderProps) => {
   return (
     <header className="flex flex-col items-center py-2">

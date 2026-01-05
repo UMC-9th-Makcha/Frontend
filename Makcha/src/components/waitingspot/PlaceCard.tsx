@@ -1,6 +1,6 @@
 import type { PlaceCardProps } from "../../types/waitingspot";
 
-export const PlaceCard = ({ place, isSelected, onSelect }: PlaceCardProps) => {
+export const PlaceCard = ({ place, onSelect }: PlaceCardProps) => {
   return (
     <div
       className="flex gap-[10px] rounded-xl bg-white p-2

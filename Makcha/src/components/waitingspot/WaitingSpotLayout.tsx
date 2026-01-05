@@ -1,11 +1,4 @@
-type WaitingSpotLayoutProps = {
-  header: React.ReactNode;
-  controls: React.ReactNode;
-  map: React.ReactNode;
-  search: React.ReactNode;
-  list: React.ReactNode;
-  detail?: React.ReactNode;
-}
+import type { WaitingSpotLayoutProps } from "../../types/waitingspot"
 
 export const WaitingSpotLayout = ({header, controls, map, search, list, detail} : WaitingSpotLayoutProps) => {
   return (
@@ -20,7 +13,7 @@ export const WaitingSpotLayout = ({header, controls, map, search, list, detail} 
       {/* aside */}
       <aside className="relative z-10 h-full w-[400px] shrink-0 bg-white shadow-[5px_0px_15px_0px_#88888859]
       dark:bg-makcha-navy-900">
-        <div className="h-full overflow-y-auto p-[20px]">
+        <div className="h-full overflow-y-auto p-5">
           <div className="py-1">
             {header}
           </div>
