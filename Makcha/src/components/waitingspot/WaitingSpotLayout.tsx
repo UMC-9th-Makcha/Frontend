@@ -18,12 +18,13 @@ export const WaitingSpotLayout = ({header, controls, map, search, list, detail} 
       </div>
 
       {/* aside */}
-      <aside className="relative z-10 h-full w-[400px] shrink-0 bg-white border-r">
+      <aside className="relative z-10 h-full w-[400px] shrink-0 bg-white shadow-[5px_0px_15px_0px_#88888859]
+      dark:bg-makcha-navy-900">
         <div className="h-full overflow-y-auto p-[20px]">
-          <div>
+          <div className="py-1">
             {header}
           </div>
-          <div>
+          <div className="py-8">
             {search}
           </div>
           <div>

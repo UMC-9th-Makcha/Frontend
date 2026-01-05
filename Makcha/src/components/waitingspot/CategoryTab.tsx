@@ -10,6 +10,7 @@ export const CategoryTab = ({ selected, onChange }: CategoryTabProps) => {
           type="button"
           onClick={() => onChange(c.key)}
           className={`h-[35px] px-[18px] text-sm rounded-[20px] shadow-[0_0_5px_0_#88888840] transition 
+            dark:text-makcha-navy-200 dark:bg-makcha-navy-800 dark:border-makcha-navy-600
             ${selected === c.key
               ? "text-makcha-navy-600 bg-[#F3F7FF] border border-makcha-navy-400 border-[0.5px]"
               : "bg-white text-[#5F5F5F] font-medium"

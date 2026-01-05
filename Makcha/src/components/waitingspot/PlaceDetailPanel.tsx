@@ -43,7 +43,8 @@ export const PlaceDetailPanel = ({ place, onClose }: PlaceDetailProps) => {
   const detail = mockPlaceDetails.find((d) => d.id === place.id) ?? null;
 
   return (
-    <aside className="flex flex-col w-[402px] h-[961px] rounded-[20px] bg-white shadow-[0_0_15px_0_#88888859] overflow-hidden">
+    <aside className="flex flex-col w-[402px] h-[961px] rounded-[20px] bg-white shadow-[0_0_15px_0_#88888859] overflow-hidden
+    dark:bg-makcha-navy-900">
       {/* 상단 이미지 */}
       <div className="relative h-[268px] w-full bg-gray-100">
         <img
@@ -65,10 +66,10 @@ export const PlaceDetailPanel = ({ place, onClose }: PlaceDetailProps) => {
       <div className="flex-1 px-7 pt-6">
         {/* 타이틀 */}
         <div className="flex items-end gap-3">
-          <h2 className="text-[26px] font-extrabold text-gray-900">
+          <h2 className="text-[26px] font-extrabold text-gray-900 dark:text-white">
             {place.name}
           </h2>
-          <span className="pb-1 text-[16px] font-semibold text-gray-500">
+          <span className="pb-1 text-[16px] font-semibold text-gray-500 dark:text-makcha-navy-400">
             {detail?.subcategory}
           </span>
         </div>
@@ -78,7 +79,8 @@ export const PlaceDetailPanel = ({ place, onClose }: PlaceDetailProps) => {
             <span
               key={badge}
               className="flex items-center h-[35px] px-[18px] text-[14px] rounded-[20px] shadow-[0_0_5px_0_#88888840]
-              text-makcha-navy-600 bg-[#F3F7FF] border border-makcha-navy-400 border-[0.5px]"
+              text-makcha-navy-600 bg-[#F3F7FF] border border-makcha-navy-400 border-[0.5px]
+              dark:text-makcha-navy-200 dark:bg-makcha-navy-800 dark:border-makcha-navy-600"
             >
               {badge}
             </span>
@@ -86,7 +88,7 @@ export const PlaceDetailPanel = ({ place, onClose }: PlaceDetailProps) => {
         </div>
 
         {/* 정보 텍스트 */}
-        <div className="mt-5 space-y-3 text-[16px] text-gray-900">
+        <div className="mt-5 space-y-3 text-[16px] text-gray-900 dark:text-makcha-navy-200">
           <div className="flex items-center gap-4 font-semibold">
             <span>도보 {Math.ceil(place.durationSeconds / 60)}분</span>
             <span>{place.distanceMeter}m</span>
@@ -102,7 +104,8 @@ export const PlaceDetailPanel = ({ place, onClose }: PlaceDetailProps) => {
       {/* 하단 버튼 */}
       <div className="flex flex-col items-center py-[100px]">
         <button
-          className="w-[362px] h-[50px] rounded-full bg-makcha-navy-400 text-white text-[20px] hover:bg-makcha-navy-600 transition"
+          className="w-[362px] h-[50px] rounded-full bg-makcha-navy-400 text-white text-[20px] border hover:bg-makcha-navy-600 transition
+          dark:text-makcha-navy-200 dark:bg-makcha-navy-800 dark:border-makcha-navy-600"
         >
           도보 길 안내 시작
         </button>
