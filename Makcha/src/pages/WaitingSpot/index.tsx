@@ -7,7 +7,7 @@ import { WaitingSpotMap } from "../../components/waitingspot/WaitingSpotMap";
 import type { CategoryKey, Place } from "../../types/waitingspot";
 import { StartLocationSearch } from "../../components/waitingspot/StartLocationSearch";
 import { PlaceList } from "../../components/waitingspot/PlaceList";
-import { PlaceDetail } from "../../components/waitingspot/PlaceDetail";
+import { PlaceDetailPanel } from "../../components/waitingspot/PlaceDetailPanel";
 
 export const mockPlaces: Place[] = [
   {
@@ -82,7 +82,7 @@ export default function WaitingSpot() {
         map={<WaitingSpotMap />}
         detail={
           selectedPlace ? (
-            <PlaceDetail
+            <PlaceDetailPanel
               place={selectedPlace}
               onClose={() => setSelectedPlaceId(null)}
             />

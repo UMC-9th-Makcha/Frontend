@@ -33,3 +33,17 @@ export type SortToggleProps = {
   value: SortValue;
   onChange: (value: "distance" | "open24h") => void;
 };
+
+export type PlaceDetailProps = {
+  place : Place | null;
+  onClose: () => void;
+}
+
+export type PlaceDetail = {
+  id: number;
+  subcategory: string;
+  imageUrl: string;
+  accessInfo: string;
+  phone: string | [];
+  badge: string[];
+};
