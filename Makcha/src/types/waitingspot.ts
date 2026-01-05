@@ -17,10 +17,14 @@ export type Place = {
 
 export type PlaceListProps = {
   places: Place[];
+  selectedPlaceId: number | null;
+  onSelectPlaceId: (id: number) => void;
 };
 
 export type PlaceCardProps = {
   place: Place;
+  isSelected?: boolean;
+  onSelect: () => void;
 };
 
 export type SortValue = "distance" | "open24h";

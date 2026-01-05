@@ -4,9 +4,10 @@ type WaitingSpotLayoutProps = {
   map: React.ReactNode;
   search: React.ReactNode;
   list: React.ReactNode;
+  detail?: React.ReactNode;
 }
 
-export const WaitingSpotLayout = ({header, controls, map, search, list} : WaitingSpotLayoutProps) => {
+export const WaitingSpotLayout = ({header, controls, map, search, list, detail} : WaitingSpotLayoutProps) => {
   return (
     <div className="relative h-full min-h-0 min-w-0 flex">
       {/* map */}
@@ -32,7 +33,13 @@ export const WaitingSpotLayout = ({header, controls, map, search, list} : Waitin
             {list}
           </div>
         </div>
+        {detail && (
+          <div className="absolute top-1/2 -translate-y-1/2 left-full ml-[26px]">
+            {detail}
+          </div>
+        )}
       </aside>
+
     </div>
   )
 }

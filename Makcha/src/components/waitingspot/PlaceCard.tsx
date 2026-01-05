@@ -1,8 +1,11 @@
 import type { PlaceCardProps } from "../../types/waitingspot";
 
-export const PlaceCard = ({ place }: PlaceCardProps) => {
+export const PlaceCard = ({ place, isSelected, onSelect }: PlaceCardProps) => {
   return (
-    <div className="flex gap-[19px] rounded-xl bg-white">
+    <div
+      className="flex gap-[19px] rounded-xl bg-white"
+      onClick={onSelect} //setSelectedPlace에 선택 장소 저장
+      >
       <div className="w-[100px] h-[100px] rounded-[20px] bg-gray-300 shrink-0" />
 
       {/* 오른쪽 콘텐츠 */}

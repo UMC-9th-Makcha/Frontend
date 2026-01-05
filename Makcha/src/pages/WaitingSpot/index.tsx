@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { WaitingSpotLayout } from "../../components/waitingspot/WaitingSpotLayout";
 import { WaitingSpotHeader } from "../../components/waitingspot/WaitingSpotHeader";
 import { CategoryTab } from "../../components/waitingspot/CategoryTab";
@@ -7,6 +7,7 @@ import { WaitingSpotMap } from "../../components/waitingspot/WaitingSpotMap";
 import type { CategoryKey, Place } from "../../types/waitingspot";
 import { StartLocationSearch } from "../../components/waitingspot/StartLocationSearch";
 import { PlaceList } from "../../components/waitingspot/PlaceList";
+import { PlaceDetail } from "../../components/waitingspot/PlaceDetail";
 
 export const mockPlaces: Place[] = [
   {
@@ -60,14 +61,33 @@ export default function WaitingSpot() {
 
   const [category, setCategory] = useState<CategoryKey>("all");
 
+  //선택된 장소 id (카드 클릭 시 저장)
+  const [selectedPlaceId, setSelectedPlaceId] = useState<number | null>(null);
+
+  const selectedPlace = useMemo<Place | null>(() => {
+    return mockPlaces.find((p) => p.id === selectedPlaceId) ?? null;
+  }, [selectedPlaceId]);
+
   return (
     <div className="h-full min-h-0 min-w-0">
       <WaitingSpotLayout
         header={<WaitingSpotHeader title={pageTitle} />}
         search={<StartLocationSearch />}
         controls={<CategoryTab selected={category} onChange={setCategory} />}
-        list={<PlaceList places={mockPlaces}/>}
+        list={<PlaceList
+          places={mockPlaces}
+          selectedPlaceId={selectedPlaceId}
+          onSelectPlaceId={setSelectedPlaceId}
+        />}
         map={<WaitingSpotMap />}
+        detail={
+          selectedPlace ? (
+            <PlaceDetail
+              place={selectedPlace}
+              onClose={() => setSelectedPlaceId(null)}
+            />
+          ) : null
+        }
       />
     </div>
   );
