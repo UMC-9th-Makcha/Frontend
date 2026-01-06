@@ -78,7 +78,7 @@ export const PlaceDetailPanel = ({ place, onClose }: PlaceDetailProps) => {
             <span
               key={badge}
               className="flex items-center h-[35px] px-[18px] text-[14px] rounded-[20px] shadow-[0_0_5px_0_#88888840]
-              text-makcha-navy-600 bg-[#F3F7FF] border border-makcha-navy-400 border-[0.5px]
+              text-makcha-navy-600 bg-[#F3F7FF] border-makcha-navy-400 border-[0.5px]
               dark:text-makcha-navy-200 dark:bg-makcha-navy-800 dark:border-makcha-navy-600"
             >
               {badge}
