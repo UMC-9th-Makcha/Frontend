@@ -10,7 +10,7 @@ const RouteLoadingPanel = ({ open }: Props) => {
     return (
         <section
             className="
-            h-full w-[402px] shrink-0
+            h-full w-100.5 shrink-0
             border-r border-gray-200 dark:border-makcha-navy-800
             bg-white dark:bg-makcha-navy-900
             "
@@ -19,7 +19,7 @@ const RouteLoadingPanel = ({ open }: Props) => {
                 <img
                     src={LoadingLogo}
                     alt="로딩"
-                    className="h-[120px] w-[120px]"
+                    className="h-30 w-30"
                 />
 
                 <p className="mt-6 text-center text-[20px] font-medium text-makcha-navy-900 dark:text-white">

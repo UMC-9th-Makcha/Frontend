@@ -145,7 +145,7 @@ const RouteResultPanel = ({ origin, destination, routes, onSelectRoute }: Props)
             <img
                 src={LogoCircle}
                 alt="service logo"
-                className="absolute bottom-[34px] right-[20px]
+                className="absolute bottom-[34px] right-5
                     h-[58px] w-[58px] rounded-full"
             />
         </section>
