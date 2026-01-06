@@ -8,6 +8,8 @@ import type { CategoryKey, Place } from "../../types/waitingspot";
 import { StartLocationSearch } from "../../components/waitingspot/StartLocationSearch";
 import { PlaceList } from "../../components/waitingspot/PlaceList";
 import { PlaceDetailPanel } from "../../components/waitingspot/PlaceDetailPanel";
+import { OverlayPortal } from "../../components/waitingspot/OverlayPortal";
+import { useIsMobile } from "../../hooks/useIsMobile";
 
 export const mockPlaces: Place[] = [
   {
@@ -68,6 +70,8 @@ export default function WaitingSpot() {
     return mockPlaces.find((p) => p.id === selectedPlaceId) ?? null;
   }, [selectedPlaceId]);
 
+  const isMobile = useIsMobile();
+
   return (
     <div className="h-full min-h-0 min-w-0">
       <WaitingSpotLayout
@@ -81,12 +85,24 @@ export default function WaitingSpot() {
         />}
         map={<WaitingSpotMap />}
         detail={
-          selectedPlace ? (
-            <PlaceDetailPanel
-              place={selectedPlace}
+          isMobile ? (
+            <OverlayPortal
+              open={!!selectedPlace}
               onClose={() => setSelectedPlaceId(null)}
-            />
-          ) : null
+            >
+              <PlaceDetailPanel
+                place={selectedPlace}
+                onClose={() => setSelectedPlaceId(null)}
+              />
+            </OverlayPortal>
+          ) : (
+            selectedPlace && (
+              <PlaceDetailPanel
+                place={selectedPlace}
+                onClose={() => setSelectedPlaceId(null)}
+              />
+            )
+          )
         }
       />
     </div>

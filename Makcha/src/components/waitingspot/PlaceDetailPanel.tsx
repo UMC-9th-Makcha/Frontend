@@ -43,10 +43,10 @@ export const PlaceDetailPanel = ({ place, onClose }: PlaceDetailProps) => {
   const detail = mockPlaceDetails.find((d) => d.id === place.id) ?? null;
 
   return (
-    <aside className="flex flex-col w-100 rounded-[20px] bg-white shadow-[0_0_15px_0_#88888859] overflow-hidden
+    <aside className="md:h-auto md:w-100 md:pt-0 md:shadow-[0_0_15px_0_#88888859] h-dvh flex flex-col pt-21 rounded-[20px] bg-white overflow-hidden
     dark:bg-makcha-navy-900">
       {/* 상단 이미지 */}
-      <div className="relative h-[264px] w-full bg-gray-100">
+      <div className="md:h-[264px] relative h-85 w-full bg-gray-100">
         <img
           src={detail?.imageUrl}
           alt="place"
@@ -75,7 +75,7 @@ export const PlaceDetailPanel = ({ place, onClose }: PlaceDetailProps) => {
           </span>
         </div>
 
-        <div className="mt-4 flex rounded-lg gap-2">
+        <div className="mt-4 flex rounded-lg gap-2 overflow-y-auto">
           {(detail?.badge ?? []).map((badge) => (
             <span
               key={badge}
@@ -104,7 +104,7 @@ export const PlaceDetailPanel = ({ place, onClose }: PlaceDetailProps) => {
       </div>
 
       {/* 하단 버튼 */}
-      <div className="flex flex-col items-center py-25">
+      <div className="flex flex-col items-center py-24">
         <button
           className="w-90 h-12 rounded-full bg-makcha-navy-400 text-white text-[20px] border hover:bg-makcha-navy-600 transition
           dark:text-makcha-navy-200 dark:bg-makcha-navy-800 dark:border-makcha-navy-600"
