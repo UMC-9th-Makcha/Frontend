@@ -5,25 +5,27 @@ export const WaitingSpotLayout = ({header, controls, map, search, list, detail} 
     <div className="relative h-full min-h-0 min-w-0 flex">
       {/* map */}
       <div className="absolute inset-0 z-0">
-        <div className="h-full w-full">
+        <div className="h-full w-full hidden md:block">
           {map}
         </div>
       </div>
 
       {/* aside */}
-      <aside className="relative z-10 h-full w-[400px] shrink-0 bg-white shadow-[5px_0px_15px_0px_#88888859]
+      <aside 
+      className="md:relative md:shadow-[5px_0px_15px_0px_#88888859] md:w-100 md:shrink-0 md:top-0 md:h-full
+      fixed top-21 bottom-0 inset-x-0 z-10 w-full bg-white
       dark:bg-makcha-navy-900">
-        <div className="h-full overflow-y-auto p-4">
-          <div className="py-2">
+        <div className="md:block h-full overflow-y-auto p-4">
+          <div>
             {header}
           </div>
-          <div className="py-8">
+          <div>
             {search}
           </div>
           <div>
             {controls}
           </div>
-          <div className="mt-6">
+          <div>
             {list}
           </div>
         </div>

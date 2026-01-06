@@ -6,7 +6,7 @@ export const SortToggle = ({ value, onChange }: SortToggleProps) => {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="relative inline-block">
+    <div className="relative inline-block py-2 px-2">
       <button
         onClick={() => setOpen((prev) => !prev)}
         className="flex items-center gap-2 text-gray-900"

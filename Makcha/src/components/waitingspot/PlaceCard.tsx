@@ -28,7 +28,7 @@ export const PlaceCard = ({ place, onSelect }: PlaceCardProps) => {
         </p>
 
         {place.badge && (
-          <span className="inline-block w-fit rounded-full bg-[#4F73C3] px-4 py-1 text-sm text-white
+          <span className="inline-block w-fit rounded-full bg-[#4F73C3] px-4 py-1 text-sm text-white whitespace-nowrap
           dark:text-makcha-navy-200 dark:bg-makcha-navy-800 dark:border-makcha-navy-600">
             {place.badge}
           </span>
