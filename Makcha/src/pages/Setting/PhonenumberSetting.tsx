@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import type { PhonenumberSettingProps } from "../../types/setting";
+import SubPanel from "../../components/common/Panel/SubPanel";
 
 export default function PhonenumberSetting({ onBack }: PhonenumberSettingProps) {
   const [phone, setPhone] = useState("");
   const [isSent, setIsSent] = useState(false);
   const [timer, setTimer] = useState(0);
 
+  // 전화번호 포맷팅 로직
   const handlePhoneChange = (val: string) => {
     const nums = val.replace(/\D/g, "");
     let formatted = "";
@@ -16,6 +18,7 @@ export default function PhonenumberSetting({ onBack }: PhonenumberSettingProps) 
     setPhone(formatted);
   };
 
+  // 타이머 로직
   useEffect(() => {
     if (timer <= 0) return;
     const interval = setInterval(() => setTimer(t => t - 1), 1000);
@@ -34,26 +37,26 @@ export default function PhonenumberSetting({ onBack }: PhonenumberSettingProps) 
   };
 
   return (
-    <div className={`
-      flex flex-col w-full h-full transition-all duration-300 overflow-hidden
-      bg-white dark:bg-makcha-navy-900 
-      md:h-auto md:max-h-[820px] md:max-w-[440px] md:rounded-[40px] md:shadow-2xl
-      md:border md:border-gray-100 dark:md:border-white/5
-    `}>
-      <header className="flex items-center justify-between px-6 py-4 md:py-6 border-b border-gray-100 dark:border-white/5 shrink-0">
-        <div className="w-8" />
-        <h2 className="text-[18px] md:text-[20px] font-bold text-gray-900 dark:text-white">연락처 변경</h2>
-        <button onClick={onBack} className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors">
+    <SubPanel
+      isOpen={true} 
+      onBack={onBack} 
+      title="연락처 변경"
+      rightAction={
+        <button 
+          onClick={onBack} 
+          className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors"
+        >
           <X size={24} />
         </button>
-      </header>
-      
-      <main className="flex-1 p-6 md:p-8 flex flex-col overflow-y-auto no-scrollbar">
+      }
+    >
+      <div className="flex flex-col h-full">
         <div className="space-y-6 flex-1">
           <div>
-            <label className="text-xs font-bold uppercase mb-3 block text-gray-500 dark:text-makcha-navy-300">새로운 전화번호</label>
+            <label className="text-xs font-bold uppercase mb-3 block text-gray-500 dark:text-makcha-navy-300">
+              새로운 전화번호
+            </label>
             
-            {/* 전화번호 입력  */}
             <div className="relative flex items-center">
               <input 
                 type="tel" 
@@ -64,18 +67,14 @@ export default function PhonenumberSetting({ onBack }: PhonenumberSettingProps) 
                 className="w-full p-4 pr-[110px] border border-gray-200 rounded-xl outline-none bg-transparent text-gray-900 dark:border-white/10 dark:text-white focus:border-blue-500 transition-colors placeholder:text-gray-300" 
               />
               
-              {/* 입력 폼 안쪽 우측 버튼  */}
               <button 
                 type="button"
                 onClick={requestAuthCode}
                 disabled={phone.length < 12 || isSent}
                 className={`
                   absolute right-2 px-3 py-2 rounded-lg text-[12px] font-bold transition-all
-                  /* 라이트 모드: 어두운 테두리 */
                   border border-gray-400 text-gray-600 hover:bg-gray-50
-                  /* 다크 모드: 흰색 테두리 */
                   dark:border-white/40 dark:text-white dark:hover:bg-white/10
-                  /* 비활성화 상태 */
                   disabled:opacity-30 disabled:cursor-not-allowed
                   ${isSent ? 'border-blue-500 text-blue-500 dark:border-blue-400 dark:text-blue-400' : ''}
                 `}
@@ -85,7 +84,6 @@ export default function PhonenumberSetting({ onBack }: PhonenumberSettingProps) 
             </div>
           </div>
 
-          {/* 인증번호 입력 필드 */}
           <div className="relative">
             <input 
               type="text" 
@@ -98,26 +96,22 @@ export default function PhonenumberSetting({ onBack }: PhonenumberSettingProps) 
               </span>
             )}
           </div>
+          
           <p className="px-1 text-sm text-gray-400">
             인증번호가 오지 않나요? <span className="underline cursor-pointer hover:text-gray-600">고객센터 문의</span>
           </p>
         </div>
 
-        {/* 확인  */}
-        <div className="mt-10 pb-10 md:pb-0">
+        {/* 하단 확인 버튼 */}
+        <div className="mt-10">
           <button 
             onClick={onBack} 
-            className={`
-              w-full py-4 rounded-xl font-medium transition-all
-              border border-gray-400 text-gray-600 hover:bg-gray-50
-              md:border-2 
-              dark:border-white dark:text-white dark:hover:bg-white/10
-            `}
+            className="w-full py-4 rounded-xl font-medium transition-all border border-gray-400 text-gray-600 hover:bg-gray-50 md:border-2 dark:border-white dark:text-white dark:hover:bg-white/10"
           >
             확인
           </button>
         </div>
-      </main>
-    </div>
+      </div>
+    </SubPanel>
   );
 }
