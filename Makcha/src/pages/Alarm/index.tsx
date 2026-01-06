@@ -1,21 +1,21 @@
 import { useState } from "react";
 import RouteLoadingPanel from "./RouteLoadingPanel";
 import RouteResultPanel from "./RouteResultPanel";
-import type { AlarmRoute } from "./mocks/alarmMock";
 import { ALARM_ROUTES_MOCK } from "./mocks/alarmMock";
-import type { OriginSearchItem } from "./mocks/originSearchMock";
+import type { OriginSearchItem } from "./types/search";
 import AlarmPanel from "./AlarmPanel";
-import OriginSearchSheet from "./OriginSearchSheet";
 import AlarmSuccessPanel from "./AlarmSuccessPanel";
-import DestinationSearchSheet from "./DestinationSearchSheet";
+import SearchSheet from "./SearchSheet";
+import type { AlarmRoute } from "./types/alarm";
 
 type Step = "INPUT" | "LOADING" | "RESULT" | "SUCCESS";
+type SearchTarget = "ORIGIN" | "DESTINATION";
 
 const Alarm = () => {
     const [step, setStep] = useState<Step>("INPUT");
 
-    const [isOriginOpen, setIsOriginOpen] = useState(false);
-    const [isDestinationOpen, setIsDestinationOpen] = useState(false);
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [searchTarget, setSearchTarget] = useState<SearchTarget>("ORIGIN");
 
     const [origin, setOrigin] = useState<OriginSearchItem | null>(null);
     const [destination, setDestination] = useState<OriginSearchItem | null>(null);
@@ -31,21 +31,36 @@ const Alarm = () => {
         }, 1200);
     };
 
-    const handleSelectOrigin = (item: OriginSearchItem) => {
-        setOrigin(item);
-        setIsOriginOpen(false);
-
-        if (destination) startRouteSearch();
+    const openOriginSheet = () => {
+        setSearchTarget("ORIGIN");
+        setIsSearchOpen(true);
     };
 
-    const handleSelectDestination = (item: OriginSearchItem) => {
+    const openDestinationSheet = () => {
+        setSearchTarget("DESTINATION");
+        setIsSearchOpen(true);
+    };
+
+    const handleSelect = (target: SearchTarget, item: OriginSearchItem) => {
+        if (target === "ORIGIN") {
+            setOrigin(item);
+            setIsSearchOpen(false);
+
+            // 둘 다 있으면 로딩중 띄우기
+            if (destination) startRouteSearch();
+            return;
+        }
+
+        // DESTINATION
         setDestination(item);
-        setIsDestinationOpen(false);
+        setIsSearchOpen(false);
 
         if (origin) {
             startRouteSearch();
         } else {
-            setIsOriginOpen(true);
+            // 도착지를 먼저 골랐으면 출발지 열기
+            setSearchTarget("ORIGIN");
+            setIsSearchOpen(true);
         }
     };
 
@@ -78,9 +93,12 @@ const Alarm = () => {
                         />
                     ) : (
                         <AlarmPanel
-                            onOpenOrigin={() => setIsOriginOpen(true)}
-                            onOpenDestination={() => setIsDestinationOpen(true)}
-                            onSelectDestination={handleSelectDestination}
+                            onOpenOrigin={openOriginSheet}
+                            onOpenDestination={openDestinationSheet}
+                            onSelectDestination={(item) => {
+                                setSearchTarget("DESTINATION"); 
+                                handleSelect("DESTINATION", item);
+                            }}
                         />
                     )}
                 </div>
@@ -88,43 +106,12 @@ const Alarm = () => {
                 {/* 지도: md 이상에서만 표시 */}
                 <section className="hidden md:block min-w-0 flex-1 h-dvh bg-gray-100" />
 
-                {/* PC */}
-                <div className="hidden md:block">
-                    <OriginSearchSheet
-                        open={isOriginOpen}
-                        onClose={() => setIsOriginOpen(false)}
-                        onSelectOrigin={handleSelectOrigin}
-                    />
-                </div>
-
-                <div className="hidden md:block">
-                    <DestinationSearchSheet
-                        open={isDestinationOpen}
-                        onClose={() => setIsDestinationOpen(false)}
-                        onSelectDestination={handleSelectDestination}
-                    />
-                </div>
-
-                {/* Mobile*/}
-                {isOriginOpen && (
-                    <div className="md:hidden">
-                        <OriginSearchSheet
-                            open
-                            onClose={() => setIsOriginOpen(false)}
-                            onSelectOrigin={handleSelectOrigin}
-                        />
-                    </div>
-                )}
-
-                {isDestinationOpen && (
-                    <div className="md:hidden">
-                        <DestinationSearchSheet
-                            open
-                            onClose={() => setIsDestinationOpen(false)}
-                            onSelectDestination={handleSelectDestination}
-                        />
-                    </div>
-                )}
+                <SearchSheet
+                    open={isSearchOpen}
+                    onClose={() => setIsSearchOpen(false)}
+                    title={searchTarget === "ORIGIN" ? "출발지" : "도착지"}
+                    onSelect={(item) => handleSelect(searchTarget, item)}
+                />
             </div>
         </div>
     );

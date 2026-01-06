@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { RECENT_DESTINATIONS } from "./../mocks/alarmMock";
-import type { OriginSearchItem } from "./../mocks/originSearchMock";
+import type { OriginSearchItem } from "../types/search";
 
 type Props = {
     onSelectDestination: (item: OriginSearchItem) => void;

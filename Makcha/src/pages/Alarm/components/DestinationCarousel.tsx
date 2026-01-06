@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { DESTINATIONS } from "./../mocks/alarmMock";
 import { useScrollIndicator } from "./../hooks/useScrollIndicator";
 import { Home } from "lucide-react";
-import type { OriginSearchItem } from "./../mocks/originSearchMock";
+import type { OriginSearchItem } from "../types/search";
 
 type Props = {
     onSelectDestination: (item: OriginSearchItem) => void;

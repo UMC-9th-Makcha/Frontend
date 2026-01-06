@@ -18,7 +18,7 @@ const SearchField = ({ label, text, onClick }: Props) => {
         onClick={onClick}
         className="
           flex w-full items-center gap-3
-          rounded-[20px]
+          rounded-[30px]
           border border-gray-200
           bg-white
           shadow-sm

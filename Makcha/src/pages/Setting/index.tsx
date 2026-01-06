@@ -1,43 +1,77 @@
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
+import { useState, useEffect, useCallback } from "react";
+import { SettingPanel } from "./SettingPanel";
+import { SettingBg } from "./SettingBg";
+import PlaceSetting from "./PlaceSetting";
+import PhonenumberSetting from "./PhonenumberSetting";
+import type { Place } from "../../types/setting";
+import type { ViewType } from "./constants";
+
+// 뒤로가기 로직 커스텀 훅으로 분리
+const useBackNavigation = (view: ViewType, onBack: () => void) => {
+  useEffect(() => {
+    if (view === 'MAIN') return;
+
+    window.history.pushState(null, '', '');
+    window.addEventListener('popstate', onBack);
+    return () => window.removeEventListener('popstate', onBack);
+  }, [view, onBack]);
+};
 
 export default function Setting() {
-  const navigate = useNavigate();
+  const [view, setView] = useState<ViewType>('MAIN');
+  const [home, setHome] = useState<Place>({ id: 'home', name: '우리 집', address: '서울특별시 성북구 종암로 83', detail: '101동 202호' });
+  const [favorites, setFavorites] = useState<Place[]>([]);
+  const [editingPlace, setEditingPlace] = useState<Place | null>(null);
 
-  const { setLogout } = useAuth();
+  const handleBack = useCallback(() => setView('MAIN'), []);
+  useBackNavigation(view, handleBack);
 
-  const handleLogout = () => {
-    if (!window.confirm('로그아웃 하시겠습니까?')) return;
+  const handleSave = useCallback((updated: Place) => {
+    if (updated.id === 'home') {
+      setHome(updated);
+    } else {
+      setFavorites(prev => 
+        prev.some(p => p.id === updated.id) 
+          ? prev.map(p => p.id === updated.id ? updated : p) 
+          : [...prev, updated]
+      );
+    }
+    handleBack();
+  }, [handleBack]);
 
-    setLogout();
+  const handleDelete = useCallback((id: string) => {
+    setFavorites(prev => prev.filter(p => p.id !== id));
+    handleBack();
+  }, [handleBack]);
 
-    navigate('/', { replace: true });
+  const renderDetail = () => {
+    switch (view) {
+      case 'EDIT_HOME':
+        return <PlaceSetting place={home} onBack={handleBack} onSave={handleSave} />;
+      case 'EDIT_FAVORITE':
+        return editingPlace && (
+          <PlaceSetting 
+            place={editingPlace} 
+            onBack={handleBack} 
+            onSave={handleSave} 
+            onDelete={handleDelete} 
+          />
+        );
+      case 'EDIT_CONTACT':
+        return <PhonenumberSetting onBack={handleBack} />;
+      default:
+        return null;
+    }
   };
 
-  const menuList = [
-    { label: '프로필 수정', onClick: () => navigate('/setting/profile') },
-    { label: '알림 소리 설정', onClick: () => {} },
-    { label: '테마 변경', onClick: () => {} },
-    { label: '로그아웃', onClick: handleLogout, isDanger: true },
-  ];
-
   return (
-    <div className="p-4 bg-white dark:bg-makcha-navy-900 min-h-screen">
-      <h1 className="text-xl font-bold mb-6 dark:text-white">환경 설정</h1>
-      <ul className="space-y-1">
-        {menuList.map((menu) => (
-          <li
-            key={menu.label}
-            onClick={menu.onClick}
-            className="py-4 border-b border-gray-100 dark:border-makcha-navy-800 flex justify-between items-center cursor-pointer active:opacity-50 transition-opacity"
-          >
-            <span className={menu.isDanger ? 'text-red-400 font-medium' : 'dark:text-makcha-navy-200'}>
-              {menu.label}
-            </span>
-            <span className="text-gray-300 dark:text-makcha-navy-700 text-lg">›</span>
-          </li>
-        ))}
-      </ul>
+    <div className="flex h-dvh w-full overflow-hidden bg-white dark:bg-makcha-navy-900">
+      <SettingPanel 
+        view={view}
+        data={{ home, favorites }} // props를 객체로 묶어 전달
+        onNavigate={(v, p) => { setView(v); if(p) setEditingPlace(p); }}
+      />
+      <SettingBg view={view}>{renderDetail()}</SettingBg>
     </div>
   );
 }

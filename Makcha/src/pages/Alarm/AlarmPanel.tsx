@@ -1,8 +1,7 @@
 import SearchField from "./components/SearchField";
 import DestinationCarousel from "./components/DestinationCarousel";
 import RecentDestinations from "./components/RecentDestinations";
-import LogoCircle from "./../../assets/icons/Logo-circle.svg";
-import type { OriginSearchItem } from "./mocks/originSearchMock";
+import type { OriginSearchItem } from "./types/search";
 
 type AlarmPanelProps = {
     onOpenOrigin: () => void;
@@ -59,17 +58,6 @@ const AlarmPanel = ({
                     />
                 </div>
             </div>
-
-            <img
-                src={LogoCircle}
-                alt="service logo"
-                className="
-                    h-[56px] w-[56px] md:h-[58px] md:w-[58px] rounded-full
-                    fixed md:absolute
-                    bottom-6 md:bottom-[34px]
-                    right-5
-                "
-            />
         </section>
     );
 };

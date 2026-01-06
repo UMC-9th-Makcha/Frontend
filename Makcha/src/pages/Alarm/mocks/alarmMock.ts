@@ -1,9 +1,6 @@
-export type DestinationCard = {
-    id: string;
-    label: string;
-    time: string;
-    address: string;
-};
+import type { AlarmRoute } from "../types/alarm";
+import type { DestinationCard, RecentDestination } from "../types/destination";
+import type { PlaceItem } from "../types/place";
 
 export const DESTINATIONS: DestinationCard[] = [
     {
@@ -20,20 +17,12 @@ export const DESTINATIONS: DestinationCard[] = [
     },
 ];
 
-export const RECENT_DESTINATIONS = [
+export const RECENT_DESTINATIONS: RecentDestination[] = [
     { id: "r1", label: "집" },
     { id: "r2", label: "본가" },
     { id: "r3", label: "학교" },
     { id: "r4", label: "회사" },
 ];
-
-export type PlaceItem = {
-    placeId: string;
-    name: string;
-    address: string;
-    lat: number;
-    lng: number;
-};
 
 export const MOCK_PLACES: PlaceItem[] = [
     {
@@ -55,21 +44,9 @@ export const MOCK_PLACES: PlaceItem[] = [
         name: "수원역",
         address: "경기 수원시 팔달구 덕영대로 924",
         lat: 37.266,
-        lng: 127.000,
+        lng: 127.0,
     },
 ];
-
-export type AlarmRoute = {
-    id: string;
-    isOptimal: boolean;
-    routeType: "SUBWAY" | "BUS" | "NIGHT_BUS";
-    lines: string[];
-    departureTime: string;
-    timeUntilDeparture: string;
-    totalDurationMin: number;
-    transferCount: number;
-    walkingTimeMin: number;
-};
 
 export const ALARM_ROUTES_MOCK: AlarmRoute[] = [
     {

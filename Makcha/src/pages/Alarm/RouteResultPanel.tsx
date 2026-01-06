@@ -1,8 +1,7 @@
 import { Search } from "lucide-react";
-import LogoCircle from "./../../assets/icons/Logo-circle.svg";
-import type { OriginSearchItem } from "./mocks/originSearchMock";
-import type { AlarmRoute } from "./mocks/alarmMock";
+import type { OriginSearchItem } from "./types/search";
 import RouteCard from "./components/RouteCard";
+import type { AlarmRoute } from "./types/alarm";
 
 type Props = {
     origin: OriginSearchItem | null;
@@ -66,15 +65,15 @@ const RouteResultPanel = ({ origin, destination, routes, onSelectRoute }: Props)
                     <button
                         type="button"
                         className="
-                    flex h-[42px] w-full items-center gap-3
-                    rounded-[20px]
-                    border border-gray-200
-                    bg-white
-                    pl-[16px] pr-[15px]
-                    shadow-sm
-                    dark:border-makcha-navy-800 dark:bg-makcha-navy-900
-                    "
-                    >
+                            flex h-[42px] w-full items-center gap-3
+                            rounded-[20px]
+                            border border-gray-200
+                            bg-white
+                            pl-[16px] pr-[15px]
+                            shadow-sm
+                            dark:border-makcha-navy-800 dark:bg-makcha-navy-900
+                            "
+                        >
                         <span className="relative h-4 w-4">
                             <span className="absolute inset-0 rounded-full bg-makcha-navy-400 opacity-60 blur-[4px]" />
                             <span className="absolute inset-1 rounded-full bg-makcha-navy-600" />
@@ -103,17 +102,6 @@ const RouteResultPanel = ({ origin, destination, routes, onSelectRoute }: Props)
                     ))}
                 </div>
             </div>
-
-            {/* 로고 */}
-            <img
-                src={LogoCircle}
-                alt="service logo"
-                className="
-                h-[58px] w-[58px] rounded-full
-                absolute bottom-[34px] right-[20px]
-                max-md:fixed max-md:bottom-6 max-md:right-5 max-md:h-[56px] max-md:w-[56px]
-                "
-            />
         </section>
     );
 };

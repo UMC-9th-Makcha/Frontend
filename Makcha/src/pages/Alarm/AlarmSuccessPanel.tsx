@@ -1,19 +1,13 @@
-import type { OriginSearchItem } from "./mocks/originSearchMock";
-import type { AlarmRoute } from "./mocks/alarmMock";
+import type { AlarmRoute } from "./types/alarm";
+import type { OriginSearchItem } from "./types/search";
 import { CheckCircle } from "lucide-react";
-import LogoCircle from "./../../assets/icons/Logo-circle.svg";
+import { ROUTE_TYPE_LABEL } from "./constants"; 
 
 type Props = {
     origin: OriginSearchItem | null;
     destination: OriginSearchItem | null;
     route: AlarmRoute | null;
     onGoAlarmList: () => void;
-};
-
-const ROUTE_TYPE_LABEL: Record<AlarmRoute["routeType"], string> = {
-    SUBWAY: "지하철",
-    BUS: "버스",
-    NIGHT_BUS: "심야버스",
 };
 
 const AlarmSuccessPanel = ({ origin, destination, route, onGoAlarmList }: Props) => {
@@ -98,18 +92,6 @@ const AlarmSuccessPanel = ({ origin, destination, route, onGoAlarmList }: Props)
                     </button>
                 </div>
             </div>
-
-            <img
-                src={LogoCircle}
-                alt="service logo"
-                className="
-                    h-[56px] w-[56px] md:h-[58px] md:w-[58px] rounded-full
-                    fixed md:absolute
-                    bottom-6 md:bottom-[34px]
-                    right-5
-                "
-            />
-
         </section>
     );
 };

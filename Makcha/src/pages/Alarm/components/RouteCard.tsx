@@ -1,14 +1,9 @@
-import type { AlarmRoute } from "../mocks/alarmMock";
+import type { AlarmRoute } from "../types/alarm";
+import { ROUTE_TYPE_LABEL } from "../constants"; 
 
 type Props = {
     route: AlarmRoute;
     onSelect: (route: AlarmRoute) => void;
-};
-
-const ROUTE_TYPE_LABEL: Record<AlarmRoute["routeType"], string> = {
-    SUBWAY: "지하철",
-    BUS: "버스",
-    NIGHT_BUS: "심야버스",
 };
 
 const Badge = ({ children }: { children: React.ReactNode }) => {

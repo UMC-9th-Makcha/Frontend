@@ -1,23 +1,23 @@
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { MapPin, Search, X } from "lucide-react";
-import type { OriginSearchItem } from "../mocks/originSearchMock";
-
+import type { OriginSearchItem } from "../types/search";
 type Props = {
     open: boolean;
     onClose: () => void;
-    onSelectDestination: (item: OriginSearchItem) => void;
-
+    title: string;
+    onSelect: (item: OriginSearchItem) => void;
     query: string;
     setQuery: (v: string) => void;
     results: OriginSearchItem[];
     hasQuery: boolean;
 };
 
-const DestinationSearchSheetMobile = ({
+const SearchSheetMobile = ({
     open,
     onClose,
-    onSelectDestination,
+    title,
+    onSelect,
     query,
     setQuery,
     results,
@@ -43,12 +43,12 @@ const DestinationSearchSheetMobile = ({
     if (!open) return null;
 
     return createPortal(
-        <div className="fixed inset-0 z-[9999] h-dvh w-screen overflow-hidden overscroll-contain flex flex-col bg-white dark:bg-makcha-navy-900">
-            <header className="sticky top-0 z-10 bg-white dark:bg-makcha-navy-900 px-5 pt-[env(safe-area-inset-top)]">
+        <div className="fixed inset-0 z-[9999] flex h-dvh w-screen flex-col overflow-hidden overscroll-contain bg-white dark:bg-makcha-navy-900">
+            <header className="sticky top-0 z-10 bg-white px-5 pt-[env(safe-area-inset-top)] dark:bg-makcha-navy-900">
                 <div className="pt-4 pb-4">
                     <div className="relative flex items-center justify-center">
                         <h2 className="text-center text-[40px] font-normal text-makcha-navy-900 dark:text-white">
-                            도착지
+                            {title}
                         </h2>
 
                         <button
@@ -91,12 +91,12 @@ const DestinationSearchSheetMobile = ({
                             onChange={(e) => setQuery(e.target.value)}
                             placeholder="지번 혹은 도로명 주소 검색"
                             className="
-                                flex-1 bg-transparent
-                                text-[24px] text-gray-900 outline-none
+                                flex-1 bg-transparent text-[20px] text-gray-900 outline-none
                                 placeholder:text-gray-500 caret-gray-900
                                 dark:text-white dark:placeholder:text-white/40
                             "
                         />
+
 
                         <button
                             type="button"
@@ -133,7 +133,7 @@ const DestinationSearchSheetMobile = ({
                                         <button
                                             type="button"
                                             onClick={() => {
-                                                onSelectDestination(item);
+                                                onSelect(item);
                                                 onClose();
                                             }}
                                             className="w-full px-5 py-4 text-left active:bg-gray-50 dark:active:bg-white/5"
@@ -157,6 +157,9 @@ const DestinationSearchSheetMobile = ({
                             <button
                                 type="button"
                                 className="flex w-full items-center gap-1.5 px-5 py-4 text-[20px] text-gray-700 dark:text-white/80"
+                                onClick={() => {
+                                    // TODO
+                                }}
                             >
                                 <MapPin
                                     className="h-5 w-5 text-gray-700 dark:text-white/70"
@@ -195,4 +198,4 @@ const DestinationSearchSheetMobile = ({
     );
 };
 
-export default DestinationSearchSheetMobile;
+export default SearchSheetMobile;
