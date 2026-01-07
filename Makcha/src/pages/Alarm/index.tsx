@@ -75,14 +75,14 @@ const Alarm = () => {
                 <div className="w-full md:w-[402px] md:shrink-0">
                     {step === "LOADING" ? (
                         <RouteLoadingPanel open />
-                    ) : step === "RESULT" ? (
+                    ) : step === "RESULT" && origin && destination ? (
                         <RouteResultPanel
                             origin={origin}
                             destination={destination}
                             routes={routes}
                             onSelectRoute={handleSelectRoute}
                         />
-                    ) : step === "SUCCESS" ? (
+                    ) : step === "SUCCESS" && origin && destination && selectedRoute ? (
                         <AlarmSuccessPanel
                             origin={origin}
                             destination={destination}
@@ -96,7 +96,7 @@ const Alarm = () => {
                             onOpenOrigin={openOriginSheet}
                             onOpenDestination={openDestinationSheet}
                             onSelectDestination={(item) => {
-                                setSearchTarget("DESTINATION"); 
+                                setSearchTarget("DESTINATION");
                                 handleSelect("DESTINATION", item);
                             }}
                         />
