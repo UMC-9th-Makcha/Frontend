@@ -1,4 +1,4 @@
-export const categories = [
+export const waitingCategories = [
     { key: "all", label: "전체" },
     { key: "night-cafe", label: "심야카페" },
     { key: "pc-cafe", label: "PC방" },
