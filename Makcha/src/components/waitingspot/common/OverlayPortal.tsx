@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from "react";
 import { createPortal } from "react-dom";
-import type { OverlayPortalProps } from "../../types/portal";
+import type { OverlayPortalProps } from "../../../types/portal";
 
 export function OverlayPortal({ open, onClose, children, closeOnBackdrop = true, }: OverlayPortalProps) {
   const portalElement = useMemo(() => {

@@ -1,15 +1,16 @@
 import { useParams } from "react-router-dom";
 import { useMemo, useState } from "react";
-import { WaitingSpotLayout } from "../../components/waitingspot/WaitingSpotLayout";
-import { WaitingSpotHeader } from "../../components/waitingspot/WaitingSpotHeader";
-import { CategoryTab } from "../../components/waitingspot/CategoryTab";
+import { WaitingSpotLayout } from "../../components/waitingspot/common/WaitingSpotLayout";
+import { WaitingSpotHeader } from "../../components/waitingspot/common/WaitingSpotHeader";
+import { CategoryTab } from "../../components/waitingspot/common/CategoryTab";
 import { WaitingSpotMap } from "../../components/waitingspot/WaitingSpotMap";
-import type { CategoryKey, Place } from "../../types/waitingspot";
+import type { Place, WaitingCategoryKey } from "../../types/waitingspot";
 import { StartLocationSearch } from "../../components/waitingspot/StartLocationSearch";
 import { PlaceList } from "../../components/waitingspot/PlaceList";
 import { PlaceDetailPanel } from "../../components/waitingspot/PlaceDetailPanel";
-import { OverlayPortal } from "../../components/waitingspot/OverlayPortal";
 import { useIsMobile } from "../../hooks/useIsMobile";
+import { waitingCategories } from "../../components/waitingspot/constants";
+import { OverlayPortal } from "../../components/waitingspot/common/OverlayPortal";
 
 export const mockPlaces: Place[] = [
   {
@@ -61,7 +62,7 @@ export default function WaitingSpot() {
   // 첫차도 막차도 아닌 경로일 경우 대시보드로 안내하거나 제목을 기본값으로 설정
   const pageTitle = isFirst ? "첫차 대기 장소" : isLast ? "막차 대기 장소" : "대기 장소 확인";
 
-  const [category, setCategory] = useState<CategoryKey>("all");
+  const [category, setCategory] = useState<WaitingCategoryKey>("all");
 
   //선택된 장소 id (카드 클릭 시 저장)
   const [selectedPlaceId, setSelectedPlaceId] = useState<number | null>(null);
@@ -75,9 +76,9 @@ export default function WaitingSpot() {
   return (
     <div className="h-full min-h-0 min-w-0">
       <WaitingSpotLayout
-        header={<WaitingSpotHeader title={pageTitle} />}
+        header={<WaitingSpotHeader title={pageTitle} content={"막차를 놓쳐서 첫차까지 대기하시는 분들을 위한 추천 장소를 안내드립니다."} />}
         search={<StartLocationSearch />}
-        controls={<CategoryTab selected={category} onChange={setCategory} />}
+        controls={<CategoryTab selected={category} onChange={setCategory} categories={waitingCategories} />}
         list={<PlaceList
           places={mockPlaces}
           selectedPlaceId={selectedPlaceId}

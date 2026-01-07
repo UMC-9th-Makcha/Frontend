@@ -1,4 +1,4 @@
-import type { WaitingSpotLayoutProps } from "../../types/waitingspot"
+import type { WaitingSpotLayoutProps } from "../../../types/waitingspot"
 
 export const WaitingSpotLayout = ({header, controls, map, search, list, detail} : WaitingSpotLayoutProps) => {
   return (
