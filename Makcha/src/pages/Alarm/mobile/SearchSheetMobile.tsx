@@ -91,17 +91,16 @@ const SearchSheetMobile = ({
                             onChange={(e) => setQuery(e.target.value)}
                             placeholder="지번 혹은 도로명 주소 검색"
                             className="
-                                flex-1 bg-transparent text-[20px] text-gray-900 outline-none
+                                flex-1 min-w-0 bg-transparent text-[20px] text-gray-900 outline-none
                                 placeholder:text-gray-500 caret-gray-900
                                 dark:text-white dark:placeholder:text-white/40
                             "
                         />
 
-
                         <button
                             type="button"
                             onClick={() => setQuery("")}
-                            className={`mr-2 text-[16px] text-gray-400 ${hasQuery ? "opacity-100" : "opacity-0 pointer-events-none"
+                            className={`mr-2 shrink-0 whitespace-nowrap text-[16px] text-gray-400 ${hasQuery ? "opacity-100" : "opacity-0 pointer-events-none"
                                 }`}
                             aria-label="검색어 지우기"
                         >

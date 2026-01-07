@@ -2,6 +2,7 @@ import type { AlarmRoute } from "./types/alarm";
 import type { OriginSearchItem } from "./types/search";
 import { CheckCircle } from "lucide-react";
 import { ROUTE_TYPE_LABEL } from "./constants";
+import FrequentRoutesCard from "./components/FrequentRoutesCard";
 
 type Props = {
     origin: OriginSearchItem;
@@ -80,6 +81,16 @@ const AlarmSuccessPanel = ({ origin, destination, route, onGoAlarmList }: Props)
                             지금부터 카카오톡으로 알려드릴게요
                         </div>
                     </div>
+                </div>
+
+                <div className="mt-4">
+                    <FrequentRoutesCard
+                        titleBold={`도착지를 [자주가는경로]에 저장할까요?`}
+                        subtitle="다음에 이용할 땐 클릭 한 번으로 알림을 받을 수 있어요!"
+                        onSave={() => {
+                            // TODO: destination 저장
+                        }}
+                    />
                 </div>
 
                 <div className="mt-[118px] pb-8 max-md:mt-10 max-md:pb-0">

@@ -91,9 +91,10 @@ const RouteResultPanel = ({ origin, destination, routes, onSelectRoute }: Props)
                 <div
                     className="
                     mt-[46px] flex-1 min-h-0
+                    w-full min-w-0
                     space-y-[29px]
                     overflow-y-auto overflow-x-hidden
-                    pb-6
+                    pb-10
                     max-md:mt-5 max-md:space-y-4
                 "
                 >
