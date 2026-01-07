@@ -3,12 +3,7 @@ import CurrentAlarmCard from "./components/CurrentAlarmCard";
 import PastSummaryCard from "./components/PastSummaryCard";
 import MonthSection from "./components/MonthSection";
 import SaveReportPanel from "./components/SaveReportPanel";
-
-import {
-  CURRENT_ALARM_MOCK,
-  PAST_SUMMARY_MOCK,
-  MONTH_SECTIONS_MOCK,
-} from "./mocks/historyMock";
+import { CURRENT_ALARM_MOCK, PAST_SUMMARY_MOCK, MONTH_SECTIONS_MOCK } from "./mocks/historyMock";
 
 const HistoryHome = () => {
   const [isSaveReportOpen, setIsSaveReportOpen] = useState(false);
@@ -33,7 +28,7 @@ const HistoryHome = () => {
       </div>
 
       {/* 구분선: PC에서만 */}
-      <div className="pointer-events-none absolute top-0 bottom-0 left-[calc(50%+20px)] hidden w-px bg-[#E2E2E2] dark:bg-makcha-navy-800 md:block" />
+      <div className="pointer-events-none absolute top-10 bottom-10 left-1/2 translate-x-[20px] hidden w-px bg-[#E2E2E2] dark:bg-makcha-navy-800 md:block" />
 
       {/* 본문 */}
       <div className="grid grid-cols-1 gap-10 md:grid-cols-2">

@@ -1,5 +1,5 @@
-import type { PastSummary } from "../mocks/historyMock";
 import { ChevronRight } from "lucide-react";
+import type { PastSummary } from "../types/history";
 
 type Props = {
     summary: PastSummary;

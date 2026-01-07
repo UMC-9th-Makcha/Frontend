@@ -1,5 +1,5 @@
-import type { CurrentAlarm } from "../mocks/historyMock";
 import { ChevronRight } from "lucide-react";
+import type { CurrentAlarm } from "../types/history";
 
 type Props = {
     alarm: CurrentAlarm | null;

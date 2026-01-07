@@ -1,5 +1,5 @@
 import EmptyHistoryCard from "./EmptyHistoryCard";
-import type { HistoryItem } from "../mocks/historyMock";
+import type { HistoryItem } from "../types/history";
 import { ChevronRight } from "lucide-react";
 
 type Props = {

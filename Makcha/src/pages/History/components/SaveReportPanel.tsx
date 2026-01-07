@@ -1,6 +1,6 @@
 import { X } from "lucide-react";
 import EmptyHistoryCard from "./EmptyHistoryCard";
-import type { HistoryItem } from "../mocks/historyMock";
+import type { HistoryItem } from "../types/history";
 import SaveReportGraph from "./SaveReportGraph";
 
 type Props = {
