@@ -56,47 +56,52 @@ const CurrentAlarmCard = ({ alarm, onCreate, onCancel, onDetail }: Props) => {
                     dark:border-makcha-navy-700 dark:bg-makcha-navy-900
                 "
             >
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                        {alarm.isOptimal && (
-                            <span
-                                className="
-                                    rounded-full border px-4 py-1 text-[18px]
-                                    border-[#EBEBEB] text-makcha-navy-900
-                                    dark:border-makcha-navy-700 dark:text-white/90
-                                "
-                            >
-                                최적
-                            </span>
-                        )}
+                <div className="flex items-center gap-3">
+                    <div className="-my-1 flex-1 overflow-x-auto">
+                        <div className="flex items-center gap-2 whitespace-nowrap py-1">
+                            {alarm.isOptimal && (
+                                <span
+                                    className="
+                                        rounded-full border px-4 py-1 text-[18px]
+                                        border-[#EBEBEB] text-makcha-navy-900
+                                        dark:border-makcha-navy-700 dark:text-white/90
+                                    "
+                                >
+                                    최적
+                                </span>
+                            )}
 
-                        {alarm.lines.map((line) => (
-                            <span
-                                key={line}
-                                className="
-                                    rounded-full border px-3 py-1 text-[18px]
-                                    border-[#EBEBEB] text-makcha-navy-900
-                                    dark:border-makcha-navy-700 dark:text-white/90
-                                "
-                            >
-                                {line}
-                            </span>
-                        ))}
+                            {alarm.lines.map((line) => (
+                                <span
+                                    key={line}
+                                    className="
+                                        rounded-full border px-3 py-1 text-[18px]
+                                        border-[#EBEBEB] text-makcha-navy-900
+                                        dark:border-makcha-navy-700 dark:text-white/90
+                                    "
+                                >
+                                    {line}
+                                </span>
+                            ))}
+                        </div>
                     </div>
 
                     <button
                         type="button"
                         onClick={onDetail}
                         className="
+                            shrink-0 whitespace-nowrap
                             flex items-center gap-2 text-[18px]
                             text-gray-600 hover:text-makcha-navy-900
                             dark:text-white/60 dark:hover:text-white
+                            -mr-1 pr-1
                         "
                     >
                         상세보기
                         <ChevronRight className="h-5 w-5" strokeWidth={2} />
                     </button>
                 </div>
+
 
                 <div className="mt-4 text-center">
                     <div className="text-[40px] font-medium text-makcha-navy-900 dark:text-white">

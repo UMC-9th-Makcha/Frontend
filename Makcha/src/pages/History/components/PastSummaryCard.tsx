@@ -47,7 +47,7 @@ const PastSummaryCard = ({ summary, onDetail }: Props) => {
                     type="button"
                     onClick={onDetail}
                     className="
-                        flex items-center gap-2 text-[16px]
+                        flex items-center gap-2 text-[16px] shrink-0 whitespace-nowrap
                         text-gray-600 hover:text-makcha-navy-900
                         dark:text-white/60 dark:hover:text-white
                     "

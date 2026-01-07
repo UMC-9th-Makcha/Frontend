@@ -10,11 +10,31 @@ type Props = {
     items: HistoryItem[];
 };
 
+const COFFEE_PRICE = 5000;   // 커피 1잔 기준가
+const CHICKEN_PRICE = 25000; // 치킨 1마리 기준가
+
 const SaveReportPanel = ({ open, onClose, totalSavedAmount, items }: Props) => {
     if (!open) return null;
 
     const totalCount = items.length;
     const isEmpty = totalCount === 0;
+
+    // 보상문구 생성
+    const rewardMessage = (() => {
+        if (isEmpty || totalSavedAmount === 0) return "알림을 설정해보세요!";
+
+        if (totalSavedAmount < COFFEE_PRICE) {
+            return "커피 한 잔 값에 가까워요!";
+        }
+
+        if (totalSavedAmount < CHICKEN_PRICE) {
+            const coffeeCount = Math.floor(totalSavedAmount / COFFEE_PRICE);
+            return `커피 ${coffeeCount}잔 값이에요!`;
+        }
+
+        const chickenCount = Math.floor(totalSavedAmount / CHICKEN_PRICE);
+        return `치킨 ${chickenCount}마리 값이에요!`;
+    })();
 
     const chartData = [
         { year: 2025, month: "11월", value: 39700 },
@@ -36,14 +56,14 @@ const SaveReportPanel = ({ open, onClose, totalSavedAmount, items }: Props) => {
 
             <aside
                 className="
-                fixed inset-0 z-70
-                h-dvh w-full
-                bg-white
-                shadow-[8px_0_20px_rgba(0,0,0,0.08)]
-                dark:bg-makcha-navy-900
-                md:inset-y-0 md:left-62 md:right-auto md:w-[402px]
-                md:border-r md:border-[#E2E2E2] md:dark:border-makcha-navy-800
-            "
+                    fixed inset-0 z-70
+                    h-dvh w-full
+                    bg-white
+                    shadow-[8px_0_20px_rgba(0,0,0,0.08)]
+                    dark:bg-makcha-navy-900
+                    md:inset-y-0 md:left-62 md:right-auto md:w-[402px]
+                    md:border-r md:border-[#E2E2E2] md:dark:border-makcha-navy-800
+                "
             >
                 <div className="h-full overflow-y-auto px-5 pt-[24px] pb-10 md:pt-[62px]">
                     {/* 헤더 */}
@@ -55,20 +75,20 @@ const SaveReportPanel = ({ open, onClose, totalSavedAmount, items }: Props) => {
 
                             {isEmpty ? (
                                 <>
-                                    <p className="mt-[18px] text-[20px] font-bold text-makcha-navy-900 dark:text-white">
+                                    <p className="mt-[18px] text-[32px] md:text-[20px] font-bold text-makcha-navy-900 dark:text-white">
                                         총 0원을 아꼈어요!
                                     </p>
-                                    <p className="mt-[5px] text-[16px] text-gray-500 dark:text-white/60">
-                                        알림을 설정해보세요!
+                                    <p className="mt-[5px] text-[24px] md:text-[16px] text-gray-500 dark:text-white/60">
+                                        {rewardMessage}
                                     </p>
                                 </>
                             ) : (
                                 <>
-                                    <p className="mt-[18px] text-[20px] font-bold text-makcha-navy-900 dark:text-white">
+                                    <p className="mt-[18px] text-[32px] md:text-[20px] font-bold text-makcha-navy-900 dark:text-white">
                                         총 {totalSavedAmount.toLocaleString()}원을 아꼈어요!
                                     </p>
-                                    <p className="mt-[5px] text-[16px] text-gray-500 dark:text-white/60">
-                                        알림을 설정해보세요!
+                                    <p className="mt-[5px] text-[24px] md:text-[16px] text-gray-500 dark:text-white/60">
+                                        {rewardMessage}
                                     </p>
                                 </>
                             )}
@@ -109,10 +129,10 @@ const SaveReportPanel = ({ open, onClose, totalSavedAmount, items }: Props) => {
                             />
 
                             <div className="mt-[23px] flex items-end justify-between">
-                                <div className="text-[20px] font-medium text-makcha-navy-900 dark:text-white">
+                                <div className="text-[24px] md:text-[20px] font-medium text-makcha-navy-900 dark:text-white">
                                     상세 내역 / 절약 비용
                                 </div>
-                                <div className="text-[20px] text-gray-500 dark:text-white/60">
+                                <div className="text-[24px] md:text-[20px] text-gray-500 dark:text-white/60">
                                     총 {totalCount}건
                                 </div>
                             </div>

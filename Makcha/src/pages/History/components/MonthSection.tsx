@@ -12,7 +12,7 @@ const MonthSection = ({ monthLabel, items, onDetail }: Props) => {
     const totalCount = items.length;
 
     return (
-        <div>
+        <div className="last:pb-10">
             <div className="flex items-end justify-between">
                 <div className="text-[32px] font-medium text-makcha-navy-900 dark:text-white">
                     {monthLabel}
