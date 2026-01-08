@@ -1,6 +1,5 @@
 import type { LucideIcon } from "lucide-react";
 import type { ComponentType, ElementType } from "react";
-import type { User } from "./auth";
 
 type IconType = LucideIcon | ComponentType<{ className?: string }> | ElementType;
 
@@ -18,10 +17,7 @@ export interface DashboardProps {
 }
 
 export interface DashboardNavProps {
-  user: User | null;
-  onItemClick: () => void;
   dividerClass: string;
-  isCollapsed: boolean;
 }
 
 export interface DashboardItemProps {
@@ -30,12 +26,8 @@ export interface DashboardItemProps {
   icon: IconType;
   onClick?: (e: React.MouseEvent) => void;
   isStatic?: boolean;
-  isCollapsed?: boolean;
 }
 
-export interface DashboardNavProps {
-  user: User | null;
-  onItemClick: () => void;
-  dividerClass: string;
-  isCollapsed: boolean;
+export interface IconProps {
+  className?: string;
 }

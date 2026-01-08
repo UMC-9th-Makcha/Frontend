@@ -1,51 +1,53 @@
-import React from 'react';
+import React, { memo, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { NAV_MENUS, PUBLIC_MENU_IDS } from './constants';
 import DashboardItem from './DashboardItem';
 import { UserIcon } from './UserIcon';
+import { useDashboardStore } from '../../store/useDashboardStore';
+import { useAuth } from '../../hooks/useAuth';
 import type { DashboardNavProps } from '../../types/dashboard';
 
-const DashboardNav = ({ user, onItemClick, dividerClass, isCollapsed }: DashboardNavProps) => {
+const DashboardNav = memo(({ dividerClass }: DashboardNavProps) => {
+  const { user } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+  const setSidebarOpen = useDashboardStore((state) => state.setSidebarOpen);
+
   const isLoggedIn = !!user;
 
-  const checkAccess = (menuId?: string) => {
+  const checkAccess = useCallback((menuId?: string) => {
     if (isLoggedIn) return true;
-    if (menuId && PUBLIC_MENU_IDS.includes(menuId)) return true;
+    if (menuId && (PUBLIC_MENU_IDS as readonly string[]).includes(menuId)) return true;
     return false;
-  };
+  }, [isLoggedIn]);
 
-  const handleNavClick = (e: React.MouseEvent, menuId?: string) => {
+  const handleNavClick = useCallback((e: React.MouseEvent, menuId: string) => {
     const hasAccess = checkAccess(menuId);
 
     if (!hasAccess) {
-      e.preventDefault(); 
-      if (location.pathname !== "/") {
-        navigate("/");
-      }
+      e.preventDefault();
+      if (location.pathname !== "/") navigate("/");
       return;
     }
 
-    onItemClick?.(); 
-  };
+    setSidebarOpen(false);
+  }, [checkAccess, location.pathname, navigate, setSidebarOpen]);
 
   return (
     <nav className="flex-1 overflow-y-auto no-scrollbar mt-2 flex flex-col gap-y-1">
       {user && (
-        <>
+        <React.Fragment>
           <DashboardItem
             label={`${user.nickname}님`}
             path="/setting"
             icon={({ className }: { className?: string }) => (
               <UserIcon user={user} className={className} />
             )}
-            onClick={(e) => handleNavClick(e, 'setting')} 
+            onClick={(e) => handleNavClick(e, 'setting')}
             isStatic
-            isCollapsed={isCollapsed}
           />
           <div className={dividerClass} />
-        </>
+        </React.Fragment>
       )}
 
       {NAV_MENUS.map((menu) => (
@@ -55,13 +57,13 @@ const DashboardNav = ({ user, onItemClick, dividerClass, isCollapsed }: Dashboar
             label={menu.label}
             path={menu.path}
             icon={menu.icon}
-            onClick={(e) => handleNavClick(e, menu.id)} 
-            isCollapsed={isCollapsed}
+            onClick={(e) => handleNavClick(e, menu.id)}
           />
         </React.Fragment>
       ))}
     </nav>
   );
-};
+});
 
+DashboardNav.displayName = 'DashboardNav';
 export default DashboardNav;
