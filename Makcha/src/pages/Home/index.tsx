@@ -6,8 +6,7 @@ export default function Home() {
   const navigate = useNavigate();
 
   return (
-    <div className="h-full w-full flex flex-col justify-between
-     pt-6 md:p-10 max-w-7xl mx-auto">
+    <div className="h-full w-full flex flex-col justify-between p-6 md:p-10 max-w-7xl mx-auto">
       
       {/* 헤더 */}
       <header className="space-y-1">
