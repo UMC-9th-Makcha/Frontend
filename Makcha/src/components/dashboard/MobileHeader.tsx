@@ -8,7 +8,7 @@ const MobileHeader = ({ isOpen, setIsOpen }: DashboardProps) => {
   const { user } = useAuth();
 
   return (
-    <header className="sticky top-0 z-49 flex h-16 w-full items-center justify-between px-4 
+    <header className="sticky top-0 z-48 flex h-16 w-full items-center justify-between px-4 
       bg-white dark:bg-makcha-navy-900 border-b border-gray-100 dark:border-makcha-navy-800 
       md:hidden overflow-hidden">
       

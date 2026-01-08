@@ -1,7 +1,7 @@
 import { Home, Star, Plus } from "lucide-react";
-import PlaceListItem from "./PlaceListItem";
-import { useSettingStore } from "../../store/useSettingStore";
-import type { SettingPlacesProps } from "../../types/setting";
+import PlaceListItem from "./Place/PlaceListItem";
+import { useSettingStore } from "../../../store/useSettingStore";
+import type { SettingPlacesProps } from "../../../types/setting";
 
 export function SettingPlaces({ onNavigate }: SettingPlacesProps) {
   const { home, favorites } = useSettingStore();

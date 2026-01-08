@@ -18,6 +18,7 @@ export default function Home() {
         </p>
       </header>
 
+      {/* 대시보드 */}
       <section>
         <HorizontalScroll<DashboardAction>
           items={DASHBOARD_ACTIONS}
@@ -54,10 +55,12 @@ export default function Home() {
       <section className="space-y-4">
         <div className="flex justify-between items-end px-1">
           <h2 className="text-lg md:text-xl font-bold dark:text-white">세이브 리포트</h2>
-          <button className="text-xs text-gray-400 hover:text-gray-600">전체보기 &gt;</button>
         </div>
-
-        <div className="relative bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 p-8 md:p-12 rounded-3xl shadow-sm text-center">
+        <div 
+          onClick={() => navigate("/history")}
+          className="relative bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 p-8 md:p-12 rounded-3xl shadow-sm text-center 
+                     cursor-pointer hover:shadow-md active:scale-[0.99] transition-all"
+        >
           <p className="text-sm md:text-base text-gray-500 dark:text-makcha-navy-300 mb-3">지금까지 아낀 택시비 🚕</p>
           <p className="text-4xl md:text-6xl font-black text-amber-400 mb-2">125,000원</p>
           <p className="text-xs md:text-sm text-gray-400">총 5번의 막차를 사수했어요!</p>

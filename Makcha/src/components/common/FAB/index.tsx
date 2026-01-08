@@ -78,7 +78,7 @@ export default function FAB() {
           : { touchAction: 'none' }
       }
       className={`
-        fixed z-50 flex cursor-grab items-center justify-center overflow-hidden shadow-2xl
+        fixed z-49 flex cursor-grab items-center justify-center overflow-hidden shadow-2xl
         h-12 w-12 md:h-16 md:w-16 rounded-full 
         bg-white dark:bg-makcha-navy-700
         active:cursor-grabbing active:scale-95

@@ -1,7 +1,7 @@
 import { ChevronRight } from "lucide-react";
-import { UserIcon } from "../../components/dashboard/UserIcon";
-import { useAuth } from "../../hooks/useAuth";
-import type { SettingAccountProps } from "../../types/setting";
+import { UserIcon } from "../../../components/dashboard/UserIcon";
+import { useAuth } from "../../../hooks/useAuth";
+import type { SettingAccountProps } from "../../../types/setting";
 
 export function SettingAccount({ onNavigate }: SettingAccountProps) {
   const { user, setLogout } = useAuth();

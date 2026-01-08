@@ -1,5 +1,5 @@
-import KakaoLoginButton from "../../components/kakao/KakaoButton";
-import Panel from "../../components/common/Panel";
+import KakaoLoginButton from "../../../components/kakao/KakaoButton";
+import Panel from "../../../components/common/Panel";
 
 export default function LoginPanel() {
   return (

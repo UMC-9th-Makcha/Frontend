@@ -1,14 +1,19 @@
-import { TIMES } from "./constants";
-import { useSettingStore } from "../../store/useSettingStore";
-import { HorizontalScroll } from "../../components/common/HorizontalScroll";
+import { TIMES } from "../constants";
+import { useSettingStore } from "../../../store/useSettingStore";
+import { HorizontalScroll } from "../../../components/common/HorizontalScroll";
+import { useCallback } from "react";
 
 export function SettingNotification() {
-  const { selectedTimes, toggleTime } = useSettingStore();
+  const selectedTimes = useSettingStore((state) => state.selectedTimes);
+  const toggleTime = useSettingStore((state) => state.toggleTime);
+
+  const handleItemClick = useCallback((t: string, moved: boolean) => {
+    toggleTime(t, moved);
+  }, [toggleTime]);
 
   return (
     <div className="mb-10 px-1">
       <p className="mb-4 text-[18px] font-semibold dark:text-white">알림</p>
-
       <HorizontalScroll
         items={TIMES}
         renderItem={(t) => {
@@ -27,7 +32,7 @@ export function SettingNotification() {
             </button>
           );
         }}
-        onItemClick={(t, moved) => toggleTime(t, moved)}
+        onItemClick={handleItemClick}
       />
     </div>
   );
