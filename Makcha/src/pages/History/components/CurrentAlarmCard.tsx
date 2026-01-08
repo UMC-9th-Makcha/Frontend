@@ -19,7 +19,7 @@ const CurrentAlarmCard = ({ alarm, onCreate, onCancel, onDetail }: Props) => {
                     dark:border-makcha-navy-700 dark:bg-makcha-navy-900
                 "
             >
-                <h2 className="px-6 py-[15px] text-[26px] font-medium text-makcha-navy-900 dark:text-white">
+                <h2 className="px-6 py-4 text-[26px] font-medium text-makcha-navy-900 dark:text-white">
                     안녕하세요, 막차 님!
                 </h2>
 
@@ -29,7 +29,7 @@ const CurrentAlarmCard = ({ alarm, onCreate, onCancel, onDetail }: Props) => {
                     카카오톡으로 알림을 확인하세요!
                 </p>
 
-                <div className="mt-[30px] flex justify-end pr-[31px] pb-[20px]">
+                <div className="mt-8 flex justify-end pr-8 pb-5">
                     <button
                         type="button"
                         onClick={onCreate}
@@ -114,7 +114,7 @@ const CurrentAlarmCard = ({ alarm, onCreate, onCancel, onDetail }: Props) => {
 
                 <div
                     className="
-                        mt-[21px] border-t border-[#E2E2E2] pt-4
+                        mt-5 border-t border-[#E2E2E2] pt-4
                         text-center text-[18px]
                         text-gray-600
                         dark:border-white/60 dark:text-white/60
@@ -126,7 +126,7 @@ const CurrentAlarmCard = ({ alarm, onCreate, onCancel, onDetail }: Props) => {
             </div>
 
             {/* 알람 취소하기 */}
-            <div className="mt-[19px] flex justify-center">
+            <div className="mt-5 flex justify-center">
                 <button
                     type="button"
                     onClick={onCancel}

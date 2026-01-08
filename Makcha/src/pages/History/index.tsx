@@ -11,21 +11,13 @@ const HistoryHome = () => {
   const totalSavedAmount = PAST_SUMMARY_MOCK.thisMonthTaxiCost;
 
   return (
-    <div className="relative h-full w-full p-5">
+    <div className="relative h-full w-full p-5 md:pt-24">
       <SaveReportPanel
         open={isSaveReportOpen}
         onClose={() => setIsSaveReportOpen(false)}
         totalSavedAmount={totalSavedAmount}
         items={reportItems}
       />
-
-      {/* 우측 상단: PC에서만 */}
-      <div className="mb-6 hidden items-center justify-end gap-4 md:flex">
-        <span className="font-pretendard font-normal text-[20px] text-[#5F5F5F] dark:text-gray-400">
-          이미 한번 이용해보셨나요?
-        </span>
-        <div className="h-15 w-15 rounded-full bg-gray-200" />
-      </div>
 
       {/* 구분선: PC에서만 */}
       <div className="pointer-events-none absolute top-10 bottom-10 left-1/2 translate-x-[20px] hidden w-px bg-[#E2E2E2] dark:bg-makcha-navy-800 md:block" />
@@ -38,7 +30,7 @@ const HistoryHome = () => {
             알림 내역
           </h1>
 
-          <p className="mt-[10px] text-[20px] text-[#5F5F5F] dark:text-makcha-navy-200">
+          <p className="mt-2 text-[20px] text-[#5F5F5F] dark:text-makcha-navy-200">
             현재 신청한 알림을 확인할 수 있어요
           </p>
 
@@ -60,15 +52,17 @@ const HistoryHome = () => {
             />
           </div>
 
-          <div className="mt-[37px] space-y-10">
+          <div className="mt-9 space-y-10">
             {MONTH_SECTIONS_MOCK.map((sec) => (
               <MonthSection
                 key={sec.monthLabel}
                 monthLabel={sec.monthLabel}
                 items={sec.items}
+                onDetail={() => setIsSaveReportOpen(true)} 
               />
             ))}
           </div>
+
         </section>
       </div>
     </div>

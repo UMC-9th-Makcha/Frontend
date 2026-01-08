@@ -14,7 +14,7 @@ const PastSummaryCard = ({ summary, onDetail }: Props) => {
             className="
                 w-full rounded-[20px]
                 border border-gray-200 bg-white
-                pt-[15px] pl-6 pr-[25px] pb-[21px] shadow-sm
+                pt-4 pl-6 pr-6 pb-5 shadow-sm
                 dark:border-makcha-navy-700 dark:bg-makcha-navy-900
             "
         >
@@ -26,7 +26,7 @@ const PastSummaryCard = ({ summary, onDetail }: Props) => {
 
                     <div
                         className={`
-                            mt-[13px] text-[32px] font-medium
+                            mt-3 text-[32px] font-medium
                             ${thisMonthTaxiCost === 0
                                 ? "text-makcha-navy-900 dark:text-white"
                                 : "text-makcha-navy-600 dark:text-makcha-navy-300"
@@ -36,7 +36,7 @@ const PastSummaryCard = ({ summary, onDetail }: Props) => {
                         {thisMonthTaxiCost.toLocaleString()}원
                     </div>
 
-                    <div className="mt-[13px] text-[16px] text-gray-500 dark:text-white/60">
+                    <div className="mt-3 text-[16px] text-gray-500 dark:text-white/60">
                         {savedCount === 0
                             ? "절약했어요! 막차 알림을 설정하고 택시비를 아껴보세요!"
                             : `절약하고, 총 ${savedCount}번의 막차를 사수했어요!`}

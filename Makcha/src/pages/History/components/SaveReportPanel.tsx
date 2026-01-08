@@ -61,11 +61,11 @@ const SaveReportPanel = ({ open, onClose, totalSavedAmount, items }: Props) => {
                     bg-white
                     shadow-[8px_0_20px_rgba(0,0,0,0.08)]
                     dark:bg-makcha-navy-900
-                    md:inset-y-0 md:left-62 md:right-auto md:w-[402px]
+                    md:inset-y-0 md:left-62 md:right-auto md:w-100
                     md:border-r md:border-[#E2E2E2] md:dark:border-makcha-navy-800
                 "
             >
-                <div className="h-full overflow-y-auto px-5 pt-[24px] pb-10 md:pt-[62px]">
+                <div className="h-full overflow-y-auto px-5 pt-6 pb-10 md:pt-15">
                     {/* 헤더 */}
                     <div className="flex items-start justify-between">
                         <div>
@@ -75,19 +75,19 @@ const SaveReportPanel = ({ open, onClose, totalSavedAmount, items }: Props) => {
 
                             {isEmpty ? (
                                 <>
-                                    <p className="mt-[18px] text-[32px] md:text-[20px] font-bold text-makcha-navy-900 dark:text-white">
+                                    <p className="mt-4 text-[32px] md:text-[20px] font-bold text-makcha-navy-900 dark:text-white">
                                         총 0원을 아꼈어요!
                                     </p>
-                                    <p className="mt-[5px] text-[24px] md:text-[16px] text-gray-500 dark:text-white/60">
+                                    <p className="mt-1 text-[24px] md:text-[16px] text-gray-500 dark:text-white/60">
                                         {rewardMessage}
                                     </p>
                                 </>
                             ) : (
                                 <>
-                                    <p className="mt-[18px] text-[32px] md:text-[20px] font-bold text-makcha-navy-900 dark:text-white">
+                                    <p className="mt-4 text-[32px] md:text-[20px] font-bold text-makcha-navy-900 dark:text-white">
                                         총 {totalSavedAmount.toLocaleString()}원을 아꼈어요!
                                     </p>
-                                    <p className="mt-[5px] text-[24px] md:text-[16px] text-gray-500 dark:text-white/60">
+                                    <p className="mt-1 text-[24px] md:text-[16px] text-gray-500 dark:text-white/60">
                                         {rewardMessage}
                                     </p>
                                 </>
@@ -107,7 +107,7 @@ const SaveReportPanel = ({ open, onClose, totalSavedAmount, items }: Props) => {
                     {/* 본문 */}
                     {isEmpty ? (
                         <>
-                            <div className="mt-[245px] flex items-end justify-between">
+                            <div className="mt-61 flex items-end justify-between">
                                 <div className="text-[20px] font-medium text-makcha-navy-900 dark:text-white">
                                     상세 내역
                                 </div>
@@ -128,7 +128,7 @@ const SaveReportPanel = ({ open, onClose, totalSavedAmount, items }: Props) => {
                                 highlightMonth={highlightMonth}
                             />
 
-                            <div className="mt-[23px] flex items-end justify-between">
+                            <div className="mt-6 flex items-end justify-between">
                                 <div className="text-[24px] md:text-[20px] font-medium text-makcha-navy-900 dark:text-white">
                                     상세 내역 / 절약 비용
                                 </div>
@@ -152,16 +152,16 @@ const SaveReportPanel = ({ open, onClose, totalSavedAmount, items }: Props) => {
                                             {it.date}
                                         </div>
 
-                                        <div className="mt-[9px] text-[26px] font-bold text-makcha-navy-900 dark:text-white">
+                                        <div className="mt-2 text-[26px] font-bold text-makcha-navy-900 dark:text-white">
                                             {it.from} → {it.to}
                                         </div>
 
-                                        <div className="mt-2 text-[16px] text-gray-500 dark:text-white/60">
+                                        <div className="text-[16px] text-gray-500 dark:text-white/60">
                                             {it.departAt}분 출발 - {it.arriveAt} 도착
                                         </div>
 
                                         {typeof it.savedAmount === "number" && (
-                                            <div className="mt-2 text-[20px] font-medium text-makcha-navy-600 dark:text-makcha-navy-300">
+                                            <div className="mt-3 text-[20px] font-medium text-makcha-navy-600 dark:text-makcha-navy-300">
                                                 {it.savedAmount.toLocaleString()}원을 절약했어요!
                                             </div>
                                         )}
