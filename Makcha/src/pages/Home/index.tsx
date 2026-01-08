@@ -6,7 +6,8 @@ export default function Home() {
   const navigate = useNavigate();
 
   return (
-    <div className="mt-10 p-6 md:p-10 space-y-10 md:space-y-16 max-w-7xl mx-auto">
+    <div className="h-full w-full flex flex-col justify-between
+     pt-6 md:p-10 max-w-7xl mx-auto">
       
       {/* 헤더 */}
       <header className="space-y-1">
@@ -52,7 +53,7 @@ export default function Home() {
       </section>
 
       {/* 세이브 리포트 */}
-      <section className="space-y-4">
+      <section className="space-y-3">
         <div className="flex justify-between items-end px-1">
           <h2 className="text-lg md:text-xl font-bold dark:text-white">세이브 리포트</h2>
         </div>

@@ -11,7 +11,8 @@ export default function Main() {
   }
 
   return (
-    <div className="flex min-h-screen transition-colors duration-200 bg-white dark:bg-makcha-navy-900 overflow-x-hidden">
+    <div className="h-full w-full flex flex-col justify-between
+     transition-colors duration-200 bg-white dark:bg-makcha-navy-900 overflow-x-hidden">
       <LoginPanel />
       <MainBg />
     </div>

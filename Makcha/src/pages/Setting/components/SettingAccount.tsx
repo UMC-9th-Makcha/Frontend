@@ -11,7 +11,7 @@ export function SettingAccount({ onNavigate }: SettingAccountProps) {
       <p className="mb-4 text-[18px] font-semibold dark:text-white">계정</p>
       <p className="text-[20px] font-bold dark:text-white">{user?.nickname || "사용자"} 님</p>
       <div className="mt-2 flex items-center gap-2 text-gray-600 dark:text-makcha-navy-300">
-        <UserIcon user={user} className="h-5 w-5" /> {user?.id || "example@email.com"}
+        <UserIcon user={user} className="h-5 w-5" /> {user?.email || "example@email.com"}
       </div>
       
       <button 

@@ -61,7 +61,8 @@ export default function Setting() {
   }, [view, home, editingPlace, handleBack, handleSave, handleDelete]);
 
   return (
-    <div className="flex h-dvh w-full overflow-hidden bg-white dark:bg-makcha-navy-900">
+    <div className="h-full w-full flex justify-between
+     overflow-hidden bg-white dark:bg-makcha-navy-900">
       <SettingPanel 
         view={view}
         onNavigate={handleNavigate}
