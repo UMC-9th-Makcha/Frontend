@@ -7,8 +7,11 @@ import AlarmPanel from "./AlarmPanel";
 import AlarmSuccessPanel from "./AlarmSuccessPanel";
 import SearchSheet from "./SearchSheet";
 import type { AlarmRoute } from "./types/alarm";
+import RouteConfirmPanel from "./RouteConfirmPanel";
+import type { RouteConfirmDetail } from "./types/routeConfirm";
+import { ROUTE_CONFIRM_DETAIL_MOCK } from "./mocks/routeConfirmMock";
 
-type Step = "INPUT" | "LOADING" | "RESULT" | "SUCCESS";
+type Step = "INPUT" | "LOADING" | "RESULT" | "CONFIRM" | "SUCCESS";
 type SearchTarget = "ORIGIN" | "DESTINATION";
 
 const Alarm = () => {
@@ -46,7 +49,6 @@ const Alarm = () => {
             setOrigin(item);
             setIsSearchOpen(false);
 
-            // 둘 다 있으면 로딩중 띄우기
             if (destination) startRouteSearch();
             return;
         }
@@ -58,7 +60,6 @@ const Alarm = () => {
         if (origin) {
             startRouteSearch();
         } else {
-            // 도착지를 먼저 골랐으면 출발지 열기
             setSearchTarget("ORIGIN");
             setIsSearchOpen(true);
         }
@@ -66,7 +67,16 @@ const Alarm = () => {
 
     const handleSelectRoute = (route: AlarmRoute) => {
         setSelectedRoute(route);
-        setStep("SUCCESS");
+        setStep("CONFIRM");
+    };
+
+    const getConfirmDetail = (routeId: string): RouteConfirmDetail => {
+        return (
+            ROUTE_CONFIRM_DETAIL_MOCK[routeId] ?? {
+                etaText: "도착 정보 없음",
+                segments: [],
+            }
+        );
     };
 
     return (
@@ -75,14 +85,21 @@ const Alarm = () => {
                 <div className="w-full md:w-[402px] md:shrink-0">
                     {step === "LOADING" ? (
                         <RouteLoadingPanel open />
-                    ) : step === "RESULT" ? (
+                    ) : step === "RESULT" && origin && destination ? (
                         <RouteResultPanel
                             origin={origin}
                             destination={destination}
                             routes={routes}
                             onSelectRoute={handleSelectRoute}
                         />
-                    ) : step === "SUCCESS" ? (
+                    ) : step === "CONFIRM" && selectedRoute ? (
+                        <RouteConfirmPanel
+                            route={selectedRoute}
+                            detail={getConfirmDetail(selectedRoute.id)}
+                            onBack={() => setStep("RESULT")}
+                            onConfirm={() => setStep("SUCCESS")}
+                        />
+                    ) : step === "SUCCESS" && origin && destination && selectedRoute ? (
                         <AlarmSuccessPanel
                             origin={origin}
                             destination={destination}
@@ -96,15 +113,17 @@ const Alarm = () => {
                             onOpenOrigin={openOriginSheet}
                             onOpenDestination={openDestinationSheet}
                             onSelectDestination={(item) => {
-                                setSearchTarget("DESTINATION"); 
+                                setSearchTarget("DESTINATION");
                                 handleSelect("DESTINATION", item);
                             }}
                         />
                     )}
                 </div>
 
-                {/* 지도: md 이상에서만 표시 */}
-                <section className="hidden md:block min-w-0 flex-1 h-dvh bg-gray-100" />
+                {/* 지도 */}
+                {step !== "CONFIRM" && (
+                    <section className="hidden md:block min-w-0 flex-1 h-dvh bg-gray-100" />
+                )}
 
                 <SearchSheet
                     open={isSearchOpen}
