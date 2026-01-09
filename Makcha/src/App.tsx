@@ -11,9 +11,12 @@ import Settings from "./pages/Setting";
 import Download from "./pages/Download";
 
 import DashboardLayout from "./components/dashboard/DashboardLayout";
+import ErrorPage from "./pages/Error";
+import { ProtectedRoute } from "./components/kakao/KakaoRoute";
+import KakaoCallback from "./components/kakao/KakaoCallback";
+import FAB from "./components/common/FAB";
 
 function App() {
-  // Zustand에서 다크모드 상태 구독
   const isDarkMode = useUIStore((state) => state.isDarkMode);
 
   useEffect(() => {
@@ -26,19 +29,29 @@ function App() {
 
   return (
     <BrowserRouter>
-      <div className="min-h-screen min-w-md overflow-x-auto">
+      <FAB />
+      <div className="min-h-screen w-full overflow-x-hidden bg-white dark:bg-makcha-navy-900">
         <Routes>
-          <Route path="/" element={<Main />} />
-          <Route element={<DashboardLayout />}>
-            <Route path="/home" element={<Home />} />
-            <Route path="/alarm" element={<Alarm />} />
-            <Route path="/spot/:type" element={<WaitingSpot />} />
-            <Route path="/history" element={<History />} />
-            <Route path="/setting" element={<Settings />} />
-            <Route path="/download" element={<Download />} />
-          </Route>
+          {/* 카카오 콜백은 레이아웃 없이 처리 */}
+          <Route path="/kakao/callback" element={<KakaoCallback />} />
 
-          <Route path="*" element={<Main />} />
+          <Route element={<DashboardLayout />}>
+            
+            {/* 비로그인 */}
+            <Route path="/" element={<Main />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/download" element={<Download />} />
+
+            {/* 로그인*/}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/alarm" element={<Alarm />} />
+              <Route path="/spot/:type" element={<WaitingSpot />} />
+              <Route path="/history" element={<History />} />
+              <Route path="/setting" element={<Settings />} />
+            </Route>
+
+            <Route path="*" element={<ErrorPage />} />
+          </Route>
         </Routes>
       </div>
     </BrowserRouter>

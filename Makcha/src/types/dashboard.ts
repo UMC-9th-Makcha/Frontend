@@ -1,22 +1,41 @@
-import type { LucideIcon } from 'lucide-react';
+import type { LucideIcon } from "lucide-react";
+import type { ComponentType, ElementType } from "react";
+import type { User } from "./auth";
+
+type IconType = LucideIcon | ComponentType<{ className?: string }> | ElementType;
 
 export interface MenuItem {
   id: string;
   label: string;
   path: string;
-  icon: LucideIcon;
+  icon: IconType;
   divider?: boolean;
 }
 
 export interface DashboardProps {
   isOpen: boolean;
-  setIsOpen: (v: boolean) => void;
+  setIsOpen: (open: boolean) => void;
+}
+
+export interface DashboardNavProps {
+  user: User | null;
+  onItemClick: () => void;
+  dividerClass: string;
+  isCollapsed: boolean;
 }
 
 export interface DashboardItemProps {
   label: string;
   path: string;
-  icon: React.ComponentType<{ className?: string }> | LucideIcon;
-  onClick: () => void;
-  isStatic?: boolean; // 활성화 효과를 끄는 옵션
+  icon: IconType;
+  onClick?: (e: React.MouseEvent) => void;
+  isStatic?: boolean;
+  isCollapsed?: boolean;
+}
+
+export interface DashboardNavProps {
+  user: User | null;
+  onItemClick: () => void;
+  dividerClass: string;
+  isCollapsed: boolean;
 }
