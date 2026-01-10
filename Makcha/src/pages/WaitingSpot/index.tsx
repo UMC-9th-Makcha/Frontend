@@ -71,7 +71,6 @@ export default function WaitingSpot() {
     return mockPlaces.find((p) => p.id === selectedPlaceId) ?? null;
   }, [selectedPlaceId]);
 
-  const isMobile = useIsMobile();
 
   return (
     <div className="min-h-dvh w-full overflow-hidden">
@@ -85,25 +84,9 @@ export default function WaitingSpot() {
           onSelectPlaceId={setSelectedPlaceId}
         />}
         map={<WaitingSpotMap />}
-        detail={
-          isMobile ? (
-            <OverlayPortal
-              open={!!selectedPlace}
-              onClose={() => setSelectedPlaceId(null)}
-            >
-              <PlaceDetailPanel
-                place={selectedPlace}
-                onClose={() => setSelectedPlaceId(null)}
-              />
-            </OverlayPortal>
-          ) : (
-            selectedPlace && (
-              <PlaceDetailPanel
-                place={selectedPlace}
-                onClose={() => setSelectedPlaceId(null)}
-              />
-            )
-          )
+        detail={selectedPlace ? <PlaceDetailPanel
+                place={selectedPlace} 
+              /> : null
         }
       />
     </div>

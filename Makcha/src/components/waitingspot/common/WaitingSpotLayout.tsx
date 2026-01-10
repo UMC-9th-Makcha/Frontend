@@ -1,41 +1,41 @@
 import type { WaitingSpotLayoutProps } from "../../../types/waitingspot"
+import Panel from "../../common/Panel"
+import SubPanel from "../../common/Panel/SubPanel";
 
 export const WaitingSpotLayout = ({header, controls, map, search, list, detail} : WaitingSpotLayoutProps) => {
   return (
     <div className="relative h-dvh w-full">
       {/* map */}
       <div className="absolute inset-0 z-0">
-        <div className="h-full w-full hidden md:block">
-          {map}
-        </div>
+        <div className="h-full w-full hidden md:block">{map}</div>
       </div>
 
-      {/* aside */}
-
-      <aside
-        className="md:relative md:shadow-[5px_0px_15px_0px_#88888859] md:w-100 md:shrink-0 md:top-0 md:h-dvh
-    relative bottom-0 inset-x-0 z-10 w-full bg-white dark:bg-makcha-navy-900 h-full">
-        <div className="md:block h-full overflow-y-auto p-4">
-          <div>
+      <div className="relative z-10 h-full w-full md:flex">
+        <Panel
+          width="md:w-100"
+          isMobileFull
+          className="md:shadow-[5px_0px_15px_0px_#88888859]"
+        >
+          <div className="flex flex-col gap-0">
             {header}
-          </div>
-          <div>
             {search}
-          </div>
-          <div>
             {controls}
-          </div>
-          <div>
             {list}
           </div>
-        </div>
-        {detail && (
-          <div className="absolute top-1/2 -translate-y-1/2 left-full ml-6">
-            {detail}
-          </div>
-        )}
-      </aside>
+        </Panel>
 
+        <SubPanel
+          isOpen={!!detail}
+          onBack={() => {
+            // ⚠️ 여기서 닫히게 하려면 상태를 받아야 함.
+            // 지금은 detail 컴포넌트 내부(X버튼 onClose)로 닫는 방식만 가능.
+          }}
+          title="상세 정보"
+          width="md:w-100"
+        >
+          {detail}
+        </SubPanel>
+      </div>
     </div>
-  )
-}
+  );
+};

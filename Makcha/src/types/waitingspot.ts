@@ -56,7 +56,6 @@ export type SortToggleProps = {
 
 export type PlaceDetailProps = {
   place : Place | null;
-  onClose: () => void;
 }
 
 export type PlaceDetail = {

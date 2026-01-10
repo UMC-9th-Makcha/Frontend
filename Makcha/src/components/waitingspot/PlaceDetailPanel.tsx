@@ -1,4 +1,3 @@
-import { X } from "lucide-react";
 import type { PlaceDetail, PlaceDetailProps } from "../../types/waitingspot";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -38,7 +37,7 @@ const mockPlaceDetails: PlaceDetail[] = [
 ];
 
 
-export const PlaceDetailPanel = ({ place, onClose }: PlaceDetailProps) => {
+export const PlaceDetailPanel = ({ place }: PlaceDetailProps) => {
   const { type } = useParams() as { type: string };
   const navigate = useNavigate();
 
@@ -47,27 +46,18 @@ export const PlaceDetailPanel = ({ place, onClose }: PlaceDetailProps) => {
   const detail = mockPlaceDetails.find((d) => d.id === place.id) ?? null;
 
   return (
-    <aside className="md:h-auto md:w-100 md:pt-0 md:shadow-[0_0_15px_0_#88888859] h-dvh flex flex-col pt-21 rounded-[20px] bg-white overflow-hidden
-    dark:bg-makcha-navy-900">
+    <div className="flex flex-col h-full">
       {/* 상단 이미지 */}
-      <div className="md:h-[264px] relative h-85 w-full bg-gray-100">
+      <div className="relative h-80 w-full shrink-0 bg-gray-100 overflow-hidden rounded-[20px]">
         <img
           src={detail?.imageUrl}
           alt="place"
           className="h-full w-full object-cover"
         />
-
-        <button
-          onClick={onClose}
-          className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 shadow"
-          aria-label="닫기"
-        >
-          <X className="h-5 w-5 text-gray-700" />
-        </button>
       </div>
 
       {/* 본문 */}
-      <div className="flex-1 px-8 pt-6">
+      <div className="px-2 pt-6">
         <div className="flex items-end gap-4">
           <h2 className="text-[26px] font-extrabold text-gray-900 
           dark:text-white">
@@ -79,7 +69,7 @@ export const PlaceDetailPanel = ({ place, onClose }: PlaceDetailProps) => {
           </span>
         </div>
 
-        <div className="mt-4 flex rounded-lg gap-2 overflow-y-auto">
+        <div className="mt-4 flex rounded-lg gap-2 overflow-x-auto">
           {(detail?.badge ?? []).map((badge) => (
             <span
               key={badge}
@@ -102,22 +92,21 @@ export const PlaceDetailPanel = ({ place, onClose }: PlaceDetailProps) => {
 
           <div>{place.address}</div>
           <div>{detail?.accessInfo}</div>
-
           {detail?.phone && <div>{detail.phone}</div>}
         </div>
-      </div>
 
-      {/* 하단 버튼 */}
-      <div className="flex flex-col items-center py-24">
+        {/* 하단 버튼 */}
+      </div>
+      <div className="mt-auto pt-6">
         <button
-          className="w-90 h-12 rounded-full bg-makcha-navy-400 text-white text-[20px] border hover:bg-makcha-navy-600 transition
-          dark:text-makcha-navy-200 dark:bg-makcha-navy-800 dark:border-makcha-navy-600"
+          className="w-full h-12 rounded-full bg-makcha-navy-400 text-white text-[20px] border hover:bg-makcha-navy-600 transition
+            dark:text-makcha-navy-200 dark:bg-makcha-navy-800 dark:border-makcha-navy-600"
           onClick={() => navigate(`/spot/${type}/direction`)}
         >
           도보 길 안내 시작
         </button>
+
       </div>
-    </aside>
+    </div>
   );
 };
-

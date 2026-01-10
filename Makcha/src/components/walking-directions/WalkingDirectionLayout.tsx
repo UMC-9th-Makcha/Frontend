@@ -1,4 +1,5 @@
 import type { WaitingSpotLayoutProps } from "../../types/waitingspot"
+import Panel from "../common/Panel";
 
 export const WalkingDirectionLayout = ({header, controls, map, search, list, detail, footer}: WaitingSpotLayoutProps) => {
   return (
@@ -8,32 +9,31 @@ export const WalkingDirectionLayout = ({header, controls, map, search, list, det
         <div className="h-full w-full hidden md:block">{map}</div>
       </div>
 
-      <aside
-        className="md:relative md:shadow-[5px_0px_15px_0px_#88888859] md:w-100 md:shrink-0 md:top-0 md:h-dvh
-          relative inset-x-0 z-10 w-full h-full bg-white dark:bg-makcha-navy-900"
+      <Panel
+        width="md:w-100"
+        isMobileFull={true}
+        className="relative inset-x-0 z-10 bg-white dark:bg-makcha-navy-900 md:relative md:top-0 md:h-dvh md:shadow-[5px_0px_15px_0px_#88888859]"
       >
-        <div className="h-full overflow-y-auto">
-          <div className="min-h-full flex flex-col p-4">
-            <div>
-              {header}
-              {search}
-              {controls}
-              {list}
-            </div>
-            {footer && (
-              <div className="mt-auto mb-30">
-                {footer}
-              </div>
-            )}
+        <div className="min-h-full flex flex-col">
+          <div className="flex-1 min-h-0">
+            {header}
+            {search}
+            {controls}
+            {list}
           </div>
         </div>
-
-        {detail && (
-          <div className="absolute top-1/2 -translate-y-1/2 left-full ml-6">
-            {detail}
+        {footer && (
+          <div className="mt-auto mb-20">
+            {footer}
           </div>
         )}
-      </aside>
+      </Panel>
+
+      {detail && (
+        <div className="absolute top-1/2 -translate-y-1/2 left-full ml-6">
+          {detail}
+        </div>
+      )}
     </div>
   );
 };
