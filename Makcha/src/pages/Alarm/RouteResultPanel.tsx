@@ -4,8 +4,8 @@ import RouteCard from "./components/RouteCard";
 import type { AlarmRoute } from "./types/alarm";
 
 type Props = {
-    origin: OriginSearchItem | null;
-    destination: OriginSearchItem | null;
+    origin: OriginSearchItem;
+    destination: OriginSearchItem;
     routes: AlarmRoute[];
     onSelectRoute: (route: AlarmRoute) => void;
 };
@@ -56,7 +56,7 @@ const RouteResultPanel = ({ origin, destination, routes, onSelectRoute }: Props)
                         </span>
 
                         <p className="flex-1 truncate text-left text-sm text-gray-600 dark:text-white/80">
-                            {origin ? `출발지 : ${origin.title}` : "출발지"}
+                            {`출발지 : ${origin.title}`}
                         </p>
 
                         <Search className="h-6 w-6 text-[#5F5F5F] dark:text-white/60" strokeWidth={2} />
@@ -73,14 +73,14 @@ const RouteResultPanel = ({ origin, destination, routes, onSelectRoute }: Props)
                             shadow-sm
                             dark:border-makcha-navy-800 dark:bg-makcha-navy-900
                             "
-                        >
+                    >
                         <span className="relative h-4 w-4">
                             <span className="absolute inset-0 rounded-full bg-makcha-navy-400 opacity-60 blur-[4px]" />
                             <span className="absolute inset-1 rounded-full bg-makcha-navy-600" />
                         </span>
 
                         <p className="flex-1 truncate text-left text-sm text-gray-600 dark:text-white/80">
-                            {destination ? `도착지 : ${destination.title}` : "도착지"}
+                            {`도착지 : ${destination.title}`}
                         </p>
 
                         <Search className="h-6 w-6 text-[#5F5F5F] dark:text-white/60" strokeWidth={2} />
@@ -91,9 +91,10 @@ const RouteResultPanel = ({ origin, destination, routes, onSelectRoute }: Props)
                 <div
                     className="
                     mt-[46px] flex-1 min-h-0
+                    w-full min-w-0
                     space-y-[29px]
                     overflow-y-auto overflow-x-hidden
-                    pb-6
+                    pb-10
                     max-md:mt-5 max-md:space-y-4
                 "
                 >

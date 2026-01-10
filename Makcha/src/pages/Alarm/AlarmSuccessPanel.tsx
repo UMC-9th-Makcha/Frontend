@@ -1,19 +1,20 @@
 import type { AlarmRoute } from "./types/alarm";
 import type { OriginSearchItem } from "./types/search";
 import { CheckCircle } from "lucide-react";
-import { ROUTE_TYPE_LABEL } from "./constants"; 
+import { ROUTE_TYPE_LABEL } from "./constants";
+import FrequentRoutesCard from "./components/FrequentRoutesCard";
 
 type Props = {
-    origin: OriginSearchItem | null;
-    destination: OriginSearchItem | null;
-    route: AlarmRoute | null;
+    origin: OriginSearchItem;
+    destination: OriginSearchItem;
+    route: AlarmRoute;
     onGoAlarmList: () => void;
 };
 
 const AlarmSuccessPanel = ({ origin, destination, route, onGoAlarmList }: Props) => {
-    const originLabel = origin?.title ?? "출발지";
-    const destLabel = destination?.title ?? "도착지";
-    const departure = route?.departureTime ?? "--:--";
+    const originLabel = origin.title;
+    const destLabel = destination.title;
+    const departure = route.departureTime;
 
     return (
         <section
@@ -35,7 +36,7 @@ const AlarmSuccessPanel = ({ origin, destination, route, onGoAlarmList }: Props)
                 "
             >
                 <div className="flex flex-col items-center">
-                    <CheckCircle className="w-15 h-15 text-[#1E1E1E] dark:text-white" strokeWidth={1.5}/>
+                    <CheckCircle className="w-15 h-15 text-[#1E1E1E] dark:text-white" strokeWidth={1.5} />
 
                     <h1 className="mt-[15px] text-[32px] font-bold text-makcha-navy-900 dark:text-white">
                         알림 신청 완료!
@@ -80,6 +81,16 @@ const AlarmSuccessPanel = ({ origin, destination, route, onGoAlarmList }: Props)
                             지금부터 카카오톡으로 알려드릴게요
                         </div>
                     </div>
+                </div>
+
+                <div className="mt-4">
+                    <FrequentRoutesCard
+                        titleBold={`도착지를 [자주가는경로]에 저장할까요?`}
+                        subtitle="다음에 이용할 땐 클릭 한 번으로 알림을 받을 수 있어요!"
+                        onSave={() => {
+                            // TODO: destination 저장
+                        }}
+                    />
                 </div>
 
                 <div className="mt-[118px] pb-8 max-md:mt-10 max-md:pb-0">

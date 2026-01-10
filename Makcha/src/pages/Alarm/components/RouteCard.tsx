@@ -20,7 +20,7 @@ const RouteCard = ({ route, onSelect }: Props) => {
             type="button"
             onClick={() => onSelect(route)}
             className="
-                w-full h-[178px]
+                relative mx-auto w-full max-w-full h-[178px]
                 rounded-[20px]
                 border border-gray-200
                 bg-white
@@ -34,7 +34,7 @@ const RouteCard = ({ route, onSelect }: Props) => {
             "
         >
             {/* 상단 */}
-            <div className="flex items-start justify-between gap-3">
+            <div className="flex w-full items-start justify-between gap-3">
                 <div className="flex flex-wrap items-center gap-2">
                     {route.isOptimal ? <Badge>최적</Badge> : <Badge>{ROUTE_TYPE_LABEL[route.routeType]}</Badge>}
 
@@ -50,7 +50,7 @@ const RouteCard = ({ route, onSelect }: Props) => {
             </div>
 
             {/* 가운데 */}
-            <div className="flex flex-1 flex-col items-center justify-center text-center max-md:py-6">
+            <div className="flex flex-1 w-full flex-col items-center justify-center text-center max-md:py-6">
                 <div className="text-[30px] font-bold text-gray-900 leading-tight dark:text-white">
                     {route.departureTime} 출발
                 </div>
@@ -60,8 +60,8 @@ const RouteCard = ({ route, onSelect }: Props) => {
             </div>
 
             {/* 하단 */}
-            <div className="border-t border-gray-200 pt-3 dark:border-makcha-navy-800">
-                <div className="flex items-center justify-center gap-8 text-[14px] text-gray-500 dark:text-white/60 max-md:grid max-md:grid-cols-3 max-md:text-center max-md:text-[13px] max-md:gap-0">
+            <div className="w-full border-t border-gray-200 pt-3 dark:border-makcha-navy-800">
+                <div className="flex w-full items-center justify-center gap-8 text-[14px] text-gray-500 dark:text-white/60 max-md:grid max-md:grid-cols-3 max-md:text-center max-md:text-[13px] max-md:gap-0">
                     <span>총 {route.totalDurationMin}분 소요</span>
                     <span>환승 {route.transferCount}회</span>
                     <span>도보 {route.walkingTimeMin}분</span>

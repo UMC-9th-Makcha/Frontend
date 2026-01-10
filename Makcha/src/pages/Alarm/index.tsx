@@ -80,8 +80,8 @@ const Alarm = () => {
     };
 
     return (
-        <div className="min-h-dvh w-full overflow-hidden bg-white dark:bg-makcha-navy-900">
-            <div className="relative h-dvh w-full md:flex md:overflow-hidden">
+        <div className="min-h-dvh w-full overflow-x-hidden bg-white dark:bg-makcha-navy-900">
+            <div className="relative min-h-dvh w-full md:flex md:overflow-hidden">
                 <div className="w-full md:w-[402px] md:shrink-0">
                     {step === "LOADING" ? (
                         <RouteLoadingPanel open />
@@ -91,13 +91,6 @@ const Alarm = () => {
                             destination={destination}
                             routes={routes}
                             onSelectRoute={handleSelectRoute}
-                        />
-                    ) : step === "CONFIRM" && selectedRoute ? (
-                        <RouteConfirmPanel
-                            route={selectedRoute}
-                            detail={getConfirmDetail(selectedRoute.id)}
-                            onBack={() => setStep("RESULT")}
-                            onConfirm={() => setStep("SUCCESS")}
                         />
                     ) : step === "SUCCESS" && origin && destination && selectedRoute ? (
                         <AlarmSuccessPanel
