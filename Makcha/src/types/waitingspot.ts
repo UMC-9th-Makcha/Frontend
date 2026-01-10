@@ -17,6 +17,7 @@ export type WaitingSpotLayoutProps = {
   search: React.ReactNode;
   list: React.ReactNode;
   detail?: React.ReactNode;
+  footer?: React.ReactNode;
 }
 
 export type WaitingSpotHeaderProps = {
