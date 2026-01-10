@@ -42,7 +42,7 @@ const SaveReportGraph = ({ yearLabel, data, highlightMonth }: Props) => {
                                 {/* 막대 */}
                                 <div
                                     className={[
-                                        "w-[41px]",
+                                        "w-11",
                                         isHighlight ? "bg-[#FFB700]" : "bg-[#406BB6]",
                                     ].join(" ")}
                                     style={{ height: `${barHeight}px` }}

@@ -33,7 +33,7 @@ const MonthSection = ({ monthLabel, items, onDetail }: Props) => {
                                 className="
                                     w-full rounded-[20px]
                                     border border-gray-200 bg-white
-                                    p-8 pt-[15px] pl-6 pr-[25px] pb-[21px]
+                                    p-8 pt-4 pl-6 pr-6 pb-5
                                     shadow-sm
                                     dark:border-makcha-navy-700 dark:bg-makcha-navy-900
                                 "
