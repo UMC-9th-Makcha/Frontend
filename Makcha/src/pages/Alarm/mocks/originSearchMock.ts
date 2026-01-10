@@ -1,8 +1,4 @@
-export type OriginSearchItem = {
-    id: string;
-    title: string;
-    address: string; 
-};
+import type { OriginSearchItem } from "../types/search";
 
 export const ORIGIN_SEARCH_MOCK: OriginSearchItem[] = [
     {
