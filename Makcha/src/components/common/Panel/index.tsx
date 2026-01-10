@@ -22,8 +22,8 @@ const Panel = ({
         bg-white dark:bg-makcha-navy-900 
         border-gray-100 dark:border-white/5 
         ${width} shrink-0
-        md:shadow-[0_0_24px_rgba(0,0,0,0.08)] 
-        md:dark:shadow-[0_0_24px_rgba(0,0,0,0.4)]
+        md:shadow-[15px_0_40px_rgba(0,0,0,0.08),5px_0_15px_rgba(0,0,0,0.03)] 
+        md:dark:shadow-[20px_0_60px_rgba(0,0,10,0.5)]
         ${className}
       `}
     >

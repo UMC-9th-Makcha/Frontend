@@ -57,7 +57,8 @@ const SubPanel = ({
         border-l border-gray-100 dark:border-white/10
         md:border md:border-gray-100 dark:md:border-white/10
 
-        shadow-[-10px_0_30px_rgba(0,0,0,0.04)]
+        md:shadow-[0_0_60px_rgba(0,0,0,0.15),0_0_20px_rgba(0,0,0,0.05)]
+        md:dark:shadow-[0_0_80px_rgba(0,0,15,0.7),0_0_30px_rgba(0,0,0,0.4)]
         transition-all duration-300 ease-in-out
         ${className}
       `}
