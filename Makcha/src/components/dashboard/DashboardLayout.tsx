@@ -9,7 +9,7 @@ const DashboardLayout = () => {
 
       <div className="flex-1 flex flex-col min-w-0 h-full">
         <MobileHeader />
-        <main className="flex-1 w-full bg-gray-50/30 dark:bg-transparent">
+        <main className="flex-1 w-full bg-gray-50/30 dark:bg-transparent overflow-y-auto no-scrollbar">
           <Outlet />
         </main>
       </div>

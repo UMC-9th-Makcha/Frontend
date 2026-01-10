@@ -57,7 +57,8 @@ const Dashboard = () => {
         x: (isMobile && !isSidebarOpen) ? "-100%" : 0 
       }}
       transition={sidebarSpring}
-      className="fixed inset-y-0 left-0 z-45 flex flex-col bg-gray-50 md:bg-white dark:bg-makcha-navy-900 md:sticky md:top-0 md:h-screen md:border-r md:border-gray-200 dark:md:border-makcha-navy-800 overflow-hidden"
+      className="fixed inset-y-0 left-0 z-45 flex flex-col bg-gray-50 md:bg-white dark:bg-makcha-navy-900 md:sticky 
+      md:top-0 md:h-full md:border-r md:border-gray-200 dark:md:border-makcha-navy-800 overflow-hidden"
     >
       {/* 닫기/축소 버튼 */}
       <div className={`mt-4 flex h-10 shrink-0 items-center ${isCollapsed ? 'justify-center' : 'justify-end px-5'}`}>
