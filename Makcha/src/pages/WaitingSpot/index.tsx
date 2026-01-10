@@ -74,7 +74,7 @@ export default function WaitingSpot() {
   const isMobile = useIsMobile();
 
   return (
-    <div className="h-full min-h-0 min-w-0">
+    <div className="min-h-dvh w-full overflow-hidden">
       <WaitingSpotLayout
         header={<WaitingSpotHeader title={pageTitle} content={"막차를 놓쳐서 첫차까지 대기하시는 분들을 위한 추천 장소를 안내드립니다."} />}
         search={<StartLocationSearch />}
