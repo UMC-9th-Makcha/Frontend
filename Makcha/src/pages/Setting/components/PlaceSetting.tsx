@@ -1,8 +1,8 @@
 import { useState, useCallback, memo, useEffect } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import { Trash2 } from "lucide-react";
-import type { Place, PlaceSettingProps } from "../../../../types/setting";
-import SubPanel from "../../../../components/common/Panel/SubPanel";
+import type { Place, PlaceSettingProps } from "../../../types/setting";
+import SubPanel from "../../../components/common/Panel/SubPanel";
 
 const PlaceSetting = memo(({ place, onBack, onSave, onDelete }: PlaceSettingProps) => {
   const [temp, setTemp] = useState<Place>(place);
@@ -25,15 +25,13 @@ const PlaceSetting = memo(({ place, onBack, onSave, onDelete }: PlaceSettingProp
   return (
     <SubPanel
       isOpen={true} 
-      onBack={onBack}
-      title={isHome ? '집 설정' : '장소 편집'}
+      onBack={onBack} 
+      title={'장소 편집'}
       rightAction={
-        !isHome && (
+        !isHome && onDelete && (
           <button 
             type="button" 
-            onClick={() => {
-               onDelete?.(place.id);
-            }} 
+            onClick={() => onDelete(place.id)} 
             className="p-1 text-red-400 hover:text-red-500 transition-colors"
           >
             <Trash2 size={20} />
@@ -43,10 +41,10 @@ const PlaceSetting = memo(({ place, onBack, onSave, onDelete }: PlaceSettingProp
     >
       <form onSubmit={handleSubmit} className="flex h-full flex-col">
         <div className="flex-1 space-y-8">
-          {!isHome && (
+          {!isHome ? (
             <section>
               <label className="mb-2 block text-xs font-bold uppercase text-gray-500 dark:text-makcha-navy-300">
-                장소 별칭
+                장소 이름
               </label>
               <input 
                 type="text" 
@@ -58,6 +56,10 @@ const PlaceSetting = memo(({ place, onBack, onSave, onDelete }: PlaceSettingProp
                 className="w-full border-b border-gray-200 bg-transparent pb-2 text-lg font-medium outline-none transition-colors focus:border-blue-500 dark:border-white/10 dark:text-white" 
               />
             </section>
+          ) : (
+            <section>
+              <p className="text-lg font-bol px-1">집</p>
+            </section>
           )}
 
           <section>
@@ -67,7 +69,7 @@ const PlaceSetting = memo(({ place, onBack, onSave, onDelete }: PlaceSettingProp
               <button 
                 type="button"
                 className="shrink-0 rounded-full bg-gray-100 px-4 py-2 text-xs font-bold text-gray-500 hover:bg-blue-600 hover:text-white dark:bg-white/10 dark:text-makcha-navy-300 dark:hover:bg-blue-500 dark:hover:text-white transition-all"
-                onClick={() => {/* 주소 검색 로직 연결 */}}
+                onClick={() => {/* 주소 검색 API 연동 */}}
               >
                 변경
               </button>
@@ -90,7 +92,7 @@ const PlaceSetting = memo(({ place, onBack, onSave, onDelete }: PlaceSettingProp
         <div className="mt-10 pb-10 md:pb-0">
           <button 
             type="submit"
-            className="w-full rounded-xl border border-gray-400 py-4 font-medium text-gray-600 hover:bg-gray-50 dark:border-white dark:text-white dark:hover:bg-white/10 transition-all"
+            className="w-full rounded-xl border border-gray-400 py-4 font-bold text-gray-600 hover:bg-gray-50 dark:border-white dark:text-white dark:hover:bg-white/10 transition-all md:border-2"
           >
             설정 저장하기
           </button>

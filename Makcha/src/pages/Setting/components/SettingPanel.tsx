@@ -1,15 +1,9 @@
 import { memo } from "react";
-import { SettingAccount } from "./SettingAccount";
-import { SettingPlaces } from "./SettingPlace";
-import { SettingNotification } from "./SettingNotification";
+import { AccountSection } from "./AccountSection";
 import Panel from "../../../components/common/Panel";
-import type { ViewType } from "../constants";
-import type { Place } from "../../../types/setting";
-
-interface SettingPanelProps {
-  view: ViewType;
-  onNavigate: (v: ViewType, p?: Place) => void;
-}
+import { AlramSection } from "./AlramSection";
+import type { SettingPanelProps } from "../../../types/setting";
+import { PlacesSection } from "./PlaceSection";
 
 export const SettingPanel = memo(function SettingPanel({ view, onNavigate }: SettingPanelProps) {
   return (
@@ -20,13 +14,13 @@ export const SettingPanel = memo(function SettingPanel({ view, onNavigate }: Set
 
       <div className="flex flex-col gap-y-2">
         {/* 알림 설정 */}
-        <SettingNotification />
+        <AlramSection />
         
         {/* 장소 설정 */}
-        <SettingPlaces onNavigate={onNavigate} />
+        <PlacesSection onNavigate={onNavigate} />
         
         {/* 계정 설정 */}
-        <SettingAccount onNavigate={onNavigate} />
+        <AccountSection onNavigate={onNavigate} />
       </div>
     </Panel>
   );
