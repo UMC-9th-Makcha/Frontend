@@ -1,3 +1,5 @@
+import owlImage from "../../assets/owl.png";
+
 export const DownloadHero = () => {
   return (
     <div className="flex flex-col items-center text-center pt-16 pb-12 px-4">
@@ -14,7 +16,7 @@ export const DownloadHero = () => {
       {/* 로고 */}
       <div className="mb-16">
         <img 
-          src="/owl.png" 
+          src={owlImage}
           alt="로고" 
           className="w-48 h-auto mx-auto object-contain"
         />
