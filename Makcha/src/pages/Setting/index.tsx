@@ -1,53 +1,49 @@
-import { useState, useEffect, useCallback } from "react";
-import { SettingPanel } from "./SettingPanel";
-import { SettingBg } from "./SettingBg";
-import PlaceSetting from "./PlaceSetting";
-import PhonenumberSetting from "./PhonenumberSetting";
+import { useState, useCallback, useMemo } from "react";
+import { SettingPanel } from "./components/SettingPanel";
+import { SettingBg } from "./components/SettingBg";
+import PlaceSetting from "./components/Place/PlaceSetting";
+import PhonenumberSetting from "./components/PhonenumberSetting";
+import { useSettingStore } from "../../store/useSettingStore";
 import type { Place } from "../../types/setting";
 import type { ViewType } from "./constants";
-
-// 뒤로가기 로직 커스텀 훅으로 분리
-const useBackNavigation = (view: ViewType, onBack: () => void) => {
-  useEffect(() => {
-    if (view === 'MAIN') return;
-
-    window.history.pushState(null, '', '');
-    window.addEventListener('popstate', onBack);
-    return () => window.removeEventListener('popstate', onBack);
-  }, [view, onBack]);
-};
+import { useBack } from "../../hooks/useBack";
 
 export default function Setting() {
-  const [view, setView] = useState<ViewType>('MAIN');
-  const [home, setHome] = useState<Place>({ id: 'home', name: '우리 집', address: '서울특별시 성북구 종암로 83', detail: '101동 202호' });
-  const [favorites, setFavorites] = useState<Place[]>([]);
+
+  const view = useSettingStore((state) => state.view);
+  const setView = useSettingStore((state) => state.setView);
   const [editingPlace, setEditingPlace] = useState<Place | null>(null);
 
-  const handleBack = useCallback(() => setView('MAIN'), []);
-  useBackNavigation(view, handleBack);
+  const home = useSettingStore((state) => state.home);
+  const savePlace = useSettingStore((state) => state.savePlace);
+  const deleteFavorite = useSettingStore((state) => state.deleteFavorite);
+
+  const handleBack = useCallback(() => {
+    setView('MAIN');
+    setEditingPlace(null);
+  }, [setView]);
+
+  useBack(view, handleBack);
+
+  const handleNavigate = useCallback((v: ViewType, p?: Place) => {
+    setView(v);
+    if (p) setEditingPlace(p);
+  }, [setView]);
 
   const handleSave = useCallback((updated: Place) => {
-    if (updated.id === 'home') {
-      setHome(updated);
-    } else {
-      setFavorites(prev => 
-        prev.some(p => p.id === updated.id) 
-          ? prev.map(p => p.id === updated.id ? updated : p) 
-          : [...prev, updated]
-      );
-    }
+    savePlace(updated);
     handleBack();
-  }, [handleBack]);
+  }, [savePlace, handleBack]);
 
   const handleDelete = useCallback((id: string) => {
-    setFavorites(prev => prev.filter(p => p.id !== id));
+    deleteFavorite(id);
     handleBack();
-  }, [handleBack]);
+  }, [deleteFavorite, handleBack]);
 
-  const renderDetail = () => {
+  const renderDetail = useMemo(() => {
     switch (view) {
       case 'EDIT_HOME':
-        return <PlaceSetting place={home} onBack={handleBack} onSave={handleSave} />;
+        return home && <PlaceSetting place={home} onBack={handleBack} onSave={handleSave} />;
       case 'EDIT_FAVORITE':
         return editingPlace && (
           <PlaceSetting 
@@ -62,16 +58,18 @@ export default function Setting() {
       default:
         return null;
     }
-  };
+  }, [view, home, editingPlace, handleBack, handleSave, handleDelete]);
 
   return (
-    <div className="flex h-dvh w-full overflow-hidden bg-white dark:bg-makcha-navy-900">
+    <div className="h-full w-full flex justify-between
+     overflow-hidden bg-white dark:bg-makcha-navy-900">
       <SettingPanel 
         view={view}
-        data={{ home, favorites }} // props를 객체로 묶어 전달
-        onNavigate={(v, p) => { setView(v); if(p) setEditingPlace(p); }}
+        onNavigate={handleNavigate}
       />
-      <SettingBg view={view}>{renderDetail()}</SettingBg>
+      <SettingBg view={view}>
+        {renderDetail}
+      </SettingBg>
     </div>
   );
 }

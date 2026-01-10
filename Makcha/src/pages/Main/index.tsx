@@ -1,7 +1,7 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
-import LoginPanel from "./MainPanel";
-import HeroSection from "./MainBg";
+import LoginPanel from "./components/MainPanel";
+import MainBg from "./components/MainBg";
 
 export default function Main() {
   const { isLoggedIn } = useAuth();
@@ -11,9 +11,10 @@ export default function Main() {
   }
 
   return (
-    <div className="flex min-h-screen transition-colors duration-200 bg-white dark:bg-makcha-navy-900 overflow-x-hidden">
+    <div className="h-full w-full flex flex-col justify-between
+     transition-colors duration-200 bg-white dark:bg-makcha-navy-900 overflow-x-hidden">
       <LoginPanel />
-      <HeroSection />
+      <MainBg />
     </div>
   );
 }

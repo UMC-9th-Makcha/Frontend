@@ -1,4 +1,4 @@
-export default function HeroSection() {
+export default function MainBg() {
     return (
       <main className="hidden lg:flex flex-1 flex-col items-center justify-center transition-colors duration-200 bg-[#F8F9FA] dark:bg-gray-900 px-12">
         <div className="flex flex-col items-center max-w-xl">

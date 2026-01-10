@@ -53,7 +53,7 @@ export const ALARM_ROUTES_MOCK: AlarmRoute[] = [
         id: "r1",
         isOptimal: true,
         routeType: "SUBWAY",
-        lines: ["2호선", "4호선"],
+        lines: ["2호선", "472"],
         departureTime: "23:55",
         timeUntilDeparture: "출발까지 12분",
         totalDurationMin: 45,
