@@ -1,9 +1,23 @@
+import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { sidebarSpring } from './constants';
+import { useDashboardStore } from '../../store/useDashboardStore';
+import { useMediaQuery } from '../../store/useMediaQuery';
 import type { DashboardItemProps } from '../../types/dashboard';
 
-const DashboardItem = ({ label, path, icon: Icon, onClick, isStatic = false, isCollapsed = false }: DashboardItemProps) => {
+const DashboardItem = React.memo(({ 
+  label, 
+  path, 
+  icon: Icon, 
+  onClick, 
+  isStatic = false 
+}: DashboardItemProps) => {
+
+  const isSidebarCollapsed = useDashboardStore((state) => state.isSidebarCollapsed);
+  const isMobile = useMediaQuery('(max-width: 768px)');
+  const isCollapsed = !isMobile && isSidebarCollapsed;
+
   return (
     <NavLink
       to={path}
@@ -21,25 +35,23 @@ const DashboardItem = ({ label, path, icon: Icon, onClick, isStatic = false, isC
         
         return (
           <>
-            {/* 아이콘 */}
             <motion.div 
-              layout // [애니메이션] 레이아웃 변화 자동 감지
-              transition={sidebarSpring} // [애니메이션] 공통 스프링 설정 적용
+              layout
+              transition={sidebarSpring}
               className={`flex items-center justify-center shrink-0 aspect-square ${isCollapsed ? 'w-7 h-7' : 'w-6 h-6 mr-4'}`}
             >
               <Icon className={`w-full h-full stroke-[2px] transition-colors duration-200 ${active ? 'text-blue-600 dark:text-white' : 'text-gray-400'}`} />
             </motion.div>
             
-            {/* 이름 */}
             <AnimatePresence mode="popLayout">
               {!isCollapsed && (
                 <motion.span
                   key="label"
-                  layout // [애니메이션] 아이콘 이동과 동기화
-                  initial={{ opacity: 0, x: -10 }} // [애니메이션] 시작 상태
-                  animate={{ opacity: 1, x: 0 }}    // [애니메이션] 등장 상태
-                  exit={{ opacity: 0, x: -10 }}     // [애니메이션] 퇴장 상태
-                  transition={sidebarSpring} // [애니메이션] 공통 스프링 설정 적용
+                  layout
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -10 }}
+                  transition={sidebarSpring}
                   className={`text-[16px] whitespace-nowrap overflow-hidden ${
                     active ? 'text-makcha-navy-900 dark:text-white font-bold' : 'text-gray-400 dark:text-gray-500 font-medium'
                   }`}
@@ -53,6 +65,7 @@ const DashboardItem = ({ label, path, icon: Icon, onClick, isStatic = false, isC
       }}
     </NavLink>
   );
-};
+});
 
+DashboardItem.displayName = 'DashboardItem';
 export default DashboardItem;

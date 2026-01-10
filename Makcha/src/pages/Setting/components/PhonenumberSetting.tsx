@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { X } from "lucide-react";
-import type { PhonenumberSettingProps } from "../../types/setting";
-import SubPanel from "../../components/common/Panel/SubPanel";
+import type { PhonenumberSettingProps } from "../../../types/setting";
+import SubPanel from "../../../components/common/Panel/SubPanel";
 
 export default function PhonenumberSetting({ onBack }: PhonenumberSettingProps) {
   const [phone, setPhone] = useState("");

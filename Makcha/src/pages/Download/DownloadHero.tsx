@@ -1,15 +1,35 @@
 export const DownloadHero = () => {
   return (
-    <div className="pt-12">
-      <div className="w-24 h-24 bg-makcha-yellow-500 rounded-3xl mx-auto mb-4 flex items-center justify-center text-4xl shadow-lg" aria-hidden="true">
-        🚌
+    <div className="flex flex-col items-center text-center pt-16 pb-12 px-4">
+      {/* 상단 */}
+      <div className="mb-16">
+        <p className="text-xl text-makcha-navy-900 dark:text-gray-300 font-medium">
+          막차 알림을 넘어선
+        </p>
+        <h1 className="text-4xl font-bold text-makcha-navy-900 dark:text-white mt-2">
+          막차 지도
+        </h1>
       </div>
-      <h1 className="text-2xl font-bold text-makcha-navy-900 dark:text-white">
-        막차 앱 설치하기
-      </h1>
-      <p className="text-makcha-navy-400 mt-2 text-sm leading-relaxed">
-        앱을 설치하면 탭을 열지 않아도<br />
-        정확한 시간에 알림을 받을 수 있어요.
+
+      {/* 로고 */}
+      <div className="mb-16">
+        <img 
+          src="/owl.png" 
+          alt="로고" 
+          className="w-48 h-auto mx-auto object-contain"
+        />
+      </div>
+
+      {/* 정보 섹션 */}
+      <div className="mb-20">
+        <h2 className="text-3xl font-extrabold text-black dark:text-white leading-tight">
+          지금 당장 다운로드
+        </h2>
+      </div>
+
+      {/* 슬로건 */}
+      <p className="text-lg text-makcha-navy-700 dark:text-makcha-navy-300">
+        확실한 귀가를 책임져드립니다
       </p>
     </div>
   );

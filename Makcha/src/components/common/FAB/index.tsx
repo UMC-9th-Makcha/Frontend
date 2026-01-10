@@ -78,12 +78,12 @@ export default function FAB() {
           : { touchAction: 'none' }
       }
       className={`
-        fixed z-50 flex cursor-grab items-center justify-center overflow-hidden shadow-2xl
-        h-12 w-12 md:h-16 md:w-16 rounded-full 
+        fixed z-49 flex cursor-grab items-center justify-center overflow-hidden shadow-2xl
+        h-12 w-12 rounded-full 
         bg-white dark:bg-makcha-navy-700
         active:cursor-grabbing active:scale-95
         
-        ${!position ? 'right-6 bottom-24' : ''}
+        ${!position ? 'right-6 bottom-6' : ''}
         
         ${isDragging ? 'opacity-90 scale-105 transition-none' : 'opacity-100 transition-transform'}
       `}

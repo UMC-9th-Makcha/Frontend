@@ -1,7 +1,7 @@
 import { ChevronRight } from "lucide-react";
-import { UserIcon } from "../../components/dashboard/UserIcon";
-import { useAuth } from "../../hooks/useAuth";
-import type { SettingAccountProps } from "../../types/setting";
+import { UserIcon } from "../../../components/dashboard/UserIcon";
+import { useAuth } from "../../../hooks/useAuth";
+import type { SettingAccountProps } from "../../../types/setting";
 
 export function SettingAccount({ onNavigate }: SettingAccountProps) {
   const { user, setLogout } = useAuth();
@@ -9,9 +9,9 @@ export function SettingAccount({ onNavigate }: SettingAccountProps) {
   return (
     <div className="mb-10 px-1">
       <p className="mb-4 text-[18px] font-semibold dark:text-white">계정</p>
-      <p className="text-[20px] font-bold dark:text-white">{user?.name || "사용자"} 님</p>
+      <p className="text-[20px] font-bold dark:text-white">{user?.nickname || "사용자"} 님</p>
       <div className="mt-2 flex items-center gap-2 text-gray-600 dark:text-makcha-navy-300">
-        <UserIcon user={user} className="h-6 w-6" /> {user?.email || "example@email.com"}
+        <UserIcon user={user} className="h-5 w-5" /> {user?.email || "example@email.com"}
       </div>
       
       <button 

@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { ViewType } from "./constants";
+import type { ViewType } from "../constants";
 
 interface SettingBgProps {
   view: ViewType;

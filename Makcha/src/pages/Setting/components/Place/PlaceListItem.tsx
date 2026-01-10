@@ -1,6 +1,6 @@
 import { memo } from "react";
 import { ChevronRight } from "lucide-react";
-import type { PlaceListItemProps } from "../../types/setting";
+import type { PlaceListItemProps } from "../../../../types/setting";
 
 const PlaceListItem = memo(({ icon, place, onClick }: PlaceListItemProps) => {
   // place 객체에서 필요한 값 미리 추출

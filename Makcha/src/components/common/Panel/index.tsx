@@ -17,11 +17,13 @@ const Panel = ({
     <section
       className={`
         ${isMobileFull ? 'flex' : 'hidden md:flex'} 
+        relative z-10
         h-full w-full flex-col border-r 
         bg-white dark:bg-makcha-navy-900 
         border-gray-100 dark:border-white/5 
         ${width} shrink-0
-        md:shadow-[0_0_24px_rgba(0,0,0,0.08)] md:dark:shadow-[0_0_24px_rgba(0,0,0,0.3)]
+        md:shadow-[0_0_24px_rgba(0,0,0,0.08)] 
+        md:dark:shadow-[0_0_24px_rgba(0,0,0,0.4)]
         ${className}
       `}
     >
@@ -32,7 +34,7 @@ const Panel = ({
         `}
         style={{ WebkitOverflowScrolling: 'touch' }}
       >
-        <div className="relative flex flex-col w-full min-h-full pb-[40px]">
+        <div className="relative flex flex-col w-full min-h-full pb-5">
           {children}
         </div>
       </div>
