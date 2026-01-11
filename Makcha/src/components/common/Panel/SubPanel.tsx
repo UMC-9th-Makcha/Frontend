@@ -51,7 +51,7 @@ const SubPanel = ({
         fixed inset-0 z-50 flex flex-col bg-white dark:bg-makcha-navy-900
         md:relative md:inset-auto md:z-0 md:ml-4
 
-        h-full w-full ${width} shrink-0 overscroll-y-none
+        h-full w-full ${width} shrink-0
 
         md:rounded-[40px] overflow-hidden
         border-l border-gray-100 dark:border-white/10
