@@ -57,6 +57,6 @@ export type PlaceDetail = {
   subcategory: string;
   imageUrl: string;
   accessInfo: string;
-  phone: string | [];
+  phone: string | null;
   badge: string[];
 };

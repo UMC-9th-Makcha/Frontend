@@ -6,16 +6,18 @@ export const SortToggle = ({ value, onChange }: SortToggleProps) => {
   const [open, setOpen] = useState(false);
 
   return (
-    <div>
+    <div className="relative inline-block py-2 px-2">
       <button
         onClick={() => setOpen((prev) => !prev)}
-        className="flex items-center gap-2 text-gray-900">
+        className="flex items-center gap-2 text-gray-900"
+        aria-expanded={open}
+        aria-haspopup="menu">
         {toggleLabel[value]}
         <span className="text-sm">▼</span>
       </button>
 
       {open && (
-        <div className="absolute left-0 mt-2 w-[140px] rounded-lg border bg-white shadow-md z-10">
+        <div className="absolute left-0 mt-2 w-36 rounded-lg border bg-white shadow-md z-10">
           <button
             className="w-full px-4 py-2 text-left hover:bg-gray-100"
             onClick={() => {
