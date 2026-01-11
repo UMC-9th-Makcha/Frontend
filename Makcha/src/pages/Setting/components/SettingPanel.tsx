@@ -4,6 +4,7 @@ import Panel from "../../../components/common/Panel";
 import { AlramSection } from "./AlramSection";
 import type { SettingPanelProps } from "../../../types/setting";
 import { PlacesSection } from "./PlaceSection";
+import PolicyLinks from "../../../components/common/PolicyLinks";
 
 export const SettingPanel = memo(function SettingPanel({ view, onNavigate }: SettingPanelProps) {
   return (
@@ -21,6 +22,10 @@ export const SettingPanel = memo(function SettingPanel({ view, onNavigate }: Set
         
         {/* 계정 설정 */}
         <AccountSection onNavigate={onNavigate} />
+      </div>
+
+      <div className="mt-12 pb-4"> 
+          <PolicyLinks />
       </div>
     </Panel>
   );
