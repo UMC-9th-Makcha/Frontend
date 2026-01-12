@@ -71,6 +71,13 @@ export default function WaitingSpot() {
     return mockPlaces.find((p) => p.id === selectedPlaceId) ?? null;
   }, [selectedPlaceId]);
 
+  const handleSelectPlaceId = (id: number) => {
+    setSelectedPlaceId(id);
+    setIsDetailOpen(true);
+  };
+
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+
 
   return (
     <div className="min-h-dvh w-full overflow-hidden">
@@ -81,13 +88,14 @@ export default function WaitingSpot() {
         list={<PlaceList
           places={mockPlaces}
           selectedPlaceId={selectedPlaceId}
-          onSelectPlaceId={setSelectedPlaceId}
+          onSelectPlaceId={handleSelectPlaceId}
         />}
         map={<WaitingSpotMap />}
-        detail={selectedPlace ? <PlaceDetailPanel
+        detail={isDetailOpen && selectedPlace ? <PlaceDetailPanel
                 place={selectedPlace} 
               /> : null
         }
+        onDetailBack={() => setIsDetailOpen(false)}
       />
     </div>
   );
