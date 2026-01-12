@@ -32,7 +32,7 @@ const Panel = ({
         className="flex-1 min-h-0 overflow-y-auto no-scrollbar overscroll-behavior-contain"
         style={{ WebkitOverflowScrolling: 'touch' }}
       >
-        <div className="relative flex flex-col w-full px-[20px] pt-[40px] md:pt-[60px] pb-32">
+        <div className="relative flex flex-col w-full px-[16px] pt-[40px] pb-16 md:pb-0">
           {children}
         </div>
       </div>

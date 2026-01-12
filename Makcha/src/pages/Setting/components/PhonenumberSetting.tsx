@@ -59,6 +59,14 @@ export const PhonenumberSetting = ({ onBack }: PhonenumberSettingProps) => {
           <X size={24} />
         </button>
       }
+      footer={
+      <button
+        onClick={handleSubmit}
+        disabled={!canSubmit}
+        className="w-full rounded-xl border border-gray-400 py-4 font-bold text-gray-600 transition-all hover:bg-gray-50 disabled:opacity-30 dark:border-white dark:text-white dark:hover:bg-white/10 md:border-2"
+      >
+        확인
+      </button>}
     >
       <div className="flex h-full flex-col">
         <div className="flex-1 space-y-8">
@@ -112,17 +120,6 @@ export const PhonenumberSetting = ({ onBack }: PhonenumberSettingProps) => {
               인증번호가 오지 않나요? <span className="cursor-pointer underline hover:text-gray-600 dark:hover:text-white">고객센터 문의</span>
             </p>
           </section>
-        </div>
-
-        {/* 하단 액션 버튼 */}
-        <div className="mt-10 pb-6 md:pb-0">
-          <button
-            onClick={handleSubmit}
-            disabled={!canSubmit}
-            className="w-full rounded-xl border border-gray-400 py-4 font-bold text-gray-600 transition-all hover:bg-gray-50 disabled:opacity-30 dark:border-white dark:text-white dark:hover:bg-white/10 md:border-2"
-          >
-            확인
-          </button>
         </div>
       </div>
     </SubPanel>
