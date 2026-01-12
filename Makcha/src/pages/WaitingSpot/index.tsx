@@ -8,9 +8,7 @@ import type { Place, WaitingCategoryKey } from "../../types/waitingspot";
 import { StartLocationSearch } from "../../components/waitingspot/StartLocationSearch";
 import { PlaceList } from "../../components/waitingspot/PlaceList";
 import { PlaceDetailPanel } from "../../components/waitingspot/PlaceDetailPanel";
-import { useIsMobile } from "../../hooks/useIsMobile";
 import { waitingCategories } from "../../components/waitingspot/constants";
-import { OverlayPortal } from "../../components/waitingspot/common/OverlayPortal";
 
 export const mockPlaces: Place[] = [
   {
