@@ -6,7 +6,7 @@ type Props = {
     onClose: () => void;
     title: string;
     onSelect: (item: OriginSearchItem) => void;
-
+    onPickCurrent: () => void;
     query: string;
     setQuery: (v: string) => void;
     results: OriginSearchItem[];
@@ -18,6 +18,7 @@ const SearchSheetPC = ({
     onClose,
     title,
     onSelect,
+    onPickCurrent,
     query,
     setQuery,
     results,
@@ -36,7 +37,7 @@ const SearchSheetPC = ({
             `}
             aria-hidden={!open}
         >
-            
+
             <div className="px-5 pt-6">
                 <div className="relative flex items-center justify-center">
                     <h2 className="text-center text-[20px] font-bold text-makcha-navy-900 dark:text-white">
@@ -60,15 +61,15 @@ const SearchSheetPC = ({
             <div className="mt-5 px-5">
                 <div className="flex h-[42px] items-center rounded-[20px] border border-gray-200 bg-white px-4 shadow-sm dark:bg-makcha-navy-900">
                     <input
-                            value={query}
-                            onChange={(e) => setQuery(e.target.value)}
-                            placeholder="지번 혹은 도로명 주소 검색"
-                            className="
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                        placeholder="지번 혹은 도로명 주소 검색"
+                        className="
                                 flex-1 bg-transparent text-sm text-gray-900 outline-none
                                 placeholder:text-gray-500 caret-gray-900
                                 dark:text-white dark:placeholder:text-white/40
                             "
-                        />
+                    />
 
                     <button
                         type="button"
@@ -129,9 +130,7 @@ const SearchSheetPC = ({
                         <button
                             type="button"
                             className="flex w-full items-center gap-1.5 px-5 py-4 text-sm text-gray-700 dark:text-white/80"
-                            onClick={() => {
-                                // TODO: 현위치 로직
-                            }}
+                            onClick={onPickCurrent}
                         >
                             <MapPin className="h-5 w-5 text-gray-700 dark:text-white/70" strokeWidth={1.5} />
                             <span>현위치</span>

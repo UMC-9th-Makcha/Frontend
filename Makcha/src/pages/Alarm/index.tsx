@@ -16,6 +16,7 @@ import type { AlarmRoute } from "./types/alarm";
 import type { RouteConfirmDetail } from "./types/routeConfirm";
 
 import Panel from "../../components/common/Panel";
+import KakaoMapView from "./KakaoMapView";
 
 type Step = "INPUT" | "LOADING" | "RESULT" | "CONFIRM" | "SUCCESS";
 type SearchTarget = "ORIGIN" | "DESTINATION";
@@ -27,6 +28,10 @@ type NavState = {
 };
 
 const Alarm = () => {
+    useEffect(() => {
+        console.log("KAKAO KEY:", import.meta.env.VITE_KAKAO_JS_KEY);
+    }, []);
+
     const navigate = useNavigate();
     const location = useLocation();
     const navState = (location.state ?? null) as NavState | null;
@@ -154,6 +159,8 @@ const Alarm = () => {
                         />
                     ) : (
                         <AlarmPanel
+                            origin={origin}
+                            destination={destination}
                             onOpenOrigin={openOriginSheet}
                             onOpenDestination={openDestinationSheet}
                             onSelectDestination={(item) => {
@@ -165,9 +172,9 @@ const Alarm = () => {
                 </Panel>
 
                 {/* 지도 영역 */}
-                {step !== "CONFIRM" && (
-                    <section className="hidden md:block min-w-0 flex-1 h-dvh bg-gray-100" />
-                )}
+                <section className="hidden md:block min-w-0 flex-1 h-dvh">
+                    <KakaoMapView />
+                </section>
 
                 {/* 검색 시트 */}
                 <SearchSheet
