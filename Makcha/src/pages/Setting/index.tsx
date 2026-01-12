@@ -30,7 +30,10 @@ export default function Setting() {
   }, [setView]);
 
   const detailView = useMemo(() => {
-    const props = { onBack: handleBack, onSave: (p: Place) => { savePlace(p); handleBack(); } };
+    const props = { 
+      onBack: handleBack, 
+      onSave: (p: Place) => { savePlace(p); handleBack(); } 
+    };
 
     switch (view) {
       case 'EDIT_HOME':
@@ -51,11 +54,18 @@ export default function Setting() {
   }, [view, home, editingPlace, handleBack, savePlace, deleteFavorite]);
 
   return (
-    <div className="h-full w-full flex justify-between overflow-hidden bg-white dark:bg-makcha-navy-900">
-      <SettingPanel view={view} onNavigate={handleNavigate} />
-      <SettingBg view={view}>
-        {detailView}
-      </SettingBg>
+    <div className="h-dvh w-full flex overflow-hidden bg-white dark:bg-makcha-navy-900">
+      <SettingPanel 
+        view={view} 
+        onNavigate={handleNavigate} 
+      />
+
+      <div className="flex-1 h-full relative overflow-hidden">
+        <SettingBg view={view}>
+          {detailView}
+        </SettingBg>
+      </div>
+
     </div>
   );
 }

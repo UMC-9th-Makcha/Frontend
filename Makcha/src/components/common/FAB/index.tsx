@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { useMediaQuery } from '../../../store/useMediaQuery';
 
 export default function FAB() {
-
+  const isMobile = useMediaQuery('(max-width: 768px)');
   const [position, setPosition] = useState<{ x: number; y: number } | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const fabRef = useRef<HTMLDivElement>(null);
@@ -10,7 +11,9 @@ export default function FAB() {
   const offset = useRef({ x: 0, y: 0 });
   const hasMoved = useRef(false);
 
-  // 드래그 로직
+  const MOBILE_NAV_HEIGHT = 64;
+  const FAB_SIZE = 48;
+
   const handleStart = (e: React.MouseEvent | React.TouchEvent) => {
     setIsDragging(true);
     hasMoved.current = false;
@@ -38,12 +41,15 @@ export default function FAB() {
     let newX = clientX - offset.current.x;
     let newY = clientY - offset.current.y;
 
-    // 화면 탈출 방지
-    newX = Math.max(10, Math.min(newX, window.innerWidth - 60));
-    newY = Math.max(10, Math.min(newY, window.innerHeight - 60));
+    const bottomLimit = isMobile 
+      ? window.innerHeight - MOBILE_NAV_HEIGHT - FAB_SIZE - 10 
+      : window.innerHeight - FAB_SIZE - 24;
+
+    newX = Math.max(10, Math.min(newX, window.innerWidth - FAB_SIZE - 10));
+    newY = Math.max(10, Math.min(newY, bottomLimit));
 
     setPosition({ x: newX, y: newY });
-  }, [isDragging]);
+  }, [isDragging, isMobile]);
 
   const handleEnd = useCallback(() => {
     setIsDragging(false);
@@ -82,8 +88,8 @@ export default function FAB() {
         h-12 w-12 rounded-full 
         bg-white dark:bg-makcha-navy-700
         active:cursor-grabbing active:scale-95
-        
-        ${!position ? 'right-6 bottom-6' : ''}
+
+        ${!position ? (isMobile ? 'right-6 bottom-[80px]' : 'right-6 bottom-6') : ''}
         
         ${isDragging ? 'opacity-90 scale-105 transition-none' : 'opacity-100 transition-transform'}
       `}

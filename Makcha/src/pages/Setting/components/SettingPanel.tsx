@@ -24,7 +24,7 @@ export const SettingPanel = memo(function SettingPanel({ view, onNavigate }: Set
         <AccountSection onNavigate={onNavigate} />
       </div>
 
-      <div className="mt-12 pb-4"> 
+      <div className="mt-auto px-1"> 
           <PolicyLinks />
       </div>
     </Panel>
