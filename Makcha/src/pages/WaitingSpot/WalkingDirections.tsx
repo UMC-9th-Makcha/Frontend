@@ -32,7 +32,7 @@ export default function WalkingDirections() {
         list={<DirectionList direction={direction}/>}
         footer={<DirectionStartButton onClick={handleStart}/>}
         detail={
-          isDetailOpen ? <RouteDetailPanel /> : null
+          isDetailOpen ? <RouteDetailPanel direction={direction} /> : null
         }
         onDetailBack={() => setIsDetailOpen(false)}
         map={<DirectionMap />}

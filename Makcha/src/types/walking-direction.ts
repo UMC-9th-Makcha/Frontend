@@ -38,3 +38,7 @@ export type DirectionSummaryProps = {
   origin: string;
   destination: string;
 }
+
+export type RouteDetailPanelProps = {
+  direction: Direction;
+};
