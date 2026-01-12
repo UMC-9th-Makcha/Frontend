@@ -15,7 +15,6 @@ import ErrorPage from "./pages/Error";
 import { ProtectedRoute } from "./components/kakao/KakaoRoute";
 import KakaoCallback from "./components/kakao/KakaoCallback";
 import FAB from "./components/common/FAB";
-import WalkingDirections from "./pages/WaitingSpot/WalkingDirections";
 
 function App() {
   const isDarkMode = useUIStore((state) => state.isDarkMode);
@@ -47,7 +46,6 @@ function App() {
             <Route element={<ProtectedRoute />}>
               <Route path="/alarm" element={<Alarm />} />
               <Route path="/spot/:type" element={<WaitingSpot />} />
-              <Route path="/spot/:type/direction" element={<WalkingDirections />} />
               <Route path="/history" element={<History />} />
               <Route path="/setting" element={<Settings />} />
             </Route>

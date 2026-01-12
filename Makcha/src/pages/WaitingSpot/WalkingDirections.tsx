@@ -10,8 +10,13 @@ import { mockDirections } from "../../components/walking-directions/mock";
 import { DirectionStartButton } from "../../components/walking-directions/DirectionStartButton";
 import { WalkingDirectionLayout } from "../../components/walking-directions/WalkingDirectionLayout";
 import { RouteDetailPanel } from "../../components/walking-directions/RouteDetailPanel";
+import { ArrowLeft } from "lucide-react";
 
-export default function WalkingDirections() {
+type WalkingDirectionsProps = {
+  onBack?: () => void;
+};
+
+export default function WalkingDirections({onBack}: WalkingDirectionsProps) {
   //임시 데이터 저장
   const [direction, setDirection] = useState(mockDirections);
 
@@ -26,7 +31,19 @@ export default function WalkingDirections() {
   return (
     <div className="min-h-dvh w-full overflow-hidden">
       <WalkingDirectionLayout
-        header={<WaitingSpotHeader title={"도보 안내"} />}
+        header={
+          <div className="relative flex items-start gap-2">
+            <button
+              type="button"
+              onClick={onBack}
+              className="absolute -top-8 text-[#5F5F5F]"
+              aria-label="뒤로가기">
+              <ArrowLeft className="w-5 h-5" />
+            </button>
+
+            <WaitingSpotHeader title="도보 안내" />
+          </div>
+        }
         search={<DirectionSummary origin={direction.origin.name} destination={direction.destination.name} />}
         controls={<CategoryTab selected={routeCategory} onChange={setRouteCategory} categories={routeCategories} />}
         list={<DirectionList direction={direction}/>}

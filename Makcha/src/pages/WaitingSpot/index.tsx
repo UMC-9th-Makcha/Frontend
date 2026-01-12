@@ -9,6 +9,7 @@ import { StartLocationSearch } from "../../components/waitingspot/StartLocationS
 import { PlaceList } from "../../components/waitingspot/PlaceList";
 import { PlaceDetailPanel } from "../../components/waitingspot/PlaceDetailPanel";
 import { waitingCategories } from "../../components/waitingspot/constants";
+import WalkingDirections from "./WalkingDirections";
 
 export const mockPlaces: Place[] = [
   {
@@ -76,6 +77,12 @@ export default function WaitingSpot() {
 
   const [isDetailOpen, setIsDetailOpen] = useState(false);
 
+  //도보 안내 페이지 렌더링 유무
+  const [showDirections, setShowDirections] = useState(false);
+
+  if (showDirections) {
+  return <WalkingDirections onBack={() => setShowDirections(false)} />;
+}
 
   return (
     <div className="min-h-dvh w-full overflow-hidden">
@@ -89,9 +96,14 @@ export default function WaitingSpot() {
           onSelectPlaceId={handleSelectPlaceId}
         />}
         map={<WaitingSpotMap />}
-        detail={isDetailOpen && selectedPlace ? <PlaceDetailPanel
-                place={selectedPlace} 
-              /> : null
+        detail={isDetailOpen && selectedPlace ?
+          <PlaceDetailPanel
+            place={selectedPlace}
+            onStartDirection={() => {
+              setIsDetailOpen(false);
+              setShowDirections(true);
+            }}
+          /> : null
         }
         onDetailBack={() => setIsDetailOpen(false)}
       />

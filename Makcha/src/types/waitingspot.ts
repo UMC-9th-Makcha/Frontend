@@ -57,6 +57,7 @@ export type SortToggleProps = {
 
 export type PlaceDetailProps = {
   place : Place | null;
+  onStartDirection: () => void;
 }
 
 export type PlaceDetail = {

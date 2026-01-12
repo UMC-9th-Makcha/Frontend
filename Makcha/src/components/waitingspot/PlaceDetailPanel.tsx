@@ -1,5 +1,4 @@
 import type { PlaceDetail, PlaceDetailProps } from "../../types/waitingspot";
-import { useNavigate, useParams } from "react-router-dom";
 
 const mockPlaceDetails: PlaceDetail[] = [
   {
@@ -37,9 +36,7 @@ const mockPlaceDetails: PlaceDetail[] = [
 ];
 
 
-export const PlaceDetailPanel = ({ place }: PlaceDetailProps) => {
-  const { type } = useParams() as { type: string };
-  const navigate = useNavigate();
+export const PlaceDetailPanel = ({ place, onStartDirection }: PlaceDetailProps) => {
 
   if (!place) return null;
 
@@ -101,7 +98,7 @@ export const PlaceDetailPanel = ({ place }: PlaceDetailProps) => {
         <button
           className="w-full h-12 rounded-full bg-makcha-navy-400 text-white text-[20px] border hover:bg-makcha-navy-600 transition
             dark:text-makcha-navy-200 dark:bg-makcha-navy-800 dark:border-makcha-navy-600"
-          onClick={() => navigate(`/spot/${type}/direction`)}
+            onClick={() => onStartDirection?.()}
         >
           도보 길 안내 시작
         </button>
