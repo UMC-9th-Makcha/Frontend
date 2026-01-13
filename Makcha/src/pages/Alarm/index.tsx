@@ -124,6 +124,7 @@ const Alarm = () => {
                     width="md:w-100"
                     isMobileFull
                     className="md:border-r md:border-gray-200 dark:md:border-makcha-navy-800"
+                    disablePadding={step === "CONFIRM"}
                 >
                     {step === "LOADING" ? (
                         <RouteLoadingPanel open />

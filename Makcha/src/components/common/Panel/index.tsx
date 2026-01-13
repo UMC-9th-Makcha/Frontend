@@ -5,6 +5,8 @@ interface PanelProps {
   width?: string;
   isMobileFull?: boolean;
   className?: string;
+  disablePadding?: boolean;
+  contentClassName?: string;
 }
 
 const Panel = ({
@@ -12,6 +14,8 @@ const Panel = ({
   width = "md:w-[400px]",
   isMobileFull = true,
   className = "",
+  disablePadding = false,
+  contentClassName = "",
 }: PanelProps) => {
   return (
     <section
@@ -28,15 +32,16 @@ const Panel = ({
         ${className}
       `}
     >
-      <div 
-        className="flex-1 min-h-0 overflow-y-auto no-scrollbar overscroll-behavior-contain"
-        style={{ WebkitOverflowScrolling: 'touch' }}
+      <div
+        className={
+          disablePadding
+            ? `relative flex h-full min-h-0 flex-col w-full ${contentClassName}`
+            : `relative flex flex-col w-full px-[16px] pt-[40px] pb-16 md:pb-0 ${contentClassName}`
+        }
       >
-        <div className="relative flex flex-col w-full px-[16px] pt-[40px] pb-16 md:pb-0">
-          {children}
-        </div>
+        {children}
       </div>
-    </section>
+    </section >
   );
 };
 
