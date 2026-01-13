@@ -1,4 +1,5 @@
 import type { PlaceDetail, PlaceDetailProps } from "../../types/waitingspot";
+import { useNavigate, useParams } from "react-router-dom";
 
 const mockPlaceDetails: PlaceDetail[] = [
   {
@@ -36,12 +37,13 @@ const mockPlaceDetails: PlaceDetail[] = [
 ];
 
 
-export const PlaceDetailPanel = ({ place, onStartDirection }: PlaceDetailProps) => {
+export const PlaceDetailPanel = ({ place }: PlaceDetailProps) => {
+  const { type } = useParams() as { type: string };
+  const navigate = useNavigate();
 
   if (!place) return null;
 
   const detail = mockPlaceDetails.find((d) => d.id === place.id) ?? null;
-
   return (
     <div className="flex flex-col h-full">
       {/* 상단 이미지 */}
@@ -52,7 +54,6 @@ export const PlaceDetailPanel = ({ place, onStartDirection }: PlaceDetailProps) 
           className="h-full w-full object-cover"
         />
       </div>
-
       {/* 본문 */}
       <div className="px-2 pt-6">
         <div className="flex items-end gap-4">
@@ -65,7 +66,6 @@ export const PlaceDetailPanel = ({ place, onStartDirection }: PlaceDetailProps) 
             {detail?.subcategory}
           </span>
         </div>
-
         <div className="mt-4 flex rounded-lg gap-2 overflow-x-auto">
           {(detail?.badge ?? []).map((badge) => (
             <span
@@ -85,23 +85,20 @@ export const PlaceDetailPanel = ({ place, onStartDirection }: PlaceDetailProps) 
             <span>도보 {Math.ceil(place.durationSeconds / 60)}분</span>
             <span>{place.distanceMeter}m</span>
           </div>
-
           <div>{place.address}</div>
           <div>{detail?.accessInfo}</div>
           {detail?.phone && <div>{detail.phone}</div>}
         </div>
-
         {/* 하단 버튼 */}
       </div>
       <div className="mt-auto pt-6">
         <button
           className="w-full h-12 rounded-full bg-makcha-navy-400 text-white text-[20px] border hover:bg-makcha-navy-600 transition
             dark:text-makcha-navy-200 dark:bg-makcha-navy-800 dark:border-makcha-navy-600"
-            onClick={() => onStartDirection?.()}
+          onClick={() => navigate(`/spot/${type}/direction`)}
         >
           도보 길 안내 시작
         </button>
-
       </div>
     </div>
   );
