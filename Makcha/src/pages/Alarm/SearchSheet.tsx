@@ -34,22 +34,28 @@ const SearchSheet = ({ open, onClose, title, onSelect }: Props) => {
 
     const hasQuery = query.trim().length > 0;
 
+    const onPickCurrent = () => {
+        onSelect({
+            id: "current",
+            title: "현위치",
+            address: "현위치",
+        });
+        onClose();
+    };
+
     const sharedProps = {
         open,
         onClose,
         title,
         onSelect,
+        onPickCurrent, 
         query,
         setQuery,
         results,
         hasQuery,
     };
 
-    return isMdUp ? (
-        <SearchSheetPC {...sharedProps} />
-    ) : (
-        <SearchSheetMobile {...sharedProps} />
-    );
+    return isMdUp ? <SearchSheetPC {...sharedProps} /> : <SearchSheetMobile {...sharedProps} />;
 };
 
 export default SearchSheet;
