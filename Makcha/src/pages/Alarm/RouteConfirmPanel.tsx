@@ -108,7 +108,7 @@ export default function RouteConfirmPanel({ route, detail, onBack, onConfirm }: 
             </div>
 
             {/* 버튼 */}
-            <div className="mt-auto px-[16px] pt-4 space-y-3 pb-[max(20px,env(safe-area-inset-bottom))]">
+            <div className="mt-auto px-[16px] pt-4 space-y-3 pb-[max(80px,env(safe-area-inset-bottom))] md:pb-[20px]">
                 <button
                     type="button"
                     className="h-12 w-full rounded-[14px] bg-[#FFE89F] transition hover:bg-[#FFD966] flex items-center justify-center gap-2 text-[18px] font-semibold text-black shadow-sm"

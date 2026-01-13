@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import AlarmPanel from "./AlarmPanel";
@@ -46,6 +46,8 @@ const Alarm = () => {
 
     const [routes, setRoutes] = useState<AlarmRoute[]>([]);
     const [selectedRoute, setSelectedRoute] = useState<AlarmRoute | null>(null);
+
+    const cameFromHistoryRef = useRef(false);
 
     const startRouteSearch = () => {
         setStep("LOADING");
@@ -103,6 +105,8 @@ const Alarm = () => {
     useEffect(() => {
         if (!navState?.openConfirm || !navState.routeId) return;
 
+        cameFromHistoryRef.current = navState.from === "history";
+
         setRoutes(ALARM_ROUTES_MOCK);
 
         const found = ALARM_ROUTES_MOCK.find((r) => r.id === navState.routeId) ?? null;
@@ -110,7 +114,6 @@ const Alarm = () => {
             setSelectedRoute(found);
             setStep("CONFIRM");
         }
-
 
         navigate(".", { replace: true, state: null });
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -141,8 +144,8 @@ const Alarm = () => {
                             detail={getConfirmDetail(selectedRoute.id)}
                             onBack={() => {
                                 // History에서 넘어온 CONFIRM이면 History로 
-                                if (navState?.from === "history") {
-                                    navigate(-1);
+                                if (cameFromHistoryRef.current) {
+                                    navigate("/history", { replace: true });
                                     return;
                                 }
                                 setStep("RESULT");
