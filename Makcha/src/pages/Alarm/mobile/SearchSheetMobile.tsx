@@ -78,7 +78,7 @@ const SearchSheetMobile = ({
                 className="min-h-0 flex-1 overflow-y-auto pb-[env(safe-area-inset-bottom)]"
             >
                 {/* 검색 input */}
-                <div className="mt-[37px] px-5">
+                <div className="mt-9 px-5">
                     <div
                         className="
                             flex h-[62px] items-center
@@ -154,7 +154,7 @@ const SearchSheetMobile = ({
                 ) : (
                     <>
                         {/* 현위치 */}
-                        <div className="mt-[37px]">
+                        <div className="mt-9">
                             <button
                                 type="button"
                                 className="flex w-full items-center gap-1.5 px-5 py-4 text-[20px] text-gray-700 dark:text-white/80"

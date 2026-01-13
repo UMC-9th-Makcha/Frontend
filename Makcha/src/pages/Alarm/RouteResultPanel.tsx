@@ -17,17 +17,17 @@ const RouteResultPanel = ({ origin, destination, routes, onSelectRoute }: Props)
                 <h1 className="text-[32px] text-makcha-navy-900 dark:text-white">알림 선택</h1>
             </div>
 
-            <p className="mt-[7px] text-[18px] text-gray-500 dark:text-white/60">
+            <p className="mt-2 text-[18px] text-gray-500 dark:text-white/60">
                 카카오톡으로 받으실 알림을 선택해 주세요!
             </p>
 
-            <div className="mt-[24px] space-y-[14px] max-md:mt-5 max-md:space-y-3">
+            <div className="mt-6 space-y-[14px] max-md:mt-5 max-md:space-y-3">
                 <button
                     type="button"
                     className="
                         flex h-[42px] w-full items-center gap-3
                         rounded-[20px] border border-gray-200 bg-white
-                        pl-[16px] pr-[15px] shadow-sm
+                        pl-4 pr-4 shadow-sm
                         dark:border-makcha-navy-800 dark:bg-makcha-navy-900
                     "
                 >
@@ -48,7 +48,7 @@ const RouteResultPanel = ({ origin, destination, routes, onSelectRoute }: Props)
                     className="
                         flex h-[42px] w-full items-center gap-3
                         rounded-[20px] border border-gray-200 bg-white
-                        pl-[16px] pr-[15px] shadow-sm
+                        pl-4 pr-4 shadow-sm
                         dark:border-makcha-navy-800 dark:bg-makcha-navy-900
                     "
                 >
@@ -65,7 +65,7 @@ const RouteResultPanel = ({ origin, destination, routes, onSelectRoute }: Props)
                 </button>
             </div>
 
-            <div className="mt-[46px] w-full min-w-0 space-y-[29px] max-md:mt-5 max-md:space-y-4">
+            <div className="mt-10 w-full min-w-0 space-y-6 max-md:mt-5 max-md:space-y-4">
                 {routes.map((route) => (
                     <RouteCard key={route.id} route={route} onSelect={onSelectRoute} />
                 ))}
