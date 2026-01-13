@@ -22,7 +22,7 @@ const SearchField = ({ label, text, onClick }: Props) => {
           border border-gray-200
           bg-white
           shadow-sm
-          h-[42px] pl-[16px] pr-[15px]
+          h-[42px] pl-4 pr-4
           dark:border-makcha-navy-700 dark:bg-makcha-navy-900
           max-md:h-[57px] max-md:pl-[14px] max-md:pr-[14px]
         "

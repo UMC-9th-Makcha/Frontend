@@ -27,7 +27,7 @@ const SearchSheetPC = ({
     return (
         <div
             className={`
-                absolute left-[410px] top-[26px] bottom-[26px] z-50 w-100
+                absolute left-102 top-[26px] bottom-[26px] z-50 w-100
                 ${open ? "translate-x-0" : "translate-x-100 pointer-events-none opacity-0"}
                 ${open ? "transition-none" : "transition-transform transition-opacity duration-300"}
             `}
@@ -41,14 +41,14 @@ const SearchSheetPC = ({
                 className="
                     md:ml-0
                     h-full
-                    md:rounded-[24px]
+                    md:rounded-6
                     shadow-[0_0_15px_rgba(136,136,136,0.35)]
                     border border-gray-200 dark:border-makcha-navy-800
                 "
             >
                 {/* 검색 input */}
                 <div className="mt-0">
-                    <div className="flex h-[42px] items-center rounded-[20px] border border-gray-200 bg-white px-4 shadow-sm dark:bg-makcha-navy-900">
+                    <div className="flex h-11 items-center rounded-[20px] border border-gray-200 bg-white px-4 shadow-sm dark:bg-makcha-navy-900">
                         <input
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
@@ -115,7 +115,7 @@ const SearchSheetPC = ({
                 ) : (
                     <>
                         {/* 현위치 */}
-                        <div className="mt-[18px]">
+                        <div className="mt-4">
                             <button
                                 type="button"
                                 className="flex w-full items-center gap-1.5 py-4 text-sm text-gray-700 dark:text-white/80"
