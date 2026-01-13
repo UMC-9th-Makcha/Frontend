@@ -7,9 +7,11 @@ type AlarmPanelProps = {
     onOpenOrigin: () => void;
     onOpenDestination: () => void;
     onSelectDestination: (item: OriginSearchItem) => void;
+    origin: OriginSearchItem | null;
+    destination: OriginSearchItem | null;
 };
 
-const AlarmPanel = ({ onOpenOrigin, onOpenDestination, onSelectDestination }: AlarmPanelProps) => {
+const AlarmPanel = ({ onOpenOrigin, onOpenDestination, onSelectDestination, origin, destination }: AlarmPanelProps) => {
     return (
         <>
             <div className="pt-8 md:pt-0">
@@ -30,10 +32,10 @@ const AlarmPanel = ({ onOpenOrigin, onOpenDestination, onSelectDestination }: Al
                 </p>
 
                 <div className="mt-6 max-md:mt-5 max-md:space-y-4 space-y-5">
-                    <SearchField label="출발지" text="현위치 : 서울역 봉구비어" onClick={onOpenOrigin} />
+                    <SearchField label="출발지" text={origin ? origin.title : "출발지"} onClick={onOpenOrigin} />
                     <DestinationCarousel onSelectDestination={onSelectDestination} />
                     <RecentDestinations onSelectDestination={onSelectDestination} />
-                    <SearchField label="직접 검색하기" text="도착지" onClick={onOpenDestination} />
+                    <SearchField label="직접 검색하기" text={destination ? destination.title : "도착지"} onClick={onOpenDestination} />
                 </div>
             </div>
         </>

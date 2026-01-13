@@ -7,6 +7,7 @@ type Props = {
     onClose: () => void;
     title: string;
     onSelect: (item: OriginSearchItem) => void;
+    onPickCurrent: () => void;
     query: string;
     setQuery: (v: string) => void;
     results: OriginSearchItem[];
@@ -18,6 +19,7 @@ const SearchSheetMobile = ({
     onClose,
     title,
     onSelect,
+    onPickCurrent,
     query,
     setQuery,
     results,
@@ -156,9 +158,7 @@ const SearchSheetMobile = ({
                             <button
                                 type="button"
                                 className="flex w-full items-center gap-1.5 px-5 py-4 text-[20px] text-gray-700 dark:text-white/80"
-                                onClick={() => {
-                                    // TODO
-                                }}
+                                onClick={onPickCurrent}
                             >
                                 <MapPin
                                     className="h-5 w-5 text-gray-700 dark:text-white/70"

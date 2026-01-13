@@ -2,12 +2,12 @@ import type { PlaceCardProps } from "../../types/waitingspot";
 
 export const PlaceCard = ({ place, onSelect }: PlaceCardProps) => {
   return (
-    <div
-      className="flex gap-[10px] rounded-xl bg-white p-2
+    <button
+      className="flex gap-4 rounded-xl bg-white
       dark:bg-makcha-navy-900"
       onClick={onSelect} //setSelectedPlace에 선택 장소 저장
       >
-      <div className="w-[100px] h-[100px] rounded-[20px] bg-gray-300 shrink-0" />
+      <div className="w-24 h-24 rounded-[20px] bg-gray-300 shrink-0" />
 
       {/* 오른쪽 콘텐츠 */}
       <div className="flex flex-col gap-2 min-w-0">
@@ -28,12 +28,12 @@ export const PlaceCard = ({ place, onSelect }: PlaceCardProps) => {
         </p>
 
         {place.badge && (
-          <span className="inline-block w-fit rounded-full bg-[#4F73C3] px-3 py-1 text-sm text-white
+          <span className="inline-block w-fit rounded-full bg-[#4F73C3] px-4 py-1 text-sm text-white whitespace-nowrap
           dark:text-makcha-navy-200 dark:bg-makcha-navy-800 dark:border-makcha-navy-600">
             {place.badge}
           </span>
         )}
       </div>
-    </div>
+    </button>
   );
 };

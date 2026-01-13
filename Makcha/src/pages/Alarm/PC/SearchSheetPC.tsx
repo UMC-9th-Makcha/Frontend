@@ -7,7 +7,7 @@ type Props = {
     onClose: () => void;
     title: string;
     onSelect: (item: OriginSearchItem) => void;
-
+    onPickCurrent: () => void;
     query: string;
     setQuery: (v: string) => void;
     results: OriginSearchItem[];
@@ -19,6 +19,7 @@ const SearchSheetPC = ({
     onClose,
     title,
     onSelect,
+    onPickCurrent,
     query,
     setQuery,
     results,
@@ -58,7 +59,7 @@ const SearchSheetPC = ({
                                 placeholder:text-gray-500 caret-gray-900
                                 dark:text-white dark:placeholder:text-white/40
                             "
-                        />
+                    />
 
                         <button
                             type="button"

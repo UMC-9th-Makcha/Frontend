@@ -1,5 +1,7 @@
 import KakaoLoginButton from "../../../components/kakao/KakaoButton";
 import Panel from "../../../components/common/Panel";
+import owlImage from "../../../assets/owl.png";
+import PolicyLinks from "../../../components/common/PolicyLinks";
 
 export default function LoginPanel() {
   return (
@@ -18,8 +20,8 @@ export default function LoginPanel() {
         <div className="flex justify-center my-8 relative">
           <div className="absolute inset-0 bg-blue-500/5 blur-2xl rounded-full scale-125" />
           <img 
-            src="/owl.png"
-            alt="Owl" 
+            src={owlImage}
+            alt="owl" 
             className="w-32 h-32 relative z-10 object-contain"
           />
         </div>
@@ -69,14 +71,7 @@ export default function LoginPanel() {
           </span>
         </p>
 
-        {/* 법적 약관 */}
-        <div className="mt-6 flex flex-wrap justify-center items-center gap-x-2 gap-y-1 text-[10px] text-slate-400 dark:text-slate-500 opacity-70">
-          <a href="https://lively-street-d6e.notion.site/2da161df3ee680b9aab1ea1d67876e4a" target="_blank" rel="noreferrer" className="hover:underline">개인정보약관</a>
-          <span>|</span>
-          <a href="https://lively-street-d6e.notion.site/2da161df3ee68080bb5dd371abeb5b91?pvs=74" target="_blank" rel="noreferrer" className="hover:underline">개인정보처리방침</a>
-          <span>|</span>
-          <a href="https://lively-street-d6e.notion.site/2da161df3ee6806db500eb7bb858ad89?pvs=74" target="_blank" rel="noreferrer" className="hover:underline">위치기반서비스 이용약관</a>
-        </div>
+        <PolicyLinks />
       </footer>
     </Panel>
   );

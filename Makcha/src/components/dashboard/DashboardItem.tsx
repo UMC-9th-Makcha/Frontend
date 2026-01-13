@@ -36,11 +36,13 @@ const DashboardItem = React.memo(({
         return (
           <>
             <motion.div 
-              layout
+              layout="position"
               transition={sidebarSpring}
-              className={`flex items-center justify-center shrink-0 aspect-square ${isCollapsed ? 'w-7 h-7' : 'w-6 h-6 mr-4'}`}
+              className={`will-change-transform flex items-center justify-center shrink-0 aspect-square 
+                ${isCollapsed ? 'w-7 h-7' : 'w-6 h-6 mr-4'}`}
             >
-              <Icon className={`w-full h-full stroke-[2px] transition-colors duration-200 ${active ? 'text-blue-600 dark:text-white' : 'text-gray-400'}`} />
+              <Icon className={`w-full h-full stroke-[2px] transition-colors duration-200 
+                ${active ? 'text-blue-600 dark:text-white' : 'text-gray-400'}`} />
             </motion.div>
             
             <AnimatePresence mode="popLayout">

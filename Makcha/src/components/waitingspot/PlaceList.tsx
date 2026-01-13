@@ -13,7 +13,7 @@ export const PlaceList = ({ places, selectedPlaceId, onSelectPlaceId }: PlaceLis
   return (
     <React.Fragment>
       <SortToggle value={sort} onChange={setSort} />
-      <div className="space-y-[34px] py-5">
+      <div className="space-y-6 py-2 px-2">
         {places.map((place) => (
           <PlaceCard
             key={place.id}

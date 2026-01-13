@@ -1,22 +1,21 @@
 import { useState, useCallback, useMemo } from "react";
 import { SettingPanel } from "./components/SettingPanel";
-import { SettingBg } from "./components/SettingBg";
-import PlaceSetting from "./components/Place/PlaceSetting";
-import PhonenumberSetting from "./components/PhonenumberSetting";
+import { SettingBg } from "./components/BgSection";
 import { useSettingStore } from "../../store/useSettingStore";
+import { useBack } from "../../hooks/useBack";
 import type { Place } from "../../types/setting";
 import type { ViewType } from "./constants";
-import { useBack } from "../../hooks/useBack";
+import PlaceSetting from "./components/PlaceSetting";
+import { PhonenumberSetting } from "./components/PhonenumberSetting";
 
 export default function Setting() {
-
   const view = useSettingStore((state) => state.view);
   const setView = useSettingStore((state) => state.setView);
-  const [editingPlace, setEditingPlace] = useState<Place | null>(null);
-
   const home = useSettingStore((state) => state.home);
   const savePlace = useSettingStore((state) => state.savePlace);
   const deleteFavorite = useSettingStore((state) => state.deleteFavorite);
+  
+  const [editingPlace, setEditingPlace] = useState<Place | null>(null);
 
   const handleBack = useCallback(() => {
     setView('MAIN');
@@ -30,46 +29,43 @@ export default function Setting() {
     if (p) setEditingPlace(p);
   }, [setView]);
 
-  const handleSave = useCallback((updated: Place) => {
-    savePlace(updated);
-    handleBack();
-  }, [savePlace, handleBack]);
+  const detailView = useMemo(() => {
+    const props = { 
+      onBack: handleBack, 
+      onSave: (p: Place) => { savePlace(p); handleBack(); } 
+    };
 
-  const handleDelete = useCallback((id: string) => {
-    deleteFavorite(id);
-    handleBack();
-  }, [deleteFavorite, handleBack]);
-
-  const renderDetail = useMemo(() => {
     switch (view) {
       case 'EDIT_HOME':
-        return home && <PlaceSetting place={home} onBack={handleBack} onSave={handleSave} />;
+        return home ? <PlaceSetting place={home} {...props} /> : null;
       case 'EDIT_FAVORITE':
-        return editingPlace && (
+        return editingPlace ? (
           <PlaceSetting 
+            {...props} 
             place={editingPlace} 
-            onBack={handleBack} 
-            onSave={handleSave} 
-            onDelete={handleDelete} 
+            onDelete={(id) => { deleteFavorite(id); handleBack(); }} 
           />
-        );
+        ) : null;
       case 'EDIT_CONTACT':
         return <PhonenumberSetting onBack={handleBack} />;
       default:
         return null;
     }
-  }, [view, home, editingPlace, handleBack, handleSave, handleDelete]);
+  }, [view, home, editingPlace, handleBack, savePlace, deleteFavorite]);
 
   return (
-    <div className="h-full w-full flex justify-between
-     overflow-hidden bg-white dark:bg-makcha-navy-900">
+    <div className="h-dvh w-full flex overflow-hidden bg-white dark:bg-makcha-navy-900">
       <SettingPanel 
-        view={view}
-        onNavigate={handleNavigate}
+        view={view} 
+        onNavigate={handleNavigate} 
       />
-      <SettingBg view={view}>
-        {renderDetail}
-      </SettingBg>
+
+      <div className="flex-1 h-full relative overflow-hidden">
+        <SettingBg view={view}>
+          {detailView}
+        </SettingBg>
+      </div>
+
     </div>
   );
 }
