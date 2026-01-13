@@ -11,7 +11,7 @@ const HistoryHome = () => {
   const totalSavedAmount = PAST_SUMMARY_MOCK.thisMonthTaxiCost;
 
   return (
-    <div className="relative h-full w-full p-5 md:pt-24">
+    <div className="relative h-full w-full p-5 pt-13 md:pt-24">
       <SaveReportPanel
         open={isSaveReportOpen}
         onClose={() => setIsSaveReportOpen(false)}

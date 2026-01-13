@@ -2,8 +2,9 @@ import type { CurrentAlarm, MonthSectionData, PastSummary } from "../types/histo
 
 //export const CURRENT_ALARM_MOCK: CurrentAlarm | null = null;
 export const CURRENT_ALARM_MOCK: CurrentAlarm = {
+    routeId: "r1",
     isOptimal: true,
-    lines: ["2호선", "4호선"],
+    lines: ["2호선", "472"],
     departureTime: "23:55",
     timeUntilDepartureText: "출발까지 12분",
     totalDurationMin: 45,
