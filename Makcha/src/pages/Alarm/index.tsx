@@ -116,7 +116,7 @@ const Alarm = () => {
             <div className="relative h-dvh w-full md:flex md:overflow-hidden">
                 {/* 좌측 패널 */}
                 <Panel
-                    width="md:w-[402px]"
+                    width="md:w-100"
                     isMobileFull
                     className="md:border-r md:border-gray-200 dark:md:border-makcha-navy-800"
                 >

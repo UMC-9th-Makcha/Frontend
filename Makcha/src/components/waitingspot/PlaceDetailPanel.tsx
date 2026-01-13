@@ -43,7 +43,7 @@ export const PlaceDetailPanel = ({ place, onClose }: PlaceDetailProps) => {
   const detail = mockPlaceDetails.find((d) => d.id === place.id) ?? null;
 
   return (
-    <aside className="flex flex-col w-[402px] h-[961px] rounded-[20px] bg-white shadow-[0_0_15px_0_#88888859] overflow-hidden
+    <aside className="flex flex-col w-100 h-[961px] rounded-[20px] bg-white shadow-[0_0_15px_0_#88888859] overflow-hidden
     dark:bg-makcha-navy-900">
       {/* 상단 이미지 */}
       <div className="relative h-[268px] w-full bg-gray-100">

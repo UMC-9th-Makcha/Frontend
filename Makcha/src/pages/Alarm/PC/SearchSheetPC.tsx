@@ -27,11 +27,11 @@ const SearchSheetPC = ({
         <div
             className={`
                 absolute left-[428px] top-[35px] bottom-[35px] z-50
-                w-[402px] rounded-[24px]
+                w-100 rounded-[24px]
                 bg-white dark:bg-makcha-navy-900
                 border-r border-gray-200 dark:border-makcha-navy-800
                 shadow-[0_0_15px_rgba(136,136,136,0.35)]
-                ${open ? "translate-x-0" : "translate-x-[402px] pointer-events-none opacity-0"}
+                ${open ? "translate-x-0" : "translate-x-100 pointer-events-none opacity-0"}
                 ${open ? "transition-none" : "transition-transform transition-opacity duration-300"}
             `}
             aria-hidden={!open}
