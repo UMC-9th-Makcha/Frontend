@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useMemo, useState } from "react";
-import { WaitingSpotLayout } from "../../components/waitingspot/common/WaitingSpotLayout";
+import { WaitingSpotLayout } from "../../components/waitingspot/WaitingSpotLayout";
 import { WaitingSpotHeader } from "../../components/waitingspot/common/WaitingSpotHeader";
 import { CategoryTab } from "../../components/waitingspot/common/CategoryTab";
 import { WaitingSpotMap } from "../../components/waitingspot/WaitingSpotMap";
@@ -11,54 +11,7 @@ import { PlaceDetailPanel } from "../../components/waitingspot/PlaceDetailPanel"
 import { FALLBACK_CENTER, waitingCategories } from "../../components/waitingspot/constants";
 import WalkingDirections from "./WalkingDirections";
 import { useGeoLocation } from "../../hooks/useGeolocation";
-
-export const mockPlaces: Place[] = [
-  {
-    id: 1,
-    name: "24시 별빛 카페",
-    category: "night-cafe",
-    address: "서울 용산구 한강대로",
-    distanceMeter: 400,
-    durationSeconds: 90,
-    badge: "곧 마감 04:00까지 운영",
-    lat: 37.5294,
-    lng: 126.9677,
-  },
-  {
-    id: 2,
-    name: "용산 PC존",
-    category: "pc-cafe",
-    address: "서울 용산구 이태원로",
-    distanceMeter: 400,
-    durationSeconds: 90,
-    badge: "곧 마감 04:00까지 운영",
-    lat: 37.5349,
-    lng: 126.9946,
-  },
-  {
-    id: 3,
-    name: "한강 사우나",
-    category: "sauna",
-    address: "서울 용산구 서빙고로",
-    distanceMeter: 400,
-    durationSeconds: 90,
-    badge: "곧 마감 04:00까지 운영",
-    lat: 37.5206,
-    lng: 126.9723,
-  },
-  {
-    id: 4,
-    name: "미드나잇 스터디 카페",
-    category: "night-cafe",
-    address: "서울 용산구 후암로",
-    distanceMeter: 400,
-    durationSeconds: 90,
-    badge: "곧 마감 04:00까지 운영",
-    lat: 37.5482,
-    lng: 126.9758,
-  },
-];
-
+import { mockPlaces } from "../../components/waitingspot/common/mock";
 
 export default function WaitingSpot() {
   //지도 현위치 좌표

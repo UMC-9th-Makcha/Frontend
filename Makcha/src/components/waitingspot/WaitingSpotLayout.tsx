@@ -1,6 +1,6 @@
-import type { WaitingSpotLayoutProps } from "../../../types/waitingspot"
-import Panel from "../../common/Panel"
-import SubPanel from "../../common/Panel/SubPanel";
+import type { WaitingSpotLayoutProps } from "../../types/waitingspot"
+import Panel from "../common/Panel"
+import SubPanel from "../common/Panel/SubPanel";
 
 export const WaitingSpotLayout = ({header, controls, map, search, list, detail, onDetailBack} : WaitingSpotLayoutProps) => {
   return (
