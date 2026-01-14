@@ -1,13 +1,17 @@
-import { Map, useKakaoLoader } from "react-kakao-maps-sdk";
+import { Map, MapMarker, useKakaoLoader } from "react-kakao-maps-sdk";
+import type { Place } from "../../types/waitingspot";
 
 type LatLng = { lat: number; lng: number };
 
 type WaitingSpotMapProps = {
   center: LatLng;
   level?: number;
+  places: Place[];
+  selectedPlaceId: number | null;
+  onClickMarker: (id: number) => void;
 };
 
-export const WaitingSpotMap = ({center, level = 3}: WaitingSpotMapProps) => {
+export const WaitingSpotMap = ({center, level = 3, places, selectedPlaceId, onClickMarker}: WaitingSpotMapProps) => {
   const MAP_KEY = import.meta.env.VITE_KAKAO_JS_KEY as string;
 
   const [loading, error] = useKakaoLoader({
@@ -23,6 +27,19 @@ export const WaitingSpotMap = ({center, level = 3}: WaitingSpotMapProps) => {
       center={center}
       style={{ width: "100%", height: "100%" }}
       level={level}
-    />
+    >
+      {places.map((p) => {
+        const isSelected = p.id === selectedPlaceId;
+
+        return (
+          <MapMarker
+            key={p.id}
+            position={{ lat: p.lat, lng: p.lng }}
+            onClick={() => onClickMarker(p.id)}
+            zIndex={isSelected ? 10 : 1}
+          />
+        );
+      })}
+    </Map>
   );
 }

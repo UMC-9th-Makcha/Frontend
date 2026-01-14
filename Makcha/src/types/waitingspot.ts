@@ -34,6 +34,8 @@ export type Place = {
   distanceMeter: number;
   durationSeconds: number;
   badge: string;
+  lat: number;
+  lng: number;
 };
 
 export type PlaceListProps = {

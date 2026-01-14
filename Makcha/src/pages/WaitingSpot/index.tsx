@@ -20,7 +20,9 @@ export const mockPlaces: Place[] = [
     address: "서울 용산구 한강대로",
     distanceMeter: 400,
     durationSeconds: 90,
-    badge: "곧 마감 04:00까지 운영"
+    badge: "곧 마감 04:00까지 운영",
+    lat: 37.5294,
+    lng: 126.9677,
   },
   {
     id: 2,
@@ -29,7 +31,9 @@ export const mockPlaces: Place[] = [
     address: "서울 용산구 이태원로",
     distanceMeter: 400,
     durationSeconds: 90,
-    badge: "곧 마감 04:00까지 운영"
+    badge: "곧 마감 04:00까지 운영",
+    lat: 37.5349,
+    lng: 126.9946,
   },
   {
     id: 3,
@@ -38,7 +42,9 @@ export const mockPlaces: Place[] = [
     address: "서울 용산구 서빙고로",
     distanceMeter: 400,
     durationSeconds: 90,
-    badge: "곧 마감 04:00까지 운영"
+    badge: "곧 마감 04:00까지 운영",
+    lat: 37.5206,
+    lng: 126.9723,
   },
   {
     id: 4,
@@ -47,9 +53,12 @@ export const mockPlaces: Place[] = [
     address: "서울 용산구 후암로",
     distanceMeter: 400,
     durationSeconds: 90,
-    badge: "곧 마감 04:00까지 운영"
+    badge: "곧 마감 04:00까지 운영",
+    lat: 37.5482,
+    lng: 126.9758,
   },
 ];
+
 
 export default function WaitingSpot() {
   //지도 현위치 좌표
@@ -58,9 +67,6 @@ export default function WaitingSpot() {
     timeout: 10000,
     maximumAge: 0,
   });
-
-  const center = location ?
-    { lat: location.latitude, lng: location.longitude } : FALLBACK_CENTER; //권한 UX 구현 전까지 임시 좌표
 
   // 1. 타입을 string으로 받거나, 명시적으로 단언하여 에러를 방지합니다.
   const { type } = useParams() as { type: string };
@@ -81,7 +87,24 @@ export default function WaitingSpot() {
     return mockPlaces.find((p) => p.id === selectedPlaceId) ?? null;
   }, [selectedPlaceId]);
 
-  const handleSelectPlaceId = (id: number) => {
+  //지도 center 좌표 반영
+  const center = useMemo(() => {
+    if (selectedPlace) {
+      return { lat: selectedPlace.lat, lng: selectedPlace.lng };
+    } //리스트 장소
+    if (location) {
+      return { lat: location.latitude, lng: location.longitude };
+    }//현위치
+    return FALLBACK_CENTER;//임시 좌표
+  }, [selectedPlace, location]);
+  
+  const handleSelectList = (id: number) => {
+    setSelectedPlaceId(id);
+    setIsDetailOpen(true);
+  };
+
+  //마커 클릭 -> 선택, 상세 열기
+  const handleSelectMarker = (id: number) => {
     setSelectedPlaceId(id);
     setIsDetailOpen(true);
   };
@@ -105,9 +128,14 @@ export default function WaitingSpot() {
         list={<PlaceList
           places={mockPlaces}
           selectedPlaceId={selectedPlaceId}
-          onSelectPlaceId={handleSelectPlaceId}
+          onSelectPlaceId={handleSelectList}
         />}
-        map={<WaitingSpotMap center={center} />}
+        map={<WaitingSpotMap 
+          center={center}
+          places={mockPlaces}
+          onClickMarker={handleSelectMarker}
+          selectedPlaceId={selectedPlaceId}
+           />}
         detail={isDetailOpen && selectedPlace ?
           <PlaceDetailPanel
             place={selectedPlace}
