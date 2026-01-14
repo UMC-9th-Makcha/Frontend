@@ -1,6 +1,13 @@
 import { Map, useKakaoLoader } from "react-kakao-maps-sdk";
 
-export const WaitingSpotMap = () => {
+type LatLng = { lat: number; lng: number };
+
+type WaitingSpotMapProps = {
+  center: LatLng;
+  level?: number;
+};
+
+export const WaitingSpotMap = ({center, level = 3}: WaitingSpotMapProps) => {
   const MAP_KEY = import.meta.env.VITE_KAKAO_JS_KEY as string;
 
   const [loading, error] = useKakaoLoader({
@@ -13,9 +20,9 @@ export const WaitingSpotMap = () => {
   return (
     <Map
       id="map"
-      center={{ lat: 33.450701, lng: 126.570667 }}
+      center={center}
       style={{ width: "100%", height: "100%" }}
-      level={3}
+      level={level}
     />
   );
 }

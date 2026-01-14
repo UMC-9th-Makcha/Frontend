@@ -8,8 +8,9 @@ import type { Place, WaitingCategoryKey } from "../../types/waitingspot";
 import { StartLocationSearch } from "../../components/waitingspot/StartLocationSearch";
 import { PlaceList } from "../../components/waitingspot/PlaceList";
 import { PlaceDetailPanel } from "../../components/waitingspot/PlaceDetailPanel";
-import { waitingCategories } from "../../components/waitingspot/constants";
+import { FALLBACK_CENTER, waitingCategories } from "../../components/waitingspot/constants";
 import WalkingDirections from "./WalkingDirections";
+import { useGeoLocation } from "../../hooks/useGeolocation";
 
 export const mockPlaces: Place[] = [
   {
@@ -51,6 +52,16 @@ export const mockPlaces: Place[] = [
 ];
 
 export default function WaitingSpot() {
+  //지도 현위치 좌표
+  const { location, loading, error } = useGeoLocation({
+    enableHighAccuracy: true,
+    timeout: 10000,
+    maximumAge: 0,
+  });
+
+  const center = location ?
+    { lat: location.latitude, lng: location.longitude } : FALLBACK_CENTER; //권한 UX 구현 전까지 임시 좌표
+
   // 1. 타입을 string으로 받거나, 명시적으로 단언하여 에러를 방지합니다.
   const { type } = useParams() as { type: string };
   
@@ -84,6 +95,7 @@ export default function WaitingSpot() {
   return <WalkingDirections onBack={() => setShowDirections(false)} />;
 }
 
+
   return (
     <div className="min-h-dvh w-full overflow-hidden">
       <WaitingSpotLayout
@@ -95,7 +107,7 @@ export default function WaitingSpot() {
           selectedPlaceId={selectedPlaceId}
           onSelectPlaceId={handleSelectPlaceId}
         />}
-        map={<WaitingSpotMap />}
+        map={<WaitingSpotMap center={center} />}
         detail={isDetailOpen && selectedPlace ?
           <PlaceDetailPanel
             place={selectedPlace}

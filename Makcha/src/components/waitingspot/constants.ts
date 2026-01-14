@@ -9,3 +9,5 @@ export const waitingCategories = [
     distance: "가까운순",
     open24h: "24시간 우선",
   };
+
+export const FALLBACK_CENTER = { lat: 37.5665, lng: 126.9780 }; //임시 좌표
