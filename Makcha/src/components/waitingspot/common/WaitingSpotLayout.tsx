@@ -7,14 +7,14 @@ export const WaitingSpotLayout = ({header, controls, map, search, list, detail, 
     <div className="relative h-dvh w-full">
       {/* map */}
       <div className="absolute inset-0 z-0">
-        <div className="h-full w-full hidden md:block">{map}</div>
+        <div className="h-full w-full">{map}</div>
       </div>
 
-      <div className="relative z-10 h-full w-full md:flex">
+      <div className="relative z-10 h-full w-full pointer-events-none md:flex">
         <Panel
           width="md:w-100"
           isMobileFull
-          className="md:shadow-[5px_0px_15px_0px_#88888859]"
+          className="pointer-events-auto md:shadow-[5px_0px_15px_0px_#88888859]"
         >
           <div className="flex flex-col gap-0">
             {header}
@@ -29,6 +29,7 @@ export const WaitingSpotLayout = ({header, controls, map, search, list, detail, 
           onBack={onDetailBack}
           title="상세 정보"
           width="md:w-100"
+          className="pointer-events-auto"
         >
           {detail}
         </SubPanel>
