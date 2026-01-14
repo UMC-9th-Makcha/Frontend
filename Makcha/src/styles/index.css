@@ -2,7 +2,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-makcha-navy-950: #000c24; /* 가장 어두운 배경용 */
+  --color-makcha-navy-950: #000c24;
   --color-makcha-navy-900: #00163D;
   --color-makcha-navy-800: #183C7B;
   --color-makcha-navy-600: #4674C6;
@@ -20,12 +20,14 @@
     @apply transition-colors duration-300;
   }
 
-  /* html까지 잡아야 오버스크롤 흰색 안 나옴 */
   html, body {
     background-color: white;
     color: black;
     height: 100%;
     margin: 0;
+
+    overscroll-behavior-y: none;
+    overflow-x: hidden;
   }
 
   html.dark, .dark body {

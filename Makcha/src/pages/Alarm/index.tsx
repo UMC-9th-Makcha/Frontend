@@ -1,20 +1,41 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+
+import AlarmPanel from "./AlarmPanel";
 import RouteLoadingPanel from "./RouteLoadingPanel";
 import RouteResultPanel from "./RouteResultPanel";
-import { ALARM_ROUTES_MOCK } from "./mocks/alarmMock";
-import type { OriginSearchItem } from "./types/search";
-import AlarmPanel from "./AlarmPanel";
+import RouteConfirmPanel from "./RouteConfirmPanel";
 import AlarmSuccessPanel from "./AlarmSuccessPanel";
 import SearchSheet from "./SearchSheet";
-import type { AlarmRoute } from "./types/alarm";
-import RouteConfirmPanel from "./RouteConfirmPanel";
-import type { RouteConfirmDetail } from "./types/routeConfirm";
+
+import { ALARM_ROUTES_MOCK } from "./mocks/alarmMock";
 import { ROUTE_CONFIRM_DETAIL_MOCK } from "./mocks/routeConfirmMock";
+
+import type { OriginSearchItem } from "./types/search";
+import type { AlarmRoute } from "./types/alarm";
+import type { RouteConfirmDetail } from "./types/routeConfirm";
+
+import Panel from "../../components/common/Panel";
+import KakaoMapView from "./KakaoMapView";
 
 type Step = "INPUT" | "LOADING" | "RESULT" | "CONFIRM" | "SUCCESS";
 type SearchTarget = "ORIGIN" | "DESTINATION";
 
+type NavState = {
+    from?: "history";
+    openConfirm?: boolean;
+    routeId?: string;
+};
+
 const Alarm = () => {
+    useEffect(() => {
+        console.log("KAKAO KEY:", import.meta.env.VITE_KAKAO_JS_KEY);
+    }, []);
+
+    const navigate = useNavigate();
+    const location = useLocation();
+    const navState = (location.state ?? null) as NavState | null;
+
     const [step, setStep] = useState<Step>("INPUT");
 
     const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -79,10 +100,31 @@ const Alarm = () => {
         );
     };
 
+    useEffect(() => {
+        if (!navState?.openConfirm || !navState.routeId) return;
+
+        setRoutes(ALARM_ROUTES_MOCK);
+
+        const found = ALARM_ROUTES_MOCK.find((r) => r.id === navState.routeId) ?? null;
+        if (found) {
+            setSelectedRoute(found);
+            setStep("CONFIRM");
+        }
+
+
+        navigate(".", { replace: true, state: null });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [navState?.openConfirm, navState?.routeId]);
+
     return (
-        <div className="min-h-dvh w-full overflow-x-hidden bg-white dark:bg-makcha-navy-900">
-            <div className="relative min-h-dvh w-full md:flex md:overflow-hidden">
-                <div className="w-full md:w-[402px] md:shrink-0">
+        <div className="h-dvh w-full overflow-x-hidden bg-white dark:bg-makcha-navy-900">
+            <div className="relative h-dvh w-full md:flex md:overflow-hidden">
+                {/* 좌측 패널 */}
+                <Panel
+                    width="md:w-100"
+                    isMobileFull
+                    className="md:border-r md:border-gray-200 dark:md:border-makcha-navy-800"
+                >
                     {step === "LOADING" ? (
                         <RouteLoadingPanel open />
                     ) : step === "RESULT" && origin && destination ? (
@@ -92,17 +134,33 @@ const Alarm = () => {
                             routes={routes}
                             onSelectRoute={handleSelectRoute}
                         />
+                    ) : step === "CONFIRM" && selectedRoute ? (
+                        <RouteConfirmPanel
+                            route={selectedRoute}
+                            detail={getConfirmDetail(selectedRoute.id)}
+                            onBack={() => {
+                                // History에서 넘어온 CONFIRM이면 History로 
+                                if (navState?.from === "history") {
+                                    navigate(-1);
+                                    return;
+                                }
+                                setStep("RESULT");
+                            }}
+                            onConfirm={() => setStep("SUCCESS")}
+                        />
                     ) : step === "SUCCESS" && origin && destination && selectedRoute ? (
                         <AlarmSuccessPanel
                             origin={origin}
                             destination={destination}
                             route={selectedRoute}
                             onGoAlarmList={() => {
-                                // TODO : 알림내역 이동
+                                navigate("/history");
                             }}
                         />
                     ) : (
                         <AlarmPanel
+                            origin={origin}
+                            destination={destination}
                             onOpenOrigin={openOriginSheet}
                             onOpenDestination={openDestinationSheet}
                             onSelectDestination={(item) => {
@@ -111,13 +169,14 @@ const Alarm = () => {
                             }}
                         />
                     )}
-                </div>
+                </Panel>
 
-                {/* 지도 */}
-                {step !== "CONFIRM" && (
-                    <section className="hidden md:block min-w-0 flex-1 h-dvh bg-gray-100" />
-                )}
+                {/* 지도 영역 */}
+                <section className="hidden md:block min-w-0 flex-1 h-dvh">
+                    <KakaoMapView />
+                </section>
 
+                {/* 검색 시트 */}
                 <SearchSheet
                     open={isSearchOpen}
                     onClose={() => setIsSearchOpen(false)}

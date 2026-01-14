@@ -1,9 +1,9 @@
+import { useCallback } from "react";
 import { TIMES } from "../constants";
 import { useSettingStore } from "../../../store/useSettingStore";
 import { HorizontalScroll } from "../../../components/common/HorizontalScroll";
-import { useCallback } from "react";
 
-export function SettingNotification() {
+export function AlramSection() {
   const selectedTimes = useSettingStore((state) => state.selectedTimes);
   const toggleTime = useSettingStore((state) => state.toggleTime);
 
@@ -20,11 +20,12 @@ export function SettingNotification() {
           const isSelected = selectedTimes.includes(t);
           return (
             <button
+              type="button"
               className={`
-                rounded-full border px-5 py-2 text-[14px] transition-colors duration-200 pointer-events-none
+                rounded-full border px-5 py-2 text-[14px] transition-all duration-200 pointer-events-none
                 ${isSelected 
                   ? 'border-blue-500 bg-blue-50 font-bold text-blue-600 dark:border-blue-400 dark:bg-blue-400/10 dark:text-blue-400' 
-                  : 'border-gray-300 text-gray-500 hover:border-gray-400 dark:border-white/10 dark:text-makcha-navy-300'
+                  : 'border-gray-300 text-gray-500 dark:border-white/10 dark:text-makcha-navy-300'
                 }
               `}
             >

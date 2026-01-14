@@ -2,7 +2,6 @@ import { ChevronLeft, ChevronRight, Bell } from "lucide-react";
 import type { AlarmRoute } from "./types/alarm";
 import type { RouteConfirmDetail, RouteConfirmSegment } from "./types/routeConfirm";
 import SegmentBar from "./components/SegmentBar";
-import Panel from "../../components/common/Panel";
 
 type Props = {
     route: AlarmRoute;
@@ -63,13 +62,8 @@ export default function RouteConfirmPanel({ route, detail, onBack, onConfirm }: 
     const chips: string[] = route.lines ?? [];
 
     return (
-        <Panel
-            width="md:w-[402px]"
-            isMobileFull
-            className="md:border-r md:border-gray-200 dark:md:border-makcha-navy-800"
-        >
-            {/* 헤더 */}
-            <div>
+        <>
+            <div className="pt-[max(12px,env(safe-area-inset-top))]">
                 <div className="flex items-start gap-3">
                     <button
                         type="button"
@@ -104,9 +98,7 @@ export default function RouteConfirmPanel({ route, detail, onBack, onConfirm }: 
                             </div>
                         </div>
 
-                        <p className="mt-2 text-[14px] text-gray-500 dark:text-white/60">
-                            {detail.etaText}
-                        </p>
+                        <p className="mt-2 text-[14px] text-gray-500 dark:text-white/60">{detail.etaText}</p>
 
                         <SegmentBar segments={detail.segments} />
                     </div>
@@ -116,7 +108,7 @@ export default function RouteConfirmPanel({ route, detail, onBack, onConfirm }: 
             </div>
 
             {/* 버튼 */}
-            <div className="mt-auto pt-4 space-y-3 bg-white dark:bg-makcha-navy-900">
+            <div className="mt-auto pt-4 space-y-3 pb-[max(20px,env(safe-area-inset-bottom))]">
                 <button
                     type="button"
                     className="h-12 w-full rounded-[14px] bg-[#FFE89F] transition hover:bg-[#FFD966] flex items-center justify-center gap-2 text-[18px] font-semibold text-black shadow-sm"
@@ -141,6 +133,6 @@ export default function RouteConfirmPanel({ route, detail, onBack, onConfirm }: 
                     알림 취소하기
                 </button>
             </div>
-        </Panel>
+        </>
     );
 }

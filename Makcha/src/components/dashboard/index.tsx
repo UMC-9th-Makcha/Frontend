@@ -44,10 +44,16 @@ const Dashboard = () => {
     };
   }, [isMobile, isSidebarOpen, setSidebarOpen]);
 
+  // 버튼 토글 핸들러
   const handleToggle = useCallback(() => {
     if (isMobile) setSidebarOpen(!isSidebarOpen);
     else toggleSidebarCollapsed();
   }, [isMobile, isSidebarOpen, setSidebarOpen, toggleSidebarCollapsed]);
+
+  // 로고 클릭 시 사이드바 닫기 핸들러 (모바일 전용)
+  const handleLogoClick = useCallback(() => {
+    if (isMobile) setSidebarOpen(false);
+  }, [isMobile, setSidebarOpen]);
 
   return (
     <motion.aside
@@ -57,7 +63,11 @@ const Dashboard = () => {
         x: (isMobile && !isSidebarOpen) ? "-100%" : 0 
       }}
       transition={sidebarSpring}
-      className="fixed inset-y-0 left-0 z-45 flex flex-col bg-gray-50 md:bg-white dark:bg-makcha-navy-900 md:sticky md:top-0 md:h-screen md:border-r md:border-gray-200 dark:md:border-makcha-navy-800 overflow-hidden"
+      className={`
+        ${isMobile ? 'absolute inset-y-0 left-0 z-45' : 'sticky top-0 h-full border-r'}
+        flex flex-col bg-gray-50 md:bg-white dark:bg-makcha-navy-900 
+        md:border-gray-200 dark:md:border-makcha-navy-800 overflow-hidden
+      `}
     >
       {/* 닫기/축소 버튼 */}
       <div className={`mt-4 flex h-10 shrink-0 items-center ${isCollapsed ? 'justify-center' : 'justify-end px-5'}`}>
@@ -70,29 +80,31 @@ const Dashboard = () => {
       </div>
 
       {/* 로고 영역 */}
-      {!isMobile && (
-        <motion.div 
-          layout
-          className={`mt-4 flex shrink-0 items-center ${isCollapsed ? 'justify-center' : 'px-7'}`}
+      <motion.div 
+        layout
+        className={`mt-4 flex shrink-0 items-center ${isCollapsed ? 'justify-center' : 'px-7'}`}
+      >
+        <MotionLink 
+          to={user ? "/home" : "/"} 
+          onClick={handleLogoClick}
+          className="flex items-center justify-center"
         >
-          <MotionLink to={user ? "/home" : "/"} className="flex items-center justify-center">
-            <motion.div
-              layout
-              initial={{ width: logoSize, height: logoSize }}
-              animate={{ width: logoSize, height: logoSize }}
-              transition={sidebarSpring}
-              style={{ width: logoSize, height: logoSize }}
-              className="relative flex shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white shadow-sm"
-            >
-              <img 
-                src="/makcha.png" 
-                className="h-full w-full object-contain" 
-                alt="Logo" 
-              />
-            </motion.div>
-          </MotionLink>
-        </motion.div>
-      )}
+          <motion.div
+            layout
+            initial={{ width: logoSize, height: logoSize }}
+            animate={{ width: logoSize, height: logoSize }}
+            transition={sidebarSpring}
+            style={{ width: logoSize, height: logoSize }}
+            className="relative flex shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white shadow-sm"
+          >
+            <img 
+              src="/makcha.png" 
+              className="h-full w-full object-contain" 
+              alt="Logo" 
+            />
+          </motion.div>
+        </MotionLink>
+      </motion.div>
 
       {/* 다크모드 토글 */}
       <motion.div 

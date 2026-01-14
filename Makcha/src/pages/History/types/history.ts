@@ -1,4 +1,5 @@
 export type CurrentAlarm = {
+    routeId: string;
     isOptimal: boolean;
     lines: string[];
     departureTime: string;

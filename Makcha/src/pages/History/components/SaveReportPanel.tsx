@@ -65,14 +65,14 @@ const SaveReportPanel = ({ open, onClose, totalSavedAmount, items }: Props) => {
                     md:border-r md:border-[#E2E2E2] md:dark:border-makcha-navy-800
                 "
             >
-                <div className="h-full overflow-y-auto px-5 pt-6 pb-10 md:pt-15">
+                <div className="h-full overflow-y-auto px-5 pt-6 pb-10 pt-13 md:pt-15">
                     {/* 헤더 */}
                     <div className="flex items-start justify-between">
                         <div>
                             <h2 className="text-[32px] font-medium text-makcha-navy-900 dark:text-white">
                                 세이브 리포트
                             </h2>
-
+                            
                             {isEmpty ? (
                                 <>
                                     <p className="mt-4 text-[32px] md:text-[20px] font-bold text-makcha-navy-900 dark:text-white">

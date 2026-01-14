@@ -1,14 +1,16 @@
 import { ChevronRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import type { CurrentAlarm } from "../types/history";
 
 type Props = {
     alarm: CurrentAlarm | null;
     onCreate?: () => void;
     onCancel?: () => void;
-    onDetail?: () => void;
 };
 
-const CurrentAlarmCard = ({ alarm, onCreate, onCancel, onDetail }: Props) => {
+const CurrentAlarmCard = ({ alarm, onCreate, onCancel }: Props) => {
+    const navigate = useNavigate();
+
     // 1) 알림 없음
     if (!alarm) {
         return (
@@ -88,7 +90,15 @@ const CurrentAlarmCard = ({ alarm, onCreate, onCancel, onDetail }: Props) => {
 
                     <button
                         type="button"
-                        onClick={onDetail}
+                        onClick={() => {
+                            navigate("/alarm", {
+                                state: {
+                                    from: "history",
+                                    openConfirm: true,
+                                    routeId: alarm.routeId,
+                                },
+                            });
+                        }}
                         className="
                             shrink-0 whitespace-nowrap
                             flex items-center gap-2 text-[18px]
@@ -101,7 +111,6 @@ const CurrentAlarmCard = ({ alarm, onCreate, onCancel, onDetail }: Props) => {
                         <ChevronRight className="h-5 w-5" strokeWidth={2} />
                     </button>
                 </div>
-
 
                 <div className="mt-4 text-center">
                     <div className="text-[40px] font-medium text-makcha-navy-900 dark:text-white">

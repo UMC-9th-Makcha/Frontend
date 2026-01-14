@@ -3,25 +3,21 @@ import type { ViewType } from '../pages/Setting/constants';
 import type { Place } from '../types/setting';
 
 interface SettingState {
-  home: Place | null;
+  home: Place;
   favorites: Place[];
   selectedTimes: string[];
   view: ViewType;
-
   setHome: (place: Place) => void;
   setFavorites: (favorites: Place[]) => void;
   setSelectedTimes: (times: string[]) => void;
   setView: (view: ViewType) => void;
-
   toggleTime: (time: string, dragMoved: boolean) => void;
-  /* 장소 저장 */
   savePlace: (updated: Place) => void;
-  /* 즐겨찾기 삭제 */
   deleteFavorite: (id: string) => void;
 }
 
 export const useSettingStore = create<SettingState>((set) => ({
-  home: null,
+  home: { id: 'home', name: '집', address: '', detail: '' },
   favorites: [],
   selectedTimes: ['10분 전'],
   view: 'MAIN',
@@ -42,9 +38,7 @@ export const useSettingStore = create<SettingState>((set) => ({
 
   savePlace: (updated) => {
     set((state) => {
-      if (updated.id === 'home') {
-        return { home: updated };
-      }
+      if (updated.id === 'home') return { home: updated };
 
       const isExisting = state.favorites.some((p) => p.id === updated.id);
       return {
@@ -56,6 +50,7 @@ export const useSettingStore = create<SettingState>((set) => ({
   },
 
   deleteFavorite: (id) => {
+    if (id === 'home') return;
     set((state) => ({
       favorites: state.favorites.filter((p) => p.id !== id),
     }));

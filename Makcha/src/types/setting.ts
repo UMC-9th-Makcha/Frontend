@@ -25,16 +25,15 @@ export interface PhonenumberSettingProps {
   onBack: () => void;
 }
 
-export interface SettingPanelProps {
-  view: ViewType;
-  data: { home: Place; favorites: Place[] }; 
-  onNavigate: (view: ViewType, place?: Place) => void;
-}
-
-export interface SettingAccountProps {
+export interface AccountSectionProps {
   onNavigate: (view: ViewType) => void;
 }
 
-export interface SettingPlacesProps {
-  onNavigate: (view: ViewType, place?: Place) => void;
+export interface SettingPlaceProps {
+  onNavigate: (v: ViewType, p?: Place) => void;
+}
+
+export interface SettingPanelProps {
+  view: ViewType;
+  onNavigate: (v: ViewType, p?: Place) => void;
 }

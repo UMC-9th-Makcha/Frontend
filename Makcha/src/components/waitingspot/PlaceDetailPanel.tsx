@@ -78,7 +78,6 @@ export const PlaceDetailPanel = ({ place, onStartDirection }: PlaceDetailProps) 
             </span>
           ))}
         </div>
-
         {/* 정보 텍스트 */}
         <div className="mt-6 mb-20 space-y-4 text-[16px] text-gray-900 
         dark:text-makcha-navy-200">
