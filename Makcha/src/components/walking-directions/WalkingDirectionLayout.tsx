@@ -6,15 +6,15 @@ export const WalkingDirectionLayout = ({header, controls, map, search, list, det
   return (
     <div className="relative h-dvh w-full">
       {/* map */}
-      <div className="absolute inset-0 z-0">
-        <div className="h-full w-full hidden md:block">{map}</div>
+      <div className="absolute inset-0">
+        {map}
       </div>
 
-      <div className="relative z-10 h-full w-full md:flex">
+      <div className="relative z-10 h-full w-full pointer-events-none md:flex">
         <Panel
           width="md:w-100"
           isMobileFull={true}
-          className="relative inset-x-0 z-10 bg-white dark:bg-makcha-navy-900 md:relative md:top-0 md:h-dvh md:shadow-[5px_0px_15px_0px_#88888859]"
+          className="relative inset-x-0 z-10 bg-white pointer-events-auto dark:bg-makcha-navy-900 md:relative md:top-0 md:h-dvh md:shadow-[5px_0px_15px_0px_#88888859]"
         >
           <div className="min-h-full flex flex-col">
             <div className="flex-1 min-h-0">
@@ -35,6 +35,7 @@ export const WalkingDirectionLayout = ({header, controls, map, search, list, det
           onBack={onDetailBack}
           title="경로 안내"
           width="md:w-100"
+          className="pointer-events-auto"
         >
           {detail}
         </SubPanel>
