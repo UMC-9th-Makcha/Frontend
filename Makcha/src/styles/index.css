@@ -13,10 +13,20 @@
   --color-makcha-yellow-400: #FFCE2F;
   --color-makcha-yellow-300: #FFDC69;
   --color-makcha-yellow-200: #FFE99F;
+
+  /* 지도 필터 변수 정의 */
+  --map-filter: none;
+  --map-anti-invert: none;
+
+  .dark {
+    --map-filter: invert(100%) hue-rotate(180deg) brightness(0.8) contrast(0.9);
+    --map-anti-invert: invert(100%) hue-rotate(180deg) brightness(1.2);
+  }
 }
 
 @layer base {
   *, ::before, ::after {
+    /* 모든 색상 및 트랜지션 300ms 일괄 적용 */
     @apply transition-colors duration-300;
   }
 
@@ -25,7 +35,6 @@
     color: black;
     height: 100%;
     margin: 0;
-
     overscroll-behavior-y: none;
     overflow-x: hidden;
   }
@@ -33,6 +42,17 @@
   html.dark, .dark body {
     background-color: var(--color-makcha-navy-900);
     color: white;
+  }
+
+  /* 카카오 맵 전용 필터 및 트랜지션 클래스 */
+  .kakao-map-wrapper {
+    filter: var(--map-filter);
+    transition: filter 0.3s ease; /* 요청하신 300ms 딜레이 효과 */
+  }
+
+  .anti-invert {
+    filter: var(--map-anti-invert);
+    transition: filter 0.3s ease;
   }
 }
 
