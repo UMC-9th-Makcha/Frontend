@@ -23,8 +23,9 @@ export const WaitingSpotMap = ({center, level = 3, places, selectedPlaceId, onCl
 
   return (
     <Map
-      id="map"
+      id="waiting-spot-map"
       center={center}
+      isPanto={true}
       style={{ width: "100%", height: "100%" }}
       level={level}
     >
