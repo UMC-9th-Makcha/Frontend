@@ -9,12 +9,16 @@ export type PathType =
   | "BUS_RED" | "BUS_BLUE" | "BUS_GREEN" | "BUS_VILLAGE" | "BUS_GYEONGGI"
   | "WALK";
 
-  export interface OriginSearchItem {
-    id: string;
-    name: string; 
-    position: MapPoint;
-    address?: string;
-  }
+// 마커의 성격
+export type MarkerVariant = 'start' | 'end' | 'spot' | 'current' | 'select';
+
+export interface MapMarker {
+  id: string | number;
+  name: string;
+  position: MapPoint;
+  variant: MarkerVariant;
+  address?: string;
+}
 
 export interface MapPathSegment {
   points: MapPoint[];

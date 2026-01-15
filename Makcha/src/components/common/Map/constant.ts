@@ -1,6 +1,15 @@
-import type { PathType } from "../../../types/map";
+import type { PathType, MarkerVariant } from "../../../types/map";
 
 export const DEFAULT_MAP_CENTER = { lat: 37.5665, lng: 126.9780 };
+
+/* 마커 타입별 색상 */
+export const MARKER_COLORS: Record<MarkerVariant, string> = {
+  start: "#4574C6",   // 출발 (파랑)
+  end: "#F43F5E",     // 도착 (빨강)
+  spot: "#86AFF7",    // 일반 장소 (연파랑)
+  select: "#10B981",  // 선택됨 (초록)
+  current: "#4674C6", // 현재 위치
+};
 
 /* 노선 타입별 공식 색상 */
 export const PATH_COLORS: Record<PathType, { light: string; dark: string }> = {
