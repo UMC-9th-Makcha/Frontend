@@ -1,13 +1,13 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
-import { requestKakaoLogin } from '../../apis/auth';
 import LoadingSpinner from '../common/loadingSpinner';
 
 const KakaoCallback = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { setLogin } = useAuth();
+
+  const { login } = useAuth();
   
   // 중복 요청 방지
   const isProcessing = useRef(false);
@@ -19,32 +19,29 @@ const KakaoCallback = () => {
     const state = searchParams.get('state');
     const storedState = sessionStorage.getItem('kakao_auth_state');
 
-    // CSRF 방지 state
+    // 보안 검증 (CSRF 방지)
     if (!code || !state || state !== storedState) {
+      console.error('로그인 실패: 유효하지 않은 인증 상태입니다.');
+      alert('비정상적인 접근입니다. 다시 로그인해 주세요.');
       navigate('/', { replace: true });
       return;
     }
 
-    const handleAuth = async () => {
-      isProcessing.current = true;
-      sessionStorage.removeItem('kakao_auth_state');
+    // 인증 처리 시작
+    isProcessing.current = true;
+    sessionStorage.removeItem('kakao_auth_state');
 
-      try {
-        const { token, user } = await requestKakaoLogin(code);
-        setLogin(token, user);
-        navigate('/home', { replace: true });
-      } catch {
-        // 에러 시 메인으로
-        navigate('/', { replace: true });
-      }
-    };
+    // Mutation 실행
+    login(code);
 
-    handleAuth();
-  }, [searchParams, navigate, setLogin]);
+  }, [searchParams, navigate, login]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
-      <LoadingSpinner />
+    <div className="flex items-center justify-center min-h-screen bg-white dark:bg-makcha-navy-900">
+      <div className="flex flex-col items-center gap-4">
+        <LoadingSpinner />
+        <p className="text-gray-500 font-medium">로그인 중입니다...</p>
+      </div>
     </div>
   );
 };
