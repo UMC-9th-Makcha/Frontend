@@ -4,12 +4,10 @@ import { useAuthStore } from '../store/useAuthStore';
 import type { BaseResponse, ApiError} from '../types/api'; 
 import type { LoginResult } from '../types/auth';
 
-/* 요청 설정 확장 */
 interface CustomConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
 }
 
-/* 리트라이 큐 아이템 타입 */
 interface RetryQueueItem {
   resolve: (token: string | null) => void;
   reject: (error: unknown) => void;
@@ -27,11 +25,8 @@ let failedQueue: RetryQueueItem[] = [];
 
 const processQueue = (error: unknown, token: string | null = null): void => {
   failedQueue.forEach((prom) => {
-    if (error) {
-      prom.reject(error);
-    } else {
-      prom.resolve(token);
-    }
+    if (error) prom.reject(error);
+    else prom.resolve(token);
   });
   failedQueue = [];
 };
@@ -51,14 +46,17 @@ api.interceptors.response.use(
   async (err: AxiosError) => {
     const originalRequest = err.config as CustomConfig;
     const errorData = err.response?.data as ApiError | undefined;
+    const status = err.response?.status;
 
-    if (errorData?.errorCode === 'AUTH-401-001' && !originalRequest._retry) {
+    // 토큰 만료 에러 처리 (401)
+    if ((status === 401 || errorData?.errorCode === 'AUTH-401-001') && !originalRequest._retry) {
       if (isRefreshing) {
         return new Promise<string | null>((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         })
           .then((token) => {
-            if (originalRequest.headers && token) {
+            if (token) {
+              originalRequest.headers = originalRequest.headers || {};
               originalRequest.headers.Authorization = `Bearer ${token}`;
             }
             return api(originalRequest);
@@ -77,24 +75,51 @@ api.interceptors.response.use(
         );
 
         const { accessToken, user } = data.result;
-
         useAuthStore.getState().setLogin(accessToken, user);
         
         processQueue(null, accessToken);
         
-        if (originalRequest.headers) {
-          originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-        }
+        originalRequest.headers = originalRequest.headers || {};
+        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+        
         return api(originalRequest);
       } catch (refreshError: unknown) {
         processQueue(refreshError, null);
         useAuthStore.getState().setLogout();
+        // 리프레시 실패 시 로그인 페이지 이동 등의 처리
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;
       }
     }
 
+    // 공통 에러 처리
+    handleGlobalError(err);
+
     return Promise.reject(err);
   }
 );
+
+// 공통 에러 핸들러 함수
+function handleGlobalError(err: AxiosError) {
+  const status = err.response?.status;
+  const errorData = err.response?.data as ApiError | undefined;
+  const message = errorData?.message || "알 수 없는 에러가 발생했습니다.";
+
+  switch (status) {
+    case 400:
+      console.error("잘못된 요청:", message);
+      break;
+    case 403:
+      console.error("권한 없음:", message);
+      break;
+    case 404:
+      console.error("찾을 수 없음:", message);
+      break;
+    case 500:
+      console.error("서버 내부 에러:", message);
+      break;
+    default:
+      console.error("네트워크 또는 기타 에러:", err.message);
+  }
+}
