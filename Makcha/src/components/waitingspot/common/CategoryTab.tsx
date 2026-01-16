@@ -1,7 +1,6 @@
-import type { CategoryTabProps } from "../../types/waitingspot";
-import { categories } from "./constants";
+import type { CategoryTabProps } from "../../../types/waitingspot";
 
-export const CategoryTab = ({ selected, onChange }: CategoryTabProps) => {
+export const CategoryTab = <T extends string>({ selected, onChange, categories }: CategoryTabProps<T>) => {
   return (
     <div className="flex rounded-lg gap-2 py-2 px-2 whitespace-nowrap">
       {categories.map((c) => (

@@ -12,7 +12,7 @@ import Download from "./pages/Download";
 
 import DashboardLayout from "./components/dashboard/DashboardLayout";
 import ErrorPage from "./pages/Error";
-import { ProtectedRoute } from "./components/kakao/KakaoRoute";
+import { ProtectedRoute, PublicRoute } from "./components/kakao/KakaoRoute";
 import KakaoCallback from "./components/kakao/KakaoCallback";
 import FAB from "./components/common/FAB";
 
@@ -38,13 +38,16 @@ function App() {
           <Route element={<DashboardLayout />}>
             
             {/* 비로그인 */}
-            <Route path="/" element={<Main />} />
-            <Route path="/home" element={<Home />} />
+            <Route element={<PublicRoute />}>
+              <Route path="/" element={<Main />} />
+            </Route>
+            
+            <Route path="/alarm" element={<Alarm />} />
             <Route path="/download" element={<Download />} />
 
             {/* 로그인*/}
             <Route element={<ProtectedRoute />}>
-              <Route path="/alarm" element={<Alarm />} />
+              <Route path="/home" element={<Home />} />
               <Route path="/spot/:type" element={<WaitingSpot />} />
               <Route path="/history" element={<History />} />
               <Route path="/setting" element={<Settings />} />

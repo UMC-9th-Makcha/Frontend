@@ -3,7 +3,7 @@ import { TIMES } from "../constants";
 import { useSettingStore } from "../../../store/useSettingStore";
 import { HorizontalScroll } from "../../../components/common/HorizontalScroll";
 
-export function AlramSection() {
+export function AlarmSection() {
   const selectedTimes = useSettingStore((state) => state.selectedTimes);
   const toggleTime = useSettingStore((state) => state.toggleTime);
 

@@ -3,39 +3,53 @@
 
 @theme {
   --color-makcha-navy-950: #000c24;
-  --color-makcha-navy-900: #00163D;
-  --color-makcha-navy-800: #183C7B;
-  --color-makcha-navy-600: #4674C6;
-  --color-makcha-navy-400: #86AFF7;
-  --color-makcha-navy-200: #D0E1FF;
+  --color-makcha-navy-900: #00163d;
+  --color-makcha-navy-800: #183c7b;
+  --color-makcha-navy-600: #4674c6;
+  --color-makcha-navy-400: #86aff7;
+  --color-makcha-navy-200: #d0e1ff;
 
-  --color-makcha-yellow-500: #FFC300;
-  --color-makcha-yellow-400: #FFCE2F;
-  --color-makcha-yellow-300: #FFDC69;
-  --color-makcha-yellow-200: #FFE99F;
+  --color-makcha-yellow-500: #ffc300;
+  --color-makcha-yellow-400: #ffce2f;
+  --color-makcha-yellow-300: #ffdc69;
+  --color-makcha-yellow-200: #ffe99f;
 }
 
 @layer base {
+  :root {
+    --map-filter: none;
+    --map-anti-invert: none;
+  }
+
+  .dark {
+    --map-filter: invert(100%) hue-rotate(180deg) brightness(0.8) contrast(0.9);
+    --map-anti-invert: invert(100%) hue-rotate(180deg) brightness(1.2);
+  }
+
   *, ::before, ::after {
     @apply transition-colors duration-300;
   }
 
   html, body {
-    background-color: white;
-    color: black;
-    height: 100%;
-    margin: 0;
-
+    @apply bg-white text-black h-full m-0 overflow-x-hidden;
     overscroll-behavior-y: none;
-    overflow-x: hidden;
   }
 
-  html.dark, .dark body {
+  .dark body {
     background-color: var(--color-makcha-navy-900);
     color: white;
   }
+
+  .kakao-map-wrapper {
+    filter: var(--map-filter);
+    transition: filter 0.3s ease;
+  }
+
+  .anti-invert {
+    filter: var(--map-anti-invert);
+    transition: filter 0.3s ease;
+  }
 }
 
-/* 스크롤바 숨기기 */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }

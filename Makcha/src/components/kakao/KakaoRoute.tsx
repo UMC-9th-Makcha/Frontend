@@ -1,5 +1,4 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-import LoadingSpinner from "../common/loadingSpinner";
 import { useAuth } from "../../hooks/useAuth";
 import { useAuthStore } from "../../store/useAuthStore";
 
@@ -9,8 +8,7 @@ export const ProtectedRoute = () => {
   const location = useLocation();
   const isHydrated = useAuthStore.persist.hasHydrated();
 
-  // Zustand persist 동기화 대기
-  if (!isHydrated) return <LoadingSpinner />; 
+  if (!isHydrated) return null;
 
   if (!isLoggedIn) {
     // 이미 메인에 있다면 추가 이동이나 리로드 없이 null 반환
@@ -23,7 +21,7 @@ export const ProtectedRoute = () => {
   return <Outlet />;
 };
 
-//🔓 PublicRoute (로그인 시 접근 불가 - 예: 로그인 페이지 등)
+//🔓 PublicRoute (로그인 시 접근 불가)
 export const PublicRoute = () => {
   const { isLoggedIn } = useAuth();
   const location = useLocation();

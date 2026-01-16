@@ -1,14 +1,22 @@
 export interface User {
-  id: number;          // 사용자 고유 ID
-  nickname: string;    // 카카오 닉네임
-  profileImage?: string; // 프로필 이미지 URL
-  email: string;       // 카카오 계정 이메일
+  id: string;
+  nickname: string;
+  profileImage?: string;
+  email?: string;
+}
+
+export interface LoginResult {
+  accessToken: string; 
+  expiresIn: number;
+  user: User;
 }
 
 export interface AuthState {
   isLoggedIn: boolean;
   accessToken: string | null;
   user: User | null;
+  isHydrated: boolean;
   setLogin: (token: string, user: User) => void;
   setLogout: () => void;
+  setHydrated: (state: boolean) => void;
 }

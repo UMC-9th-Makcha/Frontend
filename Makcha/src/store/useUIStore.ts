@@ -11,16 +11,25 @@ export const useUIStore = create<UIState>()(
   persist(
     (set) => ({
       isDarkMode: false, 
-      
+
       toggleDarkMode: () => set((state) => {
         const nextMode = !state.isDarkMode;
+        document.documentElement.classList.toggle('dark', nextMode);
         return { isDarkMode: nextMode };
       }),
 
-      setDarkMode: (isDark) => set({ isDarkMode: isDark }),
+      setDarkMode: (isDark) => set(() => {
+        document.documentElement.classList.toggle('dark', isDark);
+        return { isDarkMode: isDark };
+      }),
     }),
     {
       name: 'ui-storage',
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          document.documentElement.classList.toggle('dark', state.isDarkMode);
+        }
+      },
     }
   )
 );
