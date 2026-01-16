@@ -10,7 +10,7 @@ type Props = {
 const DestinationCarousel = ({ onSelectDestination }: Props) => {
     return (
         <section className="mt-8 max-md:mt-7">
-            <p className="text-sm font-semibold text-makcha-navy-900 dark:text-white max-md:text-[20px] max-md:font-medium max-md:text-[#262626]">
+            <p className="text-sm font-semibold text-makcha-navy-900 dark:text-white max-md:text-[18px] max-md:font-medium max-md:text-[#262626]">
                 도착지
             </p>
 
@@ -49,7 +49,6 @@ const DestinationCarousel = ({ onSelectDestination }: Props) => {
                     </button>
                 )}
                 onItemClick={(d, moved) => {
-                    // 드래그로 스크롤하다가 발생한 클릭은 무시
                     if (moved) return;
 
                     onSelectDestination({

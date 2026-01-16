@@ -30,7 +30,7 @@ const HistoryHome = () => {
             알림 내역
           </h1>
 
-          <p className="mt-2 text-[20px] text-[#5F5F5F] dark:text-makcha-navy-200">
+          <p className="mt-[10px] text-[20px] text-[#5F5F5F] dark:text-makcha-navy-200">
             현재 신청한 알림을 확인할 수 있어요
           </p>
 

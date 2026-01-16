@@ -1,8 +1,8 @@
-import type { AlarmRoute } from "./types/alarm";
-import type { OriginSearchItem } from "./types/search";
+import type { AlarmRoute } from "../types/alarm";
+import type { OriginSearchItem } from "../types/search";
 import { CheckCircle } from "lucide-react";
-import { ROUTE_TYPE_LABEL } from "./constants";
-import FrequentRoutesCard from "./components/FrequentRoutesCard";
+import { ROUTE_TYPE_LABEL } from "../constants";
+import FrequentRoutesCard from "../components/FrequentRoutesCard";
 
 type Props = {
     origin: OriginSearchItem;
@@ -25,7 +25,7 @@ const AlarmSuccessPanel = ({ origin, destination, route, onGoAlarmList }: Props)
                     알림 신청 완료!
                 </h1>
 
-                <p className="mt-[12px] text-center text-[16px] text-gray-500 dark:text-white/60">
+                <p className="mt-3 text-center text-[16px] text-gray-500 dark:text-white/60">
                     카카오톡으로 막차 알림 메시지를 보내드렸어요!
                     <br />
                     이제 브라우저를 닫으셔도 괜찮습니다.

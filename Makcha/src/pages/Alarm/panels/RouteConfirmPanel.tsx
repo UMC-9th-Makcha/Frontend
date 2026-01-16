@@ -1,7 +1,7 @@
 import { ChevronLeft, ChevronRight, Bell } from "lucide-react";
-import type { AlarmRoute } from "./types/alarm";
-import type { RouteConfirmDetail, RouteConfirmSegment } from "./types/routeConfirm";
-import SegmentBar from "./components/SegmentBar";
+import type { AlarmRoute } from "../types/alarm";
+import type { RouteConfirmDetail, RouteConfirmSegment } from "../types/routeConfirm";
+import SegmentBar from "../components/SegmentBar";
 
 type Props = {
     route: AlarmRoute;
@@ -63,7 +63,7 @@ export default function RouteConfirmPanel({ route, detail, onBack, onConfirm }: 
 
     return (
         <div className="flex min-h-full flex-col">
-            <div className="px-[16px] pt-[40px]">
+            <div className="px-4 pt-10">
                 <div className="flex items-start gap-3">
                     <button
                         type="button"

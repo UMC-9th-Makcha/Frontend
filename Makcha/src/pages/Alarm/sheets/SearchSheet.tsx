@@ -1,18 +1,19 @@
 import { useEffect, useMemo, useState } from "react";
-import { ORIGIN_SEARCH_MOCK } from "./mocks/originSearchMock";
+import { ORIGIN_SEARCH_MOCK } from "../mocks/originSearchMock";
 import SearchSheetPC from "./PC/SearchSheetPC";
 import SearchSheetMobile from "./mobile/SearchSheetMobile";
-import { useIsMdUp } from "./hooks/useIsMdUp";
-import type { OriginSearchItem } from "./types/search";
+import { useIsMdUp } from "../hooks/useIsMdUp";
+import type { OriginSearchItem } from "../types/search";
 
 type Props = {
     open: boolean;
     onClose: () => void;
     title: string; // 출발지 | 도착지
     onSelect: (item: OriginSearchItem) => void;
+    onPickCurrent: () => void;
 };
 
-const SearchSheet = ({ open, onClose, title, onSelect }: Props) => {
+const SearchSheet = ({ open, onClose, title, onSelect, onPickCurrent }: Props) => {
     const isMdUp = useIsMdUp();
     const [query, setQuery] = useState("");
 
@@ -33,15 +34,6 @@ const SearchSheet = ({ open, onClose, title, onSelect }: Props) => {
     }, [query]);
 
     const hasQuery = query.trim().length > 0;
-
-    const onPickCurrent = () => {
-        onSelect({
-            id: "current",
-            title: "현위치",
-            address: "현위치",
-        });
-        onClose();
-    };
 
     const sharedProps = {
         open,

@@ -9,7 +9,7 @@ type Props = {
 const RecentDestinations = ({ onSelectDestination }: Props) => {
     return (
         <section className="mt-8 max-md:mt-7">
-            <p className="text-sm font-semibold text-makcha-navy-900 dark:text-white max-md:text-[20px] max-md:font-medium max-md:text-[#262626]">
+            <p className="text-sm font-semibold text-makcha-navy-900 dark:text-white max-md:text-[18px] max-md:font-medium max-md:text-[#262626]">
                 최근 목적지
             </p>
 
@@ -34,7 +34,7 @@ const RecentDestinations = ({ onSelectDestination }: Props) => {
                             max-md:shadow-[0_0_5px_rgba(136,136,136,0.18)]
                         "
                     >
-                        <span className="block truncate text-sm text-makcha-navy-900 dark:text-white max-md:max-w-[220px] max-md:text-[13px]">
+                        <span className="block truncate text-sm text-makcha-navy-900 dark:text-white max-md:max-w-[220px] max-md:text-[14px]">
                             {item.label}
                         </span>
                     </button>

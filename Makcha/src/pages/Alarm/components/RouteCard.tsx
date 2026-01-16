@@ -54,7 +54,7 @@ const RouteCard = ({ route, onSelect }: Props) => {
                 <div className="text-[30px] font-bold text-gray-900 leading-tight dark:text-white">
                     {route.departureTime} 출발
                 </div>
-                <div className="mt-[4px] text-[16px] text-gray-900 dark:text-white/80">
+                <div className="mt-1 text-[16px] text-gray-900 dark:text-white/80">
                     {route.timeUntilDeparture}
                 </div>
             </div>
