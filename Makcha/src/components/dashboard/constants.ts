@@ -10,7 +10,7 @@ export const NAV_MENUS: readonly MenuItem[] = [
   { id: 'download', label: '다운로드', path: '/download', icon: Download },
 ] as const;
 
-export const PUBLIC_MENU_IDS = ['home', 'download'] as const;
+export const PUBLIC_MENU_IDS = ['alarm', 'download'] as const;
 
 export const sidebarSpring = {
   type: "spring",

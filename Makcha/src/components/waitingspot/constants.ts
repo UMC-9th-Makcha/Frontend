@@ -1,4 +1,4 @@
-export const categories = [
+export const waitingCategories = [
     { key: "all", label: "전체" },
     { key: "night-cafe", label: "심야카페" },
     { key: "pc-cafe", label: "PC방" },
@@ -9,3 +9,5 @@ export const categories = [
     distance: "가까운순",
     open24h: "24시간 우선",
   };
+
+export const FALLBACK_CENTER = { lat: 37.5665, lng: 126.9780 }; //임시 좌표

@@ -1,7 +1,7 @@
 import { memo } from "react";
 import { AccountSection } from "./AccountSection";
 import Panel from "../../../components/common/Panel";
-import { AlramSection } from "./AlramSection";
+import { AlarmSection } from "./AlarmSection";
 import type { SettingPanelProps } from "../../../types/setting";
 import { PlacesSection } from "./PlaceSection";
 import PolicyLinks from "../../../components/common/PolicyLinks";
@@ -15,7 +15,7 @@ export const SettingPanel = memo(function SettingPanel({ view, onNavigate }: Set
 
       <div className="flex flex-col gap-y-2">
         {/* 알림 설정 */}
-        <AlramSection />
+        <AlarmSection />
         
         {/* 장소 설정 */}
         <PlacesSection onNavigate={onNavigate} />

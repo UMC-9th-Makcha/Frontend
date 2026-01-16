@@ -1,8 +1,13 @@
-export type CategoryKey = "all" | "night-cafe" | "pc-cafe" | "sauna";
+export type WaitingCategoryKey = "all" | "night-cafe" | "pc-cafe" | "sauna";
 
-export type CategoryTabProps = {
-  selected: CategoryKey;
-  onChange: (key: CategoryKey) => void;
+export type CategoryTabItem<T extends string> = {
+  key: T;
+  label: string;
+}
+export type CategoryTabProps<T extends string> = {
+  selected: T;
+  onChange: (key: T) => void;
+  categories: readonly CategoryTabItem<T>[];
 };
 
 export type WaitingSpotLayoutProps = {
@@ -12,10 +17,13 @@ export type WaitingSpotLayoutProps = {
   search: React.ReactNode;
   list: React.ReactNode;
   detail?: React.ReactNode;
+  footer?: React.ReactNode;
+  onDetailBack: () => void;
 }
 
 export type WaitingSpotHeaderProps = {
-  title: string
+  title: string;
+  content?: string;
 }
 
 export type Place = {
@@ -26,6 +34,8 @@ export type Place = {
   distanceMeter: number;
   durationSeconds: number;
   badge: string;
+  lat: number;
+  lng: number;
 };
 
 export type PlaceListProps = {
@@ -49,7 +59,7 @@ export type SortToggleProps = {
 
 export type PlaceDetailProps = {
   place : Place | null;
-  onClose: () => void;
+  onStartDirection: () => void;
 }
 
 export type PlaceDetail = {
