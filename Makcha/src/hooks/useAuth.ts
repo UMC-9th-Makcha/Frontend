@@ -42,13 +42,14 @@ export const useAuth = () => {
     mutationFn: () => authService.logout(),
     onSettled: () => {
       store.setLogout();
+      queryClient.setQueryData(['me'], null);
       queryClient.removeQueries({ queryKey: ['me'] });
-      navigate('/login');
+      navigate('/', { replace: true });
     },
   });
 
   return {
-    user: userData ?? store.user,
+    user: store.accessToken ? (userData ?? store.user) : null,
     isLoggedIn: !!store.accessToken,
     isLoading: isUserLoading || loginMutation.isPending,
     

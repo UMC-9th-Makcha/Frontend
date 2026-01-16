@@ -6,8 +6,8 @@ export interface Place {
     name: string;
     address: string;
     detail: string;
-    lat: number;
-    lng: number;
+    lat?: number;
+    lng?: number;
   }
 
 export interface PlaceListItemProps {
