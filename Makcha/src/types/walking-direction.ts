@@ -41,6 +41,7 @@ export type DirectionCardProps = {
 export type DirectionSummaryProps = {
   origin: string;
   destination: string;
+  onSubmitOrigin?: (value: string) => void;
 }
 
 export type RouteDetailPanelProps = {
