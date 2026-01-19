@@ -1,3 +1,5 @@
+import type { MapMarker, MapPathSegment } from "./map";
+
 export type RouteCategoryKey = "shortest" | "safe" | "bright";
 
 export type Direction = {
@@ -19,6 +21,8 @@ export type Direction = {
     distanceMeters: number;
     crosswalkCount: number;
   };
+  markers: MapMarker[];
+  paths: MapPathSegment[];
 };
 
 export type DirectionListProps = {

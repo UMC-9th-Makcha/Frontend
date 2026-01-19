@@ -1,21 +1,20 @@
-import { Map, useKakaoLoader } from "react-kakao-maps-sdk";
+import BaseMap from "../common/Map/index"
+import type { MapMarker, MapPathSegment } from "../../types/map";
 
-export const DirectionMap = () => {
-  const MAP_KEY = import.meta.env.VITE_KAKAO_JS_KEY as string;
+type DirectionMapProps = {
+  markers: MapMarker[];
+  paths: MapPathSegment[];
+  activeId?: string | number | null;
+  onMarkerClick: (marker: MapMarker) => void;
+};
 
-  const [loading, error] = useKakaoLoader({
-    appkey: MAP_KEY,
-  });
-
-  if (loading) return <div className="h-full w-full" />;
-  if (error) return <div className="h-full w-full">지도 로드 실패</div>;
-
+export const DirectionMap = ({markers, paths, activeId, onMarkerClick} : DirectionMapProps) => {
   return (
-    <Map
-      id="map"
-      center={{ lat: 33.450701, lng: 126.570667 }}
-      style={{ width: "100%", height: "100%" }}
-      level={3}
+    <BaseMap
+      markers={markers}
+      paths={paths}
+      activeId={activeId}
+      onMarkerClick={onMarkerClick}
     />
   );
 };

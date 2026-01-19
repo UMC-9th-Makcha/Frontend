@@ -1,25 +1,54 @@
+
+import type { MapMarker, MapPathSegment } from "../../../types/map";
 import type { Place } from "../../../types/waitingspot";
+import type { Direction } from "../../../types/walking-direction";
 
 export const mockDirections = {
-    id: 1,
-    origin: {
-      lat: 37.5413,
-      lng: 126.9717,
+  id: 1,
+  origin: {
+    lat: 37.5665,
+    lng: 126.9780,
+    name: "봉구비어 남영역점",
+  },
+  destination: {
+    id: 101,
+    lat: 37.5650,
+    lng: 126.9762,
+    name: "도담 카페 신림점",
+  },
+  summary: {
+    category: "shortest",
+    durationSeconds: 180,
+    distanceMeters: 230,
+    crosswalkCount: 1,
+  },
+
+  markers: [
+    {
+      id: "start",
       name: "봉구비어 남영역점",
+      variant: "start",
+      position: { lat: 37.5772, lng: 126.9876 },
     },
-    destination: {
-      id: 101,
-      lat: 37.4845,
-      lng: 126.9292,
+    {
+      id: "end",
       name: "도담 카페 신림점",
+      variant: "end",
+      position: { lat: 37.5754, lng: 126.9867 },
     },
-    summary: {
-      category: "shortest",
-      durationSeconds: 780,
-      distanceMeters: 950,
-      crosswalkCount: 1,
+  ] as MapMarker[],
+  paths: [
+    {
+      type: "WALK",
+      points: [
+        { lat: 37.5772, lng: 126.9876 },
+        { lat: 37.5758, lng: 126.9871 },
+        { lat: 37.5754, lng: 126.9867 },
+      ],
     },
-  } as const;
+  ] as MapPathSegment[],
+} satisfies Direction;
+
 
 export const mockPlaces: Place[] = [
   {
@@ -67,3 +96,4 @@ export const mockPlaces: Place[] = [
     lng: 126.9758,
   },
 ];
+
