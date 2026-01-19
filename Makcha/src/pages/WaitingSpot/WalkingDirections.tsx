@@ -6,7 +6,7 @@ import { DirectionList } from "../../components/walking-directions/DirectionList
 import { DirectionMap } from "../../components/walking-directions/DirectionMap";
 import type { Direction, RouteCategoryKey } from "../../types/walking-direction";
 import { routeCategories } from "../../components/walking-directions/constants";
-import { mockDirections } from "../../components/waitingspot/common/mock";
+import { mockCategories } from "../../components/waitingspot/common/mock";
 import { DirectionStartButton } from "../../components/walking-directions/DirectionStartButton";
 import { WalkingDirectionLayout } from "../../components/walking-directions/WalkingDirectionLayout";
 import { RouteDetailPanel } from "../../components/walking-directions/RouteDetailPanel";
@@ -34,8 +34,8 @@ export default function WalkingDirections({onBack}: WalkingDirectionsProps) {
 
   useEffect(() => {
     //API
-    setDirection(mockDirections);
-  }, []);
+    setDirection(mockCategories[routeCategory]);
+  }, [routeCategory]);
 
   if(!direction){
     return <LoadingSpinner />

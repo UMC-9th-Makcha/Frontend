@@ -3,7 +3,7 @@ import type { MapMarker, MapPathSegment } from "../../../types/map";
 import type { Place } from "../../../types/waitingspot";
 import type { Direction } from "../../../types/walking-direction";
 
-export const mockDirections = {
+export const mockShortest = {
   id: 1,
   origin: {
     lat: 37.5665,
@@ -22,7 +22,7 @@ export const mockDirections = {
     distanceMeters: 230,
     crosswalkCount: 1,
   },
-
+  
   markers: [
     {
       id: "start",
@@ -49,6 +49,103 @@ export const mockDirections = {
   ] as MapPathSegment[],
 } satisfies Direction;
 
+export const mockSafe = {
+  id: 1,
+  origin: {
+    lat: 37.5665,
+    lng: 126.9780,
+    name: "봉구비어 남영역점",
+  },
+  destination: {
+    id: 101,
+    lat: 37.5650,
+    lng: 126.9762,
+    name: "도담 카페 신림점",
+  },
+  summary: {
+    category: "safe",
+    durationSeconds: 180,
+    distanceMeters: 250,
+    crosswalkCount: 1,
+  },
+  
+  markers: [
+    {
+      id: "start",
+      name: "봉구비어 남영역점",
+      variant: "start",
+      position: { lat: 37.5772, lng: 126.9876 },
+    },
+    {
+      id: "end",
+      name: "도담 카페 신림점",
+      variant: "end",
+      position: { lat: 37.5754, lng: 126.9867 },
+    },
+  ] as MapMarker[],
+  paths: [
+    {
+      type: "WALK",
+      points: [
+        { lat: 37.5772, lng: 126.9876 },
+        { lat: 37.5763, lng: 126.9876 },
+        { lat: 37.5754, lng: 126.9867 },
+      ],
+    },
+  ] as MapPathSegment[],
+} satisfies Direction;
+
+export const mockBright = {
+  id: 1,
+  origin: {
+    lat: 37.5665,
+    lng: 126.9780,
+    name: "봉구비어 남영역점",
+  },
+  destination: {
+    id: 101,
+    lat: 37.5650,
+    lng: 126.9762,
+    name: "도담 카페 신림점",
+  },
+  summary: {
+    category: "bright",
+    durationSeconds: 180,
+    distanceMeters: 265,
+    crosswalkCount: 1,
+  },
+  
+  markers: [
+    {
+      id: "start",
+      name: "봉구비어 남영역점",
+      variant: "start",
+      position: { lat: 37.5772, lng: 126.9876 },
+    },
+    {
+      id: "end",
+      name: "도담 카페 신림점",
+      variant: "end",
+      position: { lat: 37.5754, lng: 126.9867 },
+    },
+  ] as MapMarker[],
+  paths: [
+    {
+      type: "WALK",
+      points: [
+        { lat: 37.5772, lng: 126.9876 },
+        { lat: 37.5768, lng: 126.9881 },
+        { lat: 37.5754, lng: 126.9867 },
+      ],
+    },
+  ] as MapPathSegment[],
+} satisfies Direction;
+
+export const mockCategories = {
+  shortest: mockShortest,
+  safe: mockSafe,
+  bright: mockBright,
+};
 
 export const mockPlaces: Place[] = [
   {
