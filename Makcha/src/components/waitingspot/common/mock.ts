@@ -1,8 +1,9 @@
 
 import type { MapMarker, MapPathSegment } from "../../../types/map";
-import type { Place } from "../../../types/waitingspot";
-import type { Direction } from "../../../types/walking-direction";
+import type { Place, PlaceDetail } from "../../../types/waitingspot";
+import type { Direction, RouteCategoryKey, RouteDetail } from "../../../types/walking-direction";
 
+//도보 안내 data (카테고리 별)
 export const mockShortest = {
   id: 1,
   origin: {
@@ -141,12 +142,50 @@ export const mockBright = {
   ] as MapPathSegment[],
 } satisfies Direction;
 
+//카테고리
 export const mockCategories = {
   shortest: mockShortest,
   safe: mockSafe,
   bright: mockBright,
 };
 
+//도보 안내 상세 패널 data
+export const mockRouteDetail: Record<RouteCategoryKey, RouteDetail> = {
+  shortest: {
+    routeId: 1,
+    steps: [
+      { order: 1, type: "START", instruction: "출발: 봉구비어 남영역점", point: { lat: 37.5772, lng: 126.9876 } },
+      { order: 2, type: "STRAIGHT", instruction: "직진", distanceMeters: 120, durationSeconds: 90, point: { lat: 37.5758, lng: 126.9871 } },
+      { order: 3, type: "CROSSWALK", instruction: "횡단보도 건너기", distanceMeters: 20, durationSeconds: 15 },
+      { order: 4, type: "TURN_RIGHT", instruction: "우회전", distanceMeters: 90, durationSeconds: 60, point: { lat: 37.5754, lng: 126.9867 } },
+      { order: 5, type: "ARRIVE", instruction: "도착: 도담 카페 신림점", point: { lat: 37.5754, lng: 126.9867 } },
+    ],
+  },
+
+  safe: {
+    routeId: 1,
+    steps: [
+      { order: 1, type: "START", instruction: "출발: 봉구비어 남영역점" },
+      { order: 2, type: "STRAIGHT", instruction: "큰 길 따라 직진", distanceMeters: 140, durationSeconds: 110 },
+      { order: 3, type: "CROSSWALK", instruction: "사거리 횡단보도 건너기" },
+      { order: 4, type: "TURN_RIGHT", instruction: "우회전 후 60m 이동", distanceMeters: 60, durationSeconds: 50 },
+      { order: 5, type: "ARRIVE", instruction: "도착: 도담 카페 신림점" },
+    ],
+  },
+
+  bright: {
+    routeId: 1,
+    steps: [
+      { order: 1, type: "START", instruction: "출발: 봉구비어 남영역점" },
+      { order: 2, type: "STRAIGHT", instruction: "대로변(밝은 길) 따라 이동", distanceMeters: 160, durationSeconds: 120 },
+      { order: 3, type: "TURN_RIGHT", instruction: "우회전", distanceMeters: 70, durationSeconds: 60 },
+      { order: 4, type: "ARRIVE", instruction: "도착: 도담 카페 신림점" },
+    ],
+  },
+};
+
+
+//장소 mock data
 export const mockPlaces: Place[] = [
   {
     id: 1,
@@ -194,3 +233,37 @@ export const mockPlaces: Place[] = [
   },
 ];
 
+export const mockPlaceDetails: PlaceDetail[] = [
+  {
+    id: 1,
+    subcategory: "스터디 카페",
+    imageUrl: "https://placehold.co/400x300",
+    accessInfo: "당곡역 2번 출구에서 152m",
+    phone: "02-1234-5678",
+    badge: ["24시간", "연중무휴"],
+  },
+  {
+    id: 2,
+    subcategory: "PC방",
+    imageUrl: "https://placehold.co/400x300",
+    accessInfo: "당곡역 2번 출구에서 152m",
+    phone: "02-1234-5678",
+    badge: ["24시간", "연중무휴"],
+  },
+  {
+    id: 3,
+    subcategory: "찜질방",
+    imageUrl: "https://placehold.co/400x300",
+    accessInfo: "당곡역 2번 출구에서 152m",
+    phone: "02-1234-5678",
+    badge: ["24시간", "연중무휴"],
+  },
+  {
+    id: 4,
+    subcategory: "스터디 카페",
+    imageUrl: "https://placehold.co/400x300",
+    accessInfo: "당곡역 2번 출구에서 152m",
+    phone: "02-1234-5678",
+    badge: ["24시간", "연중무휴"],
+  },
+];

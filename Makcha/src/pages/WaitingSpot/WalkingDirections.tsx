@@ -4,9 +4,9 @@ import { CategoryTab } from "../../components/waitingspot/common/CategoryTab";
 import { DirectionSummary } from "../../components/walking-directions/DirectionSummary";
 import { DirectionList } from "../../components/walking-directions/DirectionList";
 import { DirectionMap } from "../../components/walking-directions/DirectionMap";
-import type { Direction, RouteCategoryKey } from "../../types/walking-direction";
+import type { Direction, RouteCategoryKey, RouteDetail } from "../../types/walking-direction";
 import { routeCategories } from "../../components/walking-directions/constants";
-import { mockCategories } from "../../components/waitingspot/common/mock";
+import { mockCategories, mockRouteDetail } from "../../components/waitingspot/common/mock";
 import { DirectionStartButton } from "../../components/walking-directions/DirectionStartButton";
 import { WalkingDirectionLayout } from "../../components/walking-directions/WalkingDirectionLayout";
 import { RouteDetailPanel } from "../../components/walking-directions/RouteDetailPanel";
@@ -20,6 +20,7 @@ type WalkingDirectionsProps = {
 export default function WalkingDirections({onBack}: WalkingDirectionsProps) {
   //임시 데이터 저장
   const [direction, setDirection] = useState<Direction | null>(null);
+  const [routeDetail,setRouteDetail] = useState<RouteDetail | null>(null);
 
   const [routeCategory, setRouteCategory] = useState<RouteCategoryKey>("shortest");
 
@@ -36,6 +37,18 @@ export default function WalkingDirections({onBack}: WalkingDirectionsProps) {
     //API
     setDirection(mockCategories[routeCategory]);
   }, [routeCategory]);
+
+  //도보 상세 패널 API
+  useEffect(() => {
+    if(!isDetailOpen) return;
+
+    const detail = mockRouteDetail[routeCategory];
+    if (!detail) {
+    console.warn("route detail not found");
+    return;
+  }
+    setRouteDetail(detail);
+  })
 
   if(!direction){
     return <LoadingSpinner />
@@ -62,7 +75,7 @@ export default function WalkingDirections({onBack}: WalkingDirectionsProps) {
         list={<DirectionList direction={direction}/>}
         footer={<DirectionStartButton onClick={handleStart}/>}
         detail={
-          isDetailOpen ? <RouteDetailPanel direction={direction} /> : null
+          isDetailOpen && routeDetail ? <RouteDetailPanel direction={direction} routeDetail={routeDetail} /> : null
         }
         onDetailBack={() => setIsDetailOpen(false)}
         map={<DirectionMap

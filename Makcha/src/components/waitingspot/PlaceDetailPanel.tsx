@@ -1,40 +1,5 @@
-import type { PlaceDetail, PlaceDetailProps } from "../../types/waitingspot";
-
-const mockPlaceDetails: PlaceDetail[] = [
-  {
-    id: 1,
-    subcategory: "스터디 카페",
-    imageUrl: "https://placehold.co/400x300",
-    accessInfo: "당곡역 2번 출구에서 152m",
-    phone: "02-1234-5678",
-    badge: ["24시간", "연중무휴"],
-  },
-  {
-    id: 2,
-    subcategory: "PC방",
-    imageUrl: "https://placehold.co/400x300",
-    accessInfo: "당곡역 2번 출구에서 152m",
-    phone: "02-1234-5678",
-    badge: ["24시간", "연중무휴"],
-  },
-  {
-    id: 3,
-    subcategory: "찜질방",
-    imageUrl: "https://placehold.co/400x300",
-    accessInfo: "당곡역 2번 출구에서 152m",
-    phone: "02-1234-5678",
-    badge: ["24시간", "연중무휴"],
-  },
-  {
-    id: 4,
-    subcategory: "스터디 카페",
-    imageUrl: "https://placehold.co/400x300",
-    accessInfo: "당곡역 2번 출구에서 152m",
-    phone: "02-1234-5678",
-    badge: ["24시간", "연중무휴"],
-  },
-];
-
+import type { PlaceDetailProps } from "../../types/waitingspot";
+import { mockPlaceDetails } from "./common/mock";
 
 export const PlaceDetailPanel = ({ place, onStartDirection }: PlaceDetailProps) => {
 

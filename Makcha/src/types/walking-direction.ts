@@ -46,4 +46,35 @@ export type DirectionSummaryProps = {
 
 export type RouteDetailPanelProps = {
   direction: Direction;
+  routeDetail: RouteDetail;
 };
+
+export type DirectionStepType =
+  | "START"
+  | "STRAIGHT"
+  | "TURN_LEFT"
+  | "TURN_RIGHT"
+  | "CROSSWALK"
+  | "ARRIVE";
+
+export type DirectionStep = {
+  order: number;
+  type: DirectionStepType;
+  instruction: string;
+  distanceMeters?: number;
+  durationSeconds?: number;
+  point?: {
+    lat: number;
+    lng: number;
+  };
+};
+
+export type RouteDetail = {
+  routeId: number | string;
+  steps: DirectionStep[];
+};
+
+export type RouteDetailCardProps = {
+  step: DirectionStep;
+};
+
