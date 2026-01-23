@@ -1,10 +1,24 @@
 import { Search } from 'lucide-react'
 import blueblur from '../../assets/blue-blur.svg'
+import { useState } from 'react';
+import { mockOrigins } from './common/mock';
+import { InputDropdown } from './common/InputDropdown';
 
-export const StartLocationSearch = () => {
+type StartLocationSearchProps  = {
+  onSubmitOrigin:(value: string) => void;
+}
+export const StartLocationSearch = ({onSubmitOrigin} : StartLocationSearchProps ) => {
+  const [value, setValue] = useState<string>("");
+    const [dropdown,setDropdown] = useState<boolean>(false);
+    //검색 결과 없어요 창 띄우는 용도
+    const [submitted, setSubmitted] = useState<boolean>(false);
+  
+    const filtered = mockOrigins.filter(v => v.includes(value) && value.trim().length > 0);
+    const showNoResult = submitted && dropdown && filtered.length === 0;
   return (
     <form 
     role="search"
+    onSubmit={(e) => e.preventDefault()}
     className="flex flex-col w-full py-1 px-2 gap-2">
       <label
         htmlFor="start-location"
@@ -18,10 +32,28 @@ export const StartLocationSearch = () => {
         aria-hidden 
         className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" />
         <input
+        value={value}
+              onChange={(e) => {
+                setValue(e.target.value);
+                setDropdown(true);
+                setSubmitted(false);
+              }}
+              placeholder="현위치"
+              onBlur={() => setTimeout(() => setDropdown(false), 100)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  setSubmitted(true);
+                  setDropdown(true);
+
+                  if(filtered.length > 0) {
+                    onSubmitOrigin?.(value);
+                    setDropdown(false);
+                  }
+                }
+              }}
           id="start-location"
-          placeholder="현위치"
-          className="w-full h-[42px] px-2 pl-10 shadow-[0_0_5px_0_#88888840] rounded-[20px]
-          placeholder:text-gray-600 placeholder:font-light placeholder:text-sm placeholder:opacity-100
+          className="w-full h-[42px] px-2 pl-10 shadow-[0_0_5px_0_#88888840] rounded-[20px] text-[#5F5F5F] font-light text-sm outline-none
+          placeholder:text-[#5F5F5F] placeholder:font-light placeholder:text-sm placeholder:opacity-100
           dark:placeholder-makcha-navy-200"
         />
         <button
@@ -32,6 +64,16 @@ export const StartLocationSearch = () => {
           <Search className='w-5 h-5 text-[#5F5F5F]
           dark:text-makcha-navy-400'/>
         </button>
+        <InputDropdown
+          open={dropdown && value.trim().length > 0}
+          showNoResult={showNoResult}
+          items={filtered}
+          onSelect={(item) => {
+            setValue(item);
+            onSubmitOrigin?.(item);
+            setDropdown(false);
+          }}
+        />
       </div>
     </form>
   )

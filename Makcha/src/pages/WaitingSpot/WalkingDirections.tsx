@@ -31,6 +31,7 @@ export default function WalkingDirections({onBack}: WalkingDirectionsProps) {
     setIsDetailOpen(true);
   };
 
+  //지도 마커 활성화 id
   const [activeId, setActiveId] = useState<string | number | null>("start");
 
   useEffect(() => {

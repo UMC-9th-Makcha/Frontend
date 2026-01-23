@@ -62,6 +62,12 @@ export default function WaitingSpot() {
     setIsDetailOpen(true);
   };
 
+  //출발지 검색
+  const [origin, setOrigin] = useState<string>("현위치");
+  const handleSubmitOrigin = (value: string) => {
+    setOrigin(value);
+  }
+
   const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   //도보 안내 페이지 렌더링 유무
@@ -76,7 +82,7 @@ export default function WaitingSpot() {
     <div className="min-h-dvh w-full overflow-hidden">
       <WaitingSpotLayout
         header={<WaitingSpotHeader title={pageTitle} content={"막차를 놓쳐서 첫차까지 대기하시는 분들을 위한 추천 장소를 안내드립니다."} />}
-        search={<StartLocationSearch />}
+        search={<StartLocationSearch onSubmitOrigin={handleSubmitOrigin}/>}
         controls={<CategoryTab selected={category} onChange={setCategory} categories={waitingCategories} />}
         list={<PlaceList
           places={mockPlaces}

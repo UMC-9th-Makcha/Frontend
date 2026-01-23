@@ -267,3 +267,9 @@ export const mockPlaceDetails: PlaceDetail[] = [
     badge: ["24시간", "연중무휴"],
   },
 ];
+
+export const mockOrigins = [
+  "서울역",
+  "용산역",
+  "이태원역",
+];
