@@ -1,7 +1,7 @@
 import type { PlaceDetailProps } from "../../types/waitingspot";
 import { mockPlaceDetails } from "./common/mock";
 
-export const PlaceDetailPanel = ({ place, onStartDirection }: PlaceDetailProps) => {
+export const PlaceDetailPanel = ({ place }: PlaceDetailProps) => {
 
   if (!place) return null;
 
@@ -57,16 +57,6 @@ export const PlaceDetailPanel = ({ place, onStartDirection }: PlaceDetailProps) 
         </div>
 
         {/* 하단 버튼 */}
-      </div>
-      <div className="mt-auto pt-6">
-        <button
-          className="w-full h-12 rounded-full bg-makcha-navy-400 text-white text-[20px] border hover:bg-makcha-navy-600 transition
-            dark:text-makcha-navy-200 dark:bg-makcha-navy-800 dark:border-makcha-navy-600"
-            onClick={() => onStartDirection?.()}
-        >
-          도보 길 안내 시작
-        </button>
-
       </div>
     </div>
   );

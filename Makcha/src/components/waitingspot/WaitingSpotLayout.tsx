@@ -2,7 +2,7 @@ import type { WaitingSpotLayoutProps } from "../../types/waitingspot"
 import Panel from "../common/Panel"
 import SubPanel from "../common/Panel/SubPanel";
 
-export const WaitingSpotLayout = ({header, controls, map, search, list, detail, onDetailBack} : WaitingSpotLayoutProps) => {
+export const WaitingSpotLayout = ({header, controls, map, search, list, detail, footer, onDetailBack} : WaitingSpotLayoutProps) => {
   return (
     <div className="relative h-dvh w-full">
       {/* map */}
@@ -30,6 +30,7 @@ export const WaitingSpotLayout = ({header, controls, map, search, list, detail, 
           title="상세 정보"
           width="md:w-100"
           className="pointer-events-auto"
+          footer={footer}
         >
           {detail}
         </SubPanel>

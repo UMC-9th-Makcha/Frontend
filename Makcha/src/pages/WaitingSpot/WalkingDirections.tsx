@@ -7,11 +7,11 @@ import { DirectionMap } from "../../components/walking-directions/DirectionMap";
 import type { Direction, RouteCategoryKey, RouteDetail } from "../../types/walking-direction";
 import { routeCategories } from "../../components/walking-directions/constants";
 import { mockCategories, mockRouteDetail } from "../../components/waitingspot/common/mock";
-import { DirectionStartButton } from "../../components/walking-directions/DirectionStartButton";
 import { WalkingDirectionLayout } from "../../components/walking-directions/WalkingDirectionLayout";
 import { RouteDetailPanel } from "../../components/walking-directions/RouteDetailPanel";
 import { ArrowLeft } from "lucide-react";
 import LoadingSpinner from "../../components/common/loadingSpinner";
+import { FooterButton } from "../../components/waitingspot/common/FooterButton";
 
 type WalkingDirectionsProps = {
   onBack?: () => void;
@@ -27,7 +27,7 @@ export default function WalkingDirections({onBack}: WalkingDirectionsProps) {
   //detail 창 open, close
   const [isDetailOpen, setIsDetailOpen] = useState(false);
 
-  const handleStart = () => {
+  const onDirectionStart = () => {
     setIsDetailOpen(true);
   };
 
@@ -74,7 +74,7 @@ export default function WalkingDirections({onBack}: WalkingDirectionsProps) {
         search={<DirectionSummary origin={direction.origin.name} destination={direction.destination.name} />}
         controls={<CategoryTab selected={routeCategory} onChange={setRouteCategory} categories={routeCategories} />}
         list={<DirectionList direction={direction}/>}
-        footer={<DirectionStartButton onClick={handleStart}/>}
+        footer={<FooterButton onClick={onDirectionStart} content={`길 안내`}/>}
         detail={
           isDetailOpen && routeDetail ? <RouteDetailPanel direction={direction} routeDetail={routeDetail} /> : null
         }

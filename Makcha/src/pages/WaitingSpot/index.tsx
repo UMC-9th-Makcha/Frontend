@@ -10,8 +10,9 @@ import { PlaceList } from "../../components/waitingspot/PlaceList";
 import { PlaceDetailPanel } from "../../components/waitingspot/PlaceDetailPanel";
 import { FALLBACK_CENTER, waitingCategories } from "../../components/waitingspot/constants";
 import WalkingDirections from "./WalkingDirections";
-import { useGeoLocation } from "../../hooks/useGeolocation";
 import { mockPlaces } from "../../components/waitingspot/common/mock";
+import { FooterButton } from "../../components/waitingspot/common/FooterButton";
+import { useGeoLocation } from "../../hooks/useGeoLocation";
 
 export default function WaitingSpot() {
   //지도 현위치 좌표
@@ -68,6 +69,12 @@ export default function WaitingSpot() {
     setOrigin(value);
   }
 
+  //길찾기 시작 -> 도보 안내 
+  const onStartDirection = () => {
+    setIsDetailOpen(false);
+    setShowDirections(true);
+  }
+
   const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   //도보 안내 페이지 렌더링 유무
@@ -89,6 +96,11 @@ export default function WaitingSpot() {
           selectedPlaceId={selectedPlaceId}
           onSelectPlaceId={handleSelectList}
         />}
+        footer={
+          <FooterButton
+          onClick={onStartDirection}
+          content={`도보 길 안내 시작`}/>
+        }
         map={<WaitingSpotMap 
           center={center}
           places={mockPlaces}
@@ -98,10 +110,6 @@ export default function WaitingSpot() {
         detail={isDetailOpen && selectedPlace ?
           <PlaceDetailPanel
             place={selectedPlace}
-            onStartDirection={() => {
-              setIsDetailOpen(false);
-              setShowDirections(true);
-            }}
           /> : null
         }
         onDetailBack={() => setIsDetailOpen(false)}
