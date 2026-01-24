@@ -9,7 +9,7 @@ import { routeCategories } from "../../components/walking-directions/constants";
 import { mockCategories, mockRouteDetail } from "../../components/waitingspot/common/mock";
 import { WalkingDirectionLayout } from "../../components/walking-directions/WalkingDirectionLayout";
 import { RouteDetailPanel } from "../../components/walking-directions/RouteDetailPanel";
-import { ArrowLeft } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import LoadingSpinner from "../../components/common/loadingSpinner";
 import { FooterButton } from "../../components/waitingspot/common/FooterButton";
 
@@ -59,13 +59,13 @@ export default function WalkingDirections({onBack}: WalkingDirectionsProps) {
     <div className="min-h-dvh w-full overflow-hidden">
       <WalkingDirectionLayout
         header={
-          <div className="relative flex items-start gap-2">
+          <div className="relative flex items-start mt-4">
             <button
               type="button"
               onClick={onBack}
-              className="absolute -top-8 text-[#5F5F5F]"
+              className="absolute -top-8 text-[#5F5F5F] transition-all duration-200 ease-in-out active:scale-95 dark:text-white hover:opacity-60"
               aria-label="뒤로가기">
-              <ArrowLeft className="w-5 h-5" />
+                <ChevronLeft size={24} />
             </button>
 
             <WaitingSpotHeader title="도보 안내" />
