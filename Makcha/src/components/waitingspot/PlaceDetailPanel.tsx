@@ -55,8 +55,6 @@ export const PlaceDetailPanel = ({ place }: PlaceDetailProps) => {
           <div>{detail?.accessInfo}</div>
           {detail?.phone && <div>{detail.phone}</div>}
         </div>
-
-        {/* 하단 버튼 */}
       </div>
     </div>
   );

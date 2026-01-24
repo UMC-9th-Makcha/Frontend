@@ -10,7 +10,7 @@ export const WaitingSpotLayout = ({header, controls, map, search, list, detail, 
         <div className="h-full w-full">{map}</div>
       </div>
 
-      <div className="relative z-10 h-full w-full pointer-events-none md:flex">
+      <div className="relative z-10 h-full w-full pointer-events-none md:flex md:items-center">
         <Panel
           width="md:w-100"
           isMobileFull
