@@ -26,13 +26,13 @@ const AlarmSuccessPanel = ({ origin, destination, route, onGoAlarmList }: Props)
                 </h1>
 
                 <p className="mt-3 text-center text-[16px] text-gray-500 dark:text-white/60">
-                    카카오톡으로 막차 알림 메시지를 보내드렸어요!
+                    문자 메시지로 막차 알림 메시지를 보내드렸어요!
                     <br />
                     이제 브라우저를 닫으셔도 괜찮습니다.
                 </p>
 
                 <div className="mt-[51px] w-full rounded-[20px] border border-gray-200 bg-white p-5 shadow-sm dark:bg-makcha-navy-900">
-                    <div className="text-center text-[20px] text-gray-900 dark:text-white">
+                    <div className="text-center font-bold text-[20px] text-gray-900 dark:text-white">
                         {originLabel} → {destLabel}
                     </div>
 
@@ -61,7 +61,7 @@ const AlarmSuccessPanel = ({ origin, destination, route, onGoAlarmList }: Props)
                     </div>
 
                     <div className="mt-[26px] text-center text-[14px] text-black dark:text-white/80">
-                        지금부터 카카오톡으로 알려드릴게요
+                        지금부터 문자 메시지로 출발 알림을 보내드릴게요!
                     </div>
                 </div>
             </div>

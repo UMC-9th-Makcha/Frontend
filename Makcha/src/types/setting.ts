@@ -2,13 +2,13 @@ import type { ReactNode } from "react";
 import type { ViewType } from "../pages/Setting/constants";
 
 export interface Place {
-    id: string;
-    name: string;
-    address: string;
-    detail: string;
-    lat?: number;
-    lng?: number;
-  }
+  id: string;
+  name: string;
+  address: string;
+  detail: string;
+  lat?: number;
+  lng?: number;
+}
 
 export interface PlaceListItemProps {
   icon: ReactNode;
@@ -25,6 +25,7 @@ export interface PlaceSettingProps {
 
 export interface PhonenumberSettingProps {
   onBack: () => void;
+  onComplete: (payload?: { phone: string }) => void;
 }
 
 export interface AccountSectionProps {

@@ -26,6 +26,7 @@ export type AlarmFlowUI = {
     backFromConfirm: () => void;
     confirmRoute: () => void;
     goAlarmList: () => void;
+    goToSettingForSms: () => void;
 };
 
 type Props = { flow: AlarmFlowUI };
@@ -51,6 +52,7 @@ export default function AlarmPanelSwitch({ flow }: Props) {
                 detail={flow.getConfirmDetail(flow.selectedRoute.id)}
                 onBack={flow.backFromConfirm}
                 onConfirm={flow.confirmRoute}
+                onClickSms={flow.goToSettingForSms}
             />
         );
     }
