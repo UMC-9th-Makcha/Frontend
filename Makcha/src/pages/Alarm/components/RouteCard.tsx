@@ -65,26 +65,25 @@ const RouteCard = ({ route, onSelect }: Props) => {
                 </div>
             </div>
 
-            {/* 모바일에서만 요약 */}
             <div className="text-[16px] text-gray-600 dark:text-white/60 md:hidden">
                 총 {route.totalDurationMin}분 소요 | 환승 {route.transferCount}회 | 도보 {route.walkingTimeMin}분
             </div>
 
-            {/* mobile에서만 Segm */}
+            {/* mobile에서만 Segment */}
             {segments.length > 0 && (
                 <div className="w-full md:hidden">
                     <SegmentBar segments={segments} />
                 </div>
             )}
 
-            {/* PC에서만 하단 요약 */ }
-    <div className="hidden md:block w-full border-t border-gray-200 pt-3 dark:border-makcha-navy-800">
-        <div className="flex w-full items-center justify-center gap-8 text-[14px] text-gray-500 dark:text-white/60">
-            <span>총 {route.totalDurationMin}분 소요</span>
-            <span>환승 {route.transferCount}회</span>
-            <span>도보 {route.walkingTimeMin}분</span>
-        </div>
-    </div>
+            {/* PC에서만 하단 요약 */}
+            <div className="hidden md:block w-full border-t border-gray-200 pt-3 dark:border-makcha-navy-800">
+                <div className="flex w-full items-center justify-center gap-8 text-[14px] text-gray-500 dark:text-white/60">
+                    <span>총 {route.totalDurationMin}분 소요</span>
+                    <span>환승 {route.transferCount}회</span>
+                    <span>도보 {route.walkingTimeMin}분</span>
+                </div>
+            </div>
         </button >
     );
 };
