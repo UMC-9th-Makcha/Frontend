@@ -55,34 +55,37 @@ const RouteCard = ({ route, onSelect }: Props) => {
             </div>
 
             {/* 가운데 */}
-            <div className="flex flex-1 w-full flex-col items-start justify-center text-left max-md:pt-3 max-md:pb-3">
+            <div className="flex flex-1 w-full flex-col md:mt-2 items-center text-center md:items-center md:text-center items-start text-left max-md:pt-3 max-md:pb-3">
                 <div className="text-[30px] font-bold text-gray-900 leading-tight dark:text-white">
                     {route.departureTime} 출발
                 </div>
+
                 <div className="mt-1 text-[16px] text-gray-900 dark:text-white/80">
                     {route.timeUntilDeparture}
                 </div>
-
-                <div className="mt-2 text-[16px] text-gray-600 dark:text-white/60">
-                    총 {route.totalDurationMin}분 소요 | 환승 {route.transferCount}회 | 도보 {route.walkingTimeMin}분
-                </div>
-
-                {segments.length > 0 && (
-                    <div className="mt-1 w-full">
-                        <SegmentBar segments={segments} />
-                    </div>
-                )}
             </div>
 
-            {/* 하단 */}
-            <div className="w-full border-t border-gray-200 pt-3 dark:border-makcha-navy-800 max-md:hidden">
-                <div className="flex w-full items-center justify-center gap-8 text-[14px] text-gray-500 dark:text-white/60">
-                    <span>총 {route.totalDurationMin}분 소요</span>
-                    <span>환승 {route.transferCount}회</span>
-                    <span>도보 {route.walkingTimeMin}분</span>
-                </div>
+            {/* 모바일에서만 요약 */}
+            <div className="text-[16px] text-gray-600 dark:text-white/60 md:hidden">
+                총 {route.totalDurationMin}분 소요 | 환승 {route.transferCount}회 | 도보 {route.walkingTimeMin}분
             </div>
-        </button>
+
+            {/* mobile에서만 Segm */}
+            {segments.length > 0 && (
+                <div className="w-full md:hidden">
+                    <SegmentBar segments={segments} />
+                </div>
+            )}
+
+            {/* PC에서만 하단 요약 */ }
+    <div className="hidden md:block w-full border-t border-gray-200 pt-3 dark:border-makcha-navy-800">
+        <div className="flex w-full items-center justify-center gap-8 text-[14px] text-gray-500 dark:text-white/60">
+            <span>총 {route.totalDurationMin}분 소요</span>
+            <span>환승 {route.transferCount}회</span>
+            <span>도보 {route.walkingTimeMin}분</span>
+        </div>
+    </div>
+        </button >
     );
 };
 

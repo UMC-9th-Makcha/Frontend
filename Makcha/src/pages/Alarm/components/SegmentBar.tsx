@@ -48,7 +48,7 @@ export default function SegmentBar({ segments }: Props) {
                         ))}
                     </div>
                 </div>
--
+
                 <div className="pointer-events-none absolute inset-0 flex">
                     {segments.map((s, idx) => (
                         <div
