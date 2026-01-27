@@ -25,7 +25,7 @@ const BaseMap = ({ markers = [], activeId, paths = [], onMarkerClick, onMapClick
     const bounds = new kakao.maps.LatLngBounds();
     markers.forEach(m => bounds.extend(new kakao.maps.LatLng(m.position.lat, m.position.lng)));
     paths.forEach(p => p.points.forEach(pt => bounds.extend(new kakao.maps.LatLng(pt.lat, pt.lng))));
-    map.setBounds(bounds, 80);
+    map.setBounds(bounds, 30);
   }, [map, markers, paths]);
 
   if (loading || sdkError) return <div className="h-full w-full bg-gray-100 animate-pulse" />;
@@ -33,6 +33,7 @@ const BaseMap = ({ markers = [], activeId, paths = [], onMarkerClick, onMapClick
   return (
     <div className="h-full w-full relative kakao-map-wrapper">
       <Map center={DEFAULT_MAP_CENTER} style={{ width: "100%", height: "100%" }} onCreate={setMap}
+        level={3} minLevel={1} maxLevel={10}
         onClick={(_t, e) => onMapClick?.({ lat: e.latLng.getLat(), lng: e.latLng.getLng() })}>
         
         {paths.map((seg, i) => {
