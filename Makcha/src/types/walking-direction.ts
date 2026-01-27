@@ -1,3 +1,5 @@
+import type { MapMarker, MapPathSegment } from "./map";
+
 export type RouteCategoryKey = "shortest" | "safe" | "bright";
 
 export type Direction = {
@@ -19,6 +21,8 @@ export type Direction = {
     distanceMeters: number;
     crosswalkCount: number;
   };
+  markers: MapMarker[];
+  paths: MapPathSegment[];
 };
 
 export type DirectionListProps = {
@@ -37,8 +41,40 @@ export type DirectionCardProps = {
 export type DirectionSummaryProps = {
   origin: string;
   destination: string;
+  onSubmitOrigin?: (value: string) => void;
 }
 
 export type RouteDetailPanelProps = {
   direction: Direction;
+  routeDetail: RouteDetail;
 };
+
+export type DirectionStepType =
+  | "START"
+  | "STRAIGHT"
+  | "TURN_LEFT"
+  | "TURN_RIGHT"
+  | "CROSSWALK"
+  | "ARRIVE";
+
+export type DirectionStep = {
+  order: number;
+  type: DirectionStepType;
+  instruction: string;
+  distanceMeters?: number;
+  durationSeconds?: number;
+  point?: {
+    lat: number;
+    lng: number;
+  };
+};
+
+export type RouteDetail = {
+  routeId: number | string;
+  steps: DirectionStep[];
+};
+
+export type RouteDetailCardProps = {
+  step: DirectionStep;
+};
+
