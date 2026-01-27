@@ -10,7 +10,7 @@ export const CURRENT_ALARM_MOCK: CurrentAlarm = {
     totalDurationMin: 45,
     transferCount: 1,
     walkingTimeMin: 9,
-}; 
+};
 
 export const PAST_SUMMARY_MOCK: PastSummary = {
     //thisMonthTaxiCost: 0,
@@ -26,6 +26,7 @@ export const MONTH_SECTIONS_MOCK: MonthSectionData[] = [
         items: [
             {
                 id: "h1",
+                routeId: "r1",
                 date: "2025. 12. 03",
                 from: "강남역",
                 to: "수원역",

@@ -1,7 +1,7 @@
 import { Search } from "lucide-react";
-import type { OriginSearchItem } from "./types/search";
-import RouteCard from "./components/RouteCard";
-import type { AlarmRoute } from "./types/alarm";
+import type { OriginSearchItem } from "../types/search";
+import RouteCard from "../components/RouteCard";
+import type { AlarmRoute } from "../types/alarm";
 
 type Props = {
     origin: OriginSearchItem;

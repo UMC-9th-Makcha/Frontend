@@ -16,6 +16,7 @@ export type PastSummary = {
 
 export type HistoryItem = {
     id: string;
+    routeId: string;
     date: string;
     from: string;
     to: string;

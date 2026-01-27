@@ -1,7 +1,7 @@
-import SearchField from "./components/SearchField";
-import DestinationCarousel from "./components/DestinationCarousel";
-import RecentDestinations from "./components/RecentDestinations";
-import type { OriginSearchItem } from "./types/search";
+import SearchField from "../components/SearchField";
+import DestinationCarousel from "../components/DestinationCarousel";
+import RecentDestinations from "../components/RecentDestinations";
+import type { OriginSearchItem } from "../types/search";
 
 type AlarmPanelProps = {
     onOpenOrigin: () => void;
@@ -23,8 +23,7 @@ const AlarmPanel = ({ onOpenOrigin, onOpenDestination, onSelectDestination, orig
                     className="
                         mt-2 whitespace-pre-line text-[20px]
                         text-gray-500 dark:text-makcha-navy-200
-                        max-md:mt-2.25
-                        max-md:whitespace-normal
+                        max-md:mt-[10px]
                         max-md:text-[#5F5F5F] max-md:dark:text-white/60
                     "
                 >
@@ -32,10 +31,18 @@ const AlarmPanel = ({ onOpenOrigin, onOpenDestination, onSelectDestination, orig
                 </p>
 
                 <div className="mt-6 max-md:mt-5 max-md:space-y-4 space-y-5">
-                    <SearchField label="출발지" text={origin ? origin.title : "출발지"} onClick={onOpenOrigin} />
+                    <SearchField
+                        label="출발지"
+                        text={origin ? origin.address : "출발지"}
+                        onClick={onOpenOrigin}
+                    />
                     <DestinationCarousel onSelectDestination={onSelectDestination} />
                     <RecentDestinations onSelectDestination={onSelectDestination} />
-                    <SearchField label="직접 검색하기" text={destination ? destination.title : "도착지"} onClick={onOpenDestination} />
+                    <SearchField
+                        label="직접 검색하기"
+                        text={destination ? destination.address : "도착지"}
+                        onClick={onOpenDestination}
+                    />
                 </div>
             </div>
         </>
