@@ -3,6 +3,7 @@ export interface User {
   nickname: string;
   profileImage?: string;
   email?: string;
+  phone?: string;
 }
 
 export interface LoginResult {
@@ -19,4 +20,5 @@ export interface AuthState {
   setLogin: (token: string, user: User) => void;
   setLogout: () => void;
   setHydrated: (state: boolean) => void;
+  updateUserPhone: (newPhone: string) => void;
 }
