@@ -1,16 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { WaitingSpotHeader } from "../../components/waitingspot/common/WaitingSpotHeader";
 import { CategoryTab } from "../../components/waitingspot/common/CategoryTab";
 import { DirectionSummary } from "../../components/walking-directions/DirectionSummary";
 import { DirectionList } from "../../components/walking-directions/DirectionList";
 import { DirectionMap } from "../../components/walking-directions/DirectionMap";
-import type { RouteCategoryKey } from "../../types/walking-direction";
+import type { Direction, RouteCategoryKey, RouteDetail } from "../../types/walking-direction";
 import { routeCategories } from "../../components/walking-directions/constants";
-import { mockDirections } from "../../components/waitingspot/common/mock";
+import { mockCategories, mockRouteDetail } from "../../components/waitingspot/common/mock";
 import { DirectionStartButton } from "../../components/walking-directions/DirectionStartButton";
 import { WalkingDirectionLayout } from "../../components/walking-directions/WalkingDirectionLayout";
 import { RouteDetailPanel } from "../../components/walking-directions/RouteDetailPanel";
 import { ArrowLeft } from "lucide-react";
+import LoadingSpinner from "../../components/common/loadingSpinner";
 
 type WalkingDirectionsProps = {
   onBack?: () => void;
@@ -18,7 +19,8 @@ type WalkingDirectionsProps = {
 
 export default function WalkingDirections({onBack}: WalkingDirectionsProps) {
   //임시 데이터 저장
-  const [direction, setDirection] = useState(mockDirections);
+  const [direction, setDirection] = useState<Direction | null>(null);
+  const [routeDetail,setRouteDetail] = useState<RouteDetail | null>(null);
 
   const [routeCategory, setRouteCategory] = useState<RouteCategoryKey>("shortest");
 
@@ -28,6 +30,31 @@ export default function WalkingDirections({onBack}: WalkingDirectionsProps) {
   const handleStart = () => {
     setIsDetailOpen(true);
   };
+
+  //지도 마커 활성화 id
+  const [activeId, setActiveId] = useState<string | number | null>("start");
+
+  useEffect(() => {
+    //API
+    setDirection(mockCategories[routeCategory]);
+  }, [routeCategory]);
+
+  //도보 상세 패널 API
+  useEffect(() => {
+    if(!isDetailOpen) return;
+
+    const detail = mockRouteDetail[routeCategory];
+    if (!detail) {
+    console.warn("route detail not found");
+    return;
+  }
+    setRouteDetail(detail);
+  })
+
+  if(!direction){
+    return <LoadingSpinner />
+  }
+
   return (
     <div className="min-h-dvh w-full overflow-hidden">
       <WalkingDirectionLayout
@@ -49,10 +76,15 @@ export default function WalkingDirections({onBack}: WalkingDirectionsProps) {
         list={<DirectionList direction={direction}/>}
         footer={<DirectionStartButton onClick={handleStart}/>}
         detail={
-          isDetailOpen ? <RouteDetailPanel direction={direction} /> : null
+          isDetailOpen && routeDetail ? <RouteDetailPanel direction={direction} routeDetail={routeDetail} /> : null
         }
         onDetailBack={() => setIsDetailOpen(false)}
-        map={<DirectionMap />}
+        map={<DirectionMap
+          markers={direction.markers}
+          paths={direction.paths}
+          activeId={activeId}
+          onMarkerClick={(m) => setActiveId(m.id)}
+        />}
       />
     </div>
   );
