@@ -1,191 +1,154 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-
-import AlarmPanel from "./AlarmPanel";
-import RouteLoadingPanel from "./RouteLoadingPanel";
-import RouteResultPanel from "./RouteResultPanel";
-import RouteConfirmPanel from "./RouteConfirmPanel";
-import AlarmSuccessPanel from "./AlarmSuccessPanel";
-import SearchSheet from "./SearchSheet";
-
-import { ALARM_ROUTES_MOCK } from "./mocks/alarmMock";
-import { ROUTE_CONFIRM_DETAIL_MOCK } from "./mocks/routeConfirmMock";
-
-import type { OriginSearchItem } from "./types/search";
-import type { AlarmRoute } from "./types/alarm";
-import type { RouteConfirmDetail } from "./types/routeConfirm";
-
 import Panel from "../../components/common/Panel";
 import KakaoMapView from "./KakaoMapView";
+import SearchSheet from "./sheets/SearchSheet";
+import AlarmPanelSwitch from "./panels/AlarmPanelSwitch";
+import { useAlarmFlow } from "./hooks/useAlarmFlow";
 
-type Step = "INPUT" | "LOADING" | "RESULT" | "CONFIRM" | "SUCCESS";
-type SearchTarget = "ORIGIN" | "DESTINATION";
-
-type NavState = {
-    from?: "history";
-    openConfirm?: boolean;
-    routeId?: string;
+// Setting → Alarm 복귀
+type FromSettingToAlarmState = {
+    smsVerified?: boolean;
+    phone?: string;
 };
 
-const Alarm = () => {
-    useEffect(() => {
-        console.log("KAKAO KEY:", import.meta.env.VITE_KAKAO_JS_KEY);
-    }, []);
+function isFromSettingToAlarmState(state: unknown): state is FromSettingToAlarmState {
+    if (!state || typeof state !== "object") return false;
+    return "smsVerified" in state;
+}
 
+const Alarm = () => {
+    const flow = useAlarmFlow();
     const navigate = useNavigate();
     const location = useLocation();
-    const navState = (location.state ?? null) as NavState | null;
 
-    const [step, setStep] = useState<Step>("INPUT");
-
-    const [isSearchOpen, setIsSearchOpen] = useState(false);
-    const [searchTarget, setSearchTarget] = useState<SearchTarget>("ORIGIN");
-
-    const [origin, setOrigin] = useState<OriginSearchItem | null>(null);
-    const [destination, setDestination] = useState<OriginSearchItem | null>(null);
-
-    const [routes, setRoutes] = useState<AlarmRoute[]>([]);
-    const [selectedRoute, setSelectedRoute] = useState<AlarmRoute | null>(null);
-
-    const cameFromHistoryRef = useRef(false);
-
-    const startRouteSearch = () => {
-        setStep("LOADING");
-        window.setTimeout(() => {
-            setRoutes(ALARM_ROUTES_MOCK);
-            setStep("RESULT");
-        }, 1200);
-    };
-
-    const openOriginSheet = () => {
-        setSearchTarget("ORIGIN");
-        setIsSearchOpen(true);
-    };
-
-    const openDestinationSheet = () => {
-        setSearchTarget("DESTINATION");
-        setIsSearchOpen(true);
-    };
-
-    const handleSelect = (target: SearchTarget, item: OriginSearchItem) => {
-        if (target === "ORIGIN") {
-            setOrigin(item);
-            setIsSearchOpen(false);
-
-            if (destination) startRouteSearch();
-            return;
-        }
-
-        // DESTINATION
-        setDestination(item);
-        setIsSearchOpen(false);
-
-        if (origin) {
-            startRouteSearch();
-        } else {
-            setSearchTarget("ORIGIN");
-            setIsSearchOpen(true);
-        }
-    };
-
-    const handleSelectRoute = (route: AlarmRoute) => {
-        setSelectedRoute(route);
-        setStep("CONFIRM");
-    };
-
-    const getConfirmDetail = (routeId: string): RouteConfirmDetail => {
-        return (
-            ROUTE_CONFIRM_DETAIL_MOCK[routeId] ?? {
-                etaText: "도착 정보 없음",
-                segments: [],
-            }
-        );
-    };
-
+    // Setting에서 전화번호 인증 완료 후 돌아오면 SUCCESS로 전환
     useEffect(() => {
-        if (!navState?.openConfirm || !navState.routeId) return;
+        const st: unknown = location.state;
 
-        cameFromHistoryRef.current = navState.from === "history";
-
-        setRoutes(ALARM_ROUTES_MOCK);
-
-        const found = ALARM_ROUTES_MOCK.find((r) => r.id === navState.routeId) ?? null;
-        if (found) {
-            setSelectedRoute(found);
-            setStep("CONFIRM");
+        if (isFromSettingToAlarmState(st) && st.smsVerified) {
+            flow.confirmRoute();
+            navigate("/alarm", { replace: true, state: null });
         }
+    }, [location.state, flow, navigate]);
 
-        navigate(".", { replace: true, state: null });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [navState?.openConfirm, navState?.routeId]);
+    // 문자 알림 버튼 누르면 Setting으로 이동
+    const goToSettingForSms = () => {
+        navigate("/setting", {
+            state: { from: "ALARM_SMS", returnTo: "/alarm" },
+        });
+    };
+
+    const pickCurrentLocation = async () => {
+        const targetSnapshot = flow.searchTarget;
+
+        try {
+            const pos = await new Promise<GeolocationPosition>((resolve, reject) => {
+                if (!navigator.geolocation) {
+                    reject(new Error("Geolocation not supported"));
+                    return;
+                }
+                navigator.geolocation.getCurrentPosition(resolve, reject, {
+                    enableHighAccuracy: false,
+                    timeout: 15000,
+                    maximumAge: 60000,
+                });
+            });
+
+            const lat = pos.coords.latitude;
+            const lng = pos.coords.longitude;
+
+            const restKey = import.meta.env.VITE_KAKAO_REST_KEY as string | undefined;
+            let addressText = "현위치";
+
+            if (restKey) {
+                const res = await fetch(
+                    `https://dapi.kakao.com/v2/local/geo/coord2address.json?x=${lng}&y=${lat}`,
+                    { headers: { Authorization: `KakaoAK ${restKey}` } }
+                );
+
+                if (res.ok) {
+                    const data: unknown = await res.json();
+                    const d = data as {
+                        documents?: Array<{
+                            road_address?: { address_name?: string };
+                            address?: { address_name?: string };
+                        }>;
+                    };
+                    const doc = d.documents?.[0];
+
+                    addressText =
+                        doc?.road_address?.address_name ??
+                        doc?.address?.address_name ??
+                        "현위치";
+                }
+            }
+
+            flow.handleSelect(targetSnapshot, {
+                id: "current",
+                title: "현위치",
+                address: addressText,
+            });
+        } catch (err: unknown) {
+            if (err && typeof err === "object" && "code" in err) {
+                const e = err as GeolocationPositionError;
+                alert(`위치 실패 (code=${e.code})\n${e.message}`);
+                return;
+            }
+
+            alert("알 수 없는 위치 오류");
+        }
+    };
 
     return (
         <div className="h-dvh w-full overflow-x-hidden bg-white dark:bg-makcha-navy-900">
             <div className="relative h-dvh w-full md:flex md:overflow-hidden">
-                {/* 좌측 패널 */}
                 <Panel
                     width="md:w-100"
                     isMobileFull
                     className="md:border-r md:border-gray-200 dark:md:border-makcha-navy-800"
-                    disablePadding={step === "CONFIRM"}
+                    disablePadding={flow.step === "CONFIRM"}
                 >
-                    {step === "LOADING" ? (
-                        <RouteLoadingPanel open />
-                    ) : step === "RESULT" && origin && destination ? (
-                        <RouteResultPanel
-                            origin={origin}
-                            destination={destination}
-                            routes={routes}
-                            onSelectRoute={handleSelectRoute}
-                        />
-                    ) : step === "CONFIRM" && selectedRoute ? (
-                        <RouteConfirmPanel
-                            route={selectedRoute}
-                            detail={getConfirmDetail(selectedRoute.id)}
-                            onBack={() => {
-                                // History에서 넘어온 CONFIRM이면 History로 
-                                if (cameFromHistoryRef.current) {
-                                    navigate("/history", { replace: true });
-                                    return;
-                                }
-                                setStep("RESULT");
-                            }}
-                            onConfirm={() => setStep("SUCCESS")}
-                        />
-                    ) : step === "SUCCESS" && origin && destination && selectedRoute ? (
-                        <AlarmSuccessPanel
-                            origin={origin}
-                            destination={destination}
-                            route={selectedRoute}
-                            onGoAlarmList={() => {
-                                navigate("/history");
-                            }}
-                        />
-                    ) : (
-                        <AlarmPanel
-                            origin={origin}
-                            destination={destination}
-                            onOpenOrigin={openOriginSheet}
-                            onOpenDestination={openDestinationSheet}
-                            onSelectDestination={(item) => {
-                                setSearchTarget("DESTINATION");
-                                handleSelect("DESTINATION", item);
-                            }}
-                        />
-                    )}
+                    <AlarmPanelSwitch
+                        flow={{
+                            step: flow.step,
+                            origin: flow.origin,
+                            destination: flow.destination,
+                            routes: flow.routes,
+                            selectedRoute: flow.selectedRoute,
+
+                            getConfirmDetail: flow.getConfirmDetail,
+
+                            openOriginSheet: flow.openOriginSheet,
+                            openDestinationSheet: flow.openDestinationSheet,
+                            handleSelectDestinationFromPanel: flow.handleSelectDestinationFromPanel,
+
+                            handleSelectRoute: flow.handleSelectRoute,
+
+                            backFromConfirm: flow.backFromConfirm,
+                            confirmRoute: flow.confirmRoute,
+                            goAlarmList: flow.goAlarmList,
+
+                            goToSettingForSms,
+                        }}
+                    />
                 </Panel>
 
-                {/* 지도 영역 */}
+                {/* 지도 */}
                 <section className="hidden md:block min-w-0 flex-1 h-dvh">
-                    <KakaoMapView />
+                    <KakaoMapView
+                        routes={flow.routes}
+                        selectedRouteId={flow.selectedRoute?.id ?? null}
+                    />
                 </section>
 
                 {/* 검색 시트 */}
                 <SearchSheet
-                    open={isSearchOpen}
-                    onClose={() => setIsSearchOpen(false)}
-                    title={searchTarget === "ORIGIN" ? "출발지" : "도착지"}
-                    onSelect={(item) => handleSelect(searchTarget, item)}
+                    open={flow.isSearchOpen}
+                    onClose={() => flow.setIsSearchOpen(false)}
+                    title={flow.searchTarget === "ORIGIN" ? "출발지" : "도착지"}
+                    onSelect={(item) => flow.handleSelect(flow.searchTarget, item)}
+                    onPickCurrent={pickCurrentLocation}
                 />
             </div>
         </div>

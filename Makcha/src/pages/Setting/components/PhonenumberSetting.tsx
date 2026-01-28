@@ -3,7 +3,7 @@ import { X } from "lucide-react";
 import SubPanel from "../../../components/common/Panel/SubPanel";
 import type { PhonenumberSettingProps } from "../../../types/setting";
 
-export const PhonenumberSetting = ({ onBack }: PhonenumberSettingProps) => {
+export const PhonenumberSetting = ({ onBack, onComplete }: PhonenumberSettingProps) => {
   // State
   const [phone, setPhone] = useState("");
   const [authCode, setAuthCode] = useState("");
@@ -29,8 +29,8 @@ export const PhonenumberSetting = ({ onBack }: PhonenumberSettingProps) => {
   const handleSubmit = useCallback(() => {
     // 최종 확인 로직
     console.log("인증번호 확인:", authCode);
-    onBack();
-  }, [authCode, onBack]);
+    onComplete?.({ phone });
+  }, [authCode, phone, onComplete]);
 
   // Timer
   useEffect(() => {
@@ -41,8 +41,8 @@ export const PhonenumberSetting = ({ onBack }: PhonenumberSettingProps) => {
 
   // 연산 결과물
   const timeString = useMemo(() => {
-    const min = Math.floor(timer / 60).toString().padStart(2, '0');
-    const sec = (timer % 60).toString().padStart(2, '0');
+    const min = Math.floor(timer / 60).toString().padStart(2, "0");
+    const sec = (timer % 60).toString().padStart(2, "0");
     return `${min}:${sec}`;
   }, [timer]);
 
@@ -55,18 +55,22 @@ export const PhonenumberSetting = ({ onBack }: PhonenumberSettingProps) => {
       onBack={onBack}
       title="연락처 변경"
       rightAction={
-        <button onClick={onBack} className="p-1 text-gray-400 hover:text-makcha-navy-900 dark:hover:text-white transition-colors">
+        <button
+          onClick={onBack}
+          className="p-1 text-gray-400 hover:text-makcha-navy-900 dark:hover:text-white transition-colors"
+        >
           <X size={24} />
         </button>
       }
       footer={
-      <button
-        onClick={handleSubmit}
-        disabled={!canSubmit}
-        className="w-full rounded-xl border border-gray-400 py-4 font-bold text-gray-600 transition-all hover:bg-gray-50 disabled:opacity-30 dark:border-white dark:text-white dark:hover:bg-white/10 md:border-2"
-      >
-        확인
-      </button>}
+        <button
+          onClick={handleSubmit}
+          disabled={!canSubmit}
+          className="w-full rounded-xl border border-gray-400 py-4 font-bold text-gray-600 transition-all hover:bg-gray-50 disabled:opacity-30 dark:border-white dark:text-white dark:hover:bg-white/10 md:border-2"
+        >
+          확인
+        </button>
+      }
     >
       <div className="flex h-full flex-col">
         <div className="flex-1 space-y-8">
@@ -89,9 +93,7 @@ export const PhonenumberSetting = ({ onBack }: PhonenumberSettingProps) => {
                 onClick={requestAuthCode}
                 disabled={!canRequest && !isSent}
                 className={`absolute right-2 rounded-lg border px-3 py-2 text-[12px] font-bold transition-all
-                  ${isSent 
-                    ? 'border-blue-500 text-blue-500' 
-                    : 'border-gray-400 text-gray-600 dark:border-white/40 dark:text-white'}
+                  ${isSent ? "border-blue-500 text-blue-500" : "border-gray-400 text-gray-600 dark:border-white/40 dark:text-white"}
                   disabled:opacity-30 disabled:cursor-not-allowed`}
               >
                 {isSent ? "재발송" : "인증 요청"}
@@ -117,7 +119,10 @@ export const PhonenumberSetting = ({ onBack }: PhonenumberSettingProps) => {
               )}
             </div>
             <p className="px-1 text-sm text-gray-400">
-              인증번호가 오지 않나요? <span className="cursor-pointer underline hover:text-gray-600 dark:hover:text-white">고객센터 문의</span>
+              인증번호가 오지 않나요?{" "}
+              <span className="cursor-pointer underline hover:text-gray-600 dark:hover:text-white">
+                고객센터 문의
+              </span>
             </p>
           </section>
         </div>

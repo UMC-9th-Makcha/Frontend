@@ -1,4 +1,4 @@
-import LoadingLogo from "./../../assets/icons/logo.svg";
+import LoadingLogo from "../../../assets/icons/logo.svg";
 
 type Props = { open: boolean };
 
@@ -11,7 +11,7 @@ const RouteLoadingPanel = ({ open }: Props) => {
                 <img
                     src={LoadingLogo}
                     alt="로딩"
-                    className="h-[120px] w-[120px] max-md:h-[140px] max-md:w-[140px]"
+                    className="h-30 w-30 max-md:h-[140px] max-md:w-[140px]"
                 />
                 <p
                     className="

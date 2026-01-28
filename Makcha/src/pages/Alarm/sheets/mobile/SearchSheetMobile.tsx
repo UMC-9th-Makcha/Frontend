@@ -1,7 +1,8 @@
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { MapPin, Search, X } from "lucide-react";
-import type { OriginSearchItem } from "../types/search";
+import type { OriginSearchItem } from "../../types/search";
+
 type Props = {
     open: boolean;
     onClose: () => void;
@@ -47,9 +48,9 @@ const SearchSheetMobile = ({
     return createPortal(
         <div className="fixed inset-0 z-[9999] flex h-dvh w-screen flex-col overflow-hidden overscroll-contain bg-white dark:bg-makcha-navy-900">
             <header className="sticky top-0 z-10 bg-white px-5 pt-[env(safe-area-inset-top)] dark:bg-makcha-navy-900">
-                <div className="pt-4 pb-4">
+                <div className="pt-4 pb-2">
                     <div className="relative flex items-center justify-center">
-                        <h2 className="text-center text-[40px] font-normal text-makcha-navy-900 dark:text-white">
+                        <h2 className="text-center text-[20px] font-normal text-makcha-navy-900 dark:text-white">
                             {title}
                         </h2>
 
@@ -81,7 +82,7 @@ const SearchSheetMobile = ({
                 <div className="mt-9 px-5">
                     <div
                         className="
-                            flex h-[62px] items-center
+                            flex h-[50px] items-center
                             rounded-[30px]
                             border border-gray-200
                             bg-white px-4 shadow-sm
@@ -93,7 +94,7 @@ const SearchSheetMobile = ({
                             onChange={(e) => setQuery(e.target.value)}
                             placeholder="지번 혹은 도로명 주소 검색"
                             className="
-                                flex-1 min-w-0 bg-transparent text-[20px] text-gray-900 outline-none
+                                flex-1 min-w-0 bg-transparent text-[16px] text-gray-900 outline-none
                                 placeholder:text-gray-500 caret-gray-900
                                 dark:text-white dark:placeholder:text-white/40
                             "
@@ -110,21 +111,37 @@ const SearchSheetMobile = ({
                         </button>
 
                         <Search
-                            className="h-8 w-8 text-[#5F5F5F] dark:text-white/60"
+                            className="h-6 w-6 text-[#5F5F5F] dark:text-white/60"
                             strokeWidth={2}
                         />
                     </div>
                 </div>
 
-                {hasQuery ? (
-                    <div className="mt-4">
-                        <div className="px-5 pb-3 text-[20px] font-medium text-makcha-navy-900 dark:text-white">
-                            검색 결과
-                        </div>
-                        <div className="mx-5 border-t border-[#E2E2E2] dark:border-makcha-navy-800" />
+                <div className="mt-2">
+                    <div className="px-5 pt-3 pb-3">
+                        {hasQuery ? (
+                            <div className="text-[18px] font-medium text-makcha-navy-900 dark:text-white">
+                                검색 결과
+                            </div>
+                        ) : (
+                            <button
+                                type="button"
+                                onClick={onPickCurrent}
+                                className="flex w-full items-center gap-1.5 text-[18px] text-gray-700 dark:text-white/80"
+                            >
+                                <MapPin
+                                    className="h-5 w-5 text-gray-700 dark:text-white/70"
+                                    strokeWidth={1.5}
+                                />
+                                <span>현위치</span>
+                            </button>
+                        )}
+                    </div>
 
-                        {results.length === 0 ? (
-                            <div className="px-5 py-10 text-center text-[20px] text-gray-500 dark:text-white/40">
+                    <div className="mx-5 border-t border-[#E2E2E2] dark:border-makcha-navy-800" />
+                    {hasQuery ? (
+                        results.length === 0 ? (
+                            <div className="px-5 py-10 text-center text-[18px] text-gray-500 dark:text-white/40">
                                 검색 결과가 없습니다.
                             </div>
                         ) : (
@@ -137,60 +154,43 @@ const SearchSheetMobile = ({
                                                 onSelect(item);
                                                 onClose();
                                             }}
-                                            className="w-full px-5 py-4 text-left active:bg-gray-50 dark:active:bg-white/5"
+                                            className="w-full px-5 py-1 text-left active:bg-gray-50 dark:active:bg-white/5"
                                         >
-                                            <div className="text-[20px] font-semibold text-makcha-navy-900 dark:text-white">
+                                            <div className="text-[18px] font-semibold text-makcha-navy-900 dark:text-white">
                                                 {item.title}
                                             </div>
-                                            <div className="mt-1 text-[15px] text-gray-500 dark:text-white/50">
+                                            <div className="mt-[1px] text-[14px] text-gray-500 dark:text-white/50">
                                                 {item.address}
                                             </div>
                                         </button>
                                     </li>
                                 ))}
                             </ul>
-                        )}
-                    </div>
-                ) : (
-                    <>
-                        {/* 현위치 */}
-                        <div className="mt-9">
-                            <button
-                                type="button"
-                                className="flex w-full items-center gap-1.5 px-5 py-4 text-[20px] text-gray-700 dark:text-white/80"
-                                onClick={onPickCurrent}
-                            >
-                                <MapPin
-                                    className="h-5 w-5 text-gray-700 dark:text-white/70"
-                                    strokeWidth={1.5}
-                                />
-                                <span>현위치</span>
-                            </button>
-
-                            <div className="mx-5 border-t border-[#E2E2E2]" />
-                        </div>
-
-                        {/* 주소록 */}
-                        <div className="pt-4">
-                            <div className="flex items-center justify-between px-5">
-                                <span className="text-[20px] text-makcha-navy-900 dark:text-white">
-                                    주소록
-                                </span>
-                                <button
-                                    type="button"
-                                    className="text-[20px] text-makcha-navy-900 dark:text-white"
-                                >
-                                    전체보기
-                                </button>
+                        )
+                    ) : (
+                        <>
+                            {/* 주소록 */}
+                            <div className="pt-4">
+                                <div className="flex items-center justify-between px-5">
+                                    <span className="text-[18px] text-makcha-navy-900 dark:text-white">
+                                        주소록
+                                    </span>
+                                    <button
+                                        type="button"
+                                        className="text-[18px] text-makcha-navy-900 dark:text-white"
+                                    >
+                                        전체보기
+                                    </button>
+                                </div>
                             </div>
-                        </div>
 
-                        {/* 최근 주소 없음 */}
-                        <div className="px-7 py-[240px] text-center text-[25px] text-gray-500 dark:text-white/40">
-                            최근에 선택한 주소가 없습니다.
-                        </div>
-                    </>
-                )}
+                            {/* 최근 주소 없음 */}
+                            <div className="px-7 py-60 text-center text-[18px] text-gray-500 dark:text-white/40">
+                                최근에 선택한 주소가 없습니다.
+                            </div>
+                        </>
+                    )}
+                </div>
             </main>
         </div>,
         document.body

@@ -24,7 +24,7 @@ export default function WaitingSpot() {
 
   // 1. 타입을 string으로 받거나, 명시적으로 단언하여 에러를 방지합니다.
   const { type } = useParams() as { type: string };
-  
+
   // 2. 잘못된 경로(예: /spot/abc)로 들어왔을 때를 대비한 방어 로직
   const isFirst = type === 'first';
   const isLast = type === 'last';
@@ -51,7 +51,7 @@ export default function WaitingSpot() {
     }//현위치
     return FALLBACK_CENTER;//임시 좌표
   }, [selectedPlace, location]);
-  
+
   const handleSelectList = (id: number) => {
     setSelectedPlaceId(id);
     setIsDetailOpen(true);
@@ -81,8 +81,8 @@ export default function WaitingSpot() {
   const [showDirections, setShowDirections] = useState(false);
 
   if (showDirections) {
-  return <WalkingDirections onBack={() => setShowDirections(false)} />;
-}
+    return <WalkingDirections onBack={() => setShowDirections(false)} />;
+  }
 
 
   return (
@@ -106,7 +106,7 @@ export default function WaitingSpot() {
           places={mockPlaces}
           onClickMarker={handleSelectMarker}
           selectedPlaceId={selectedPlaceId}
-           />}
+        />}
         detail={isDetailOpen && selectedPlace ?
           <PlaceDetailPanel
             place={selectedPlace}

@@ -1,12 +1,13 @@
 import { MapPin, Search } from "lucide-react";
-import type { OriginSearchItem } from "../types/search";
-import SubPanel from "../../../components/common/Panel/SubPanel";
+import type { OriginSearchItem } from "../../types/search";
+import SubPanel from "../../../../components/common/Panel/SubPanel";
 
 type Props = {
     open: boolean;
     onClose: () => void;
     title: string;
     onSelect: (item: OriginSearchItem) => void;
+    onPickCurrent: () => void;
     query: string;
     setQuery: (v: string) => void;
     results: OriginSearchItem[];
@@ -18,6 +19,7 @@ const SearchSheetPC = ({
     onClose,
     title,
     onSelect,
+    onPickCurrent,
     query,
     setQuery,
     results,
@@ -118,9 +120,7 @@ const SearchSheetPC = ({
                             <button
                                 type="button"
                                 className="flex w-full items-center gap-1.5 py-4 text-sm text-gray-700 dark:text-white/80"
-                                onClick={() => {
-                                    // TODO: 현위치 로직
-                                }}
+                                onClick={onPickCurrent}
                             >
                                 <MapPin className="h-5 w-5 text-gray-700 dark:text-white/70" strokeWidth={1.5} />
                                 <span>현위치</span>

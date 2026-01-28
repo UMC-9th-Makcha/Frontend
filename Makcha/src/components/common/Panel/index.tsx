@@ -36,7 +36,7 @@ const Panel = ({
         className={
           disablePadding
             ? `relative flex h-full min-h-0 flex-col w-full ${contentClassName}`
-            : `relative flex flex-col w-full px-[16px] pt-[40px] pb-16 md:pb-0 ${contentClassName}`
+            : `relative flex flex-col w-full px-4 pt-10 pb-16 md:pb-0 ${contentClassName}`
         }
       >
         {children}
