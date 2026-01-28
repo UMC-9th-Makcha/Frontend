@@ -22,7 +22,7 @@ export const StartLocationSearch = ({onSubmitOrigin} : StartLocationSearchProps 
     className="flex flex-col w-full py-1 px-2 gap-2">
       <label
         htmlFor="start-location"
-        className="text-[#262626] text-[14px] mt-4
+        className="text-[#262626] text-[14px] mt-4 hidden md:flex
         dark:text-white">
         출발지
       </label>
@@ -52,7 +52,7 @@ export const StartLocationSearch = ({onSubmitOrigin} : StartLocationSearchProps 
                 }
               }}
           id="start-location"
-          className="w-full h-[42px] px-2 pl-10 shadow-[0_0_5px_0_#88888840] rounded-[20px] text-[#5F5F5F] font-light text-sm outline-none
+          className="w-full h-[42px] px-2 pl-10 bg-white shadow-[0_0_5px_0_#88888840] rounded-[20px] text-[#5F5F5F] font-light text-sm outline-none
           placeholder:text-[#5F5F5F] placeholder:font-light placeholder:text-sm placeholder:opacity-100
           dark:placeholder-makcha-navy-200"
         />
