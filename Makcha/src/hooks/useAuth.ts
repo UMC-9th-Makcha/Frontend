@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import axios, { AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import { useAuthStore } from '../store/useAuthStore';
 import { authService } from '../apis/auth';
 import { useNavigate } from 'react-router-dom';
@@ -11,19 +11,12 @@ export const useAuth = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-   // 내 정보 조회
+  // 내 정보 조회
   const { data: userData, isLoading: isUserLoading } = useQuery<User, AxiosError<ApiError>>({
     queryKey: ['me'],
     queryFn: () => authService.getMe(),
     enabled: !!store.accessToken && store.isHydrated,
     retry: false,
-    throwOnError: (error: AxiosError<ApiError>) => {
-      if (axios.isAxiosError(error) && error.response?.status === 401) {
-        store.setLogout();
-        return true;
-      }
-      return false;
-    },
     staleTime: 1000 * 60 * 5,
   });
 
@@ -31,8 +24,7 @@ export const useAuth = () => {
   const loginMutation = useMutation<LoginResult, AxiosError<ApiError>, string>({
     mutationFn: (code: string) => authService.requestKakaoLogin(code),
     onSuccess: (data) => {
-      store.setLogin(data.accessToken, data.user);
-      queryClient.setQueryData(['me'], data.user);
+      store.setLogin(data.accessToken);
       navigate('/', { replace: true });
     },
   });
@@ -42,27 +34,45 @@ export const useAuth = () => {
     mutationFn: () => authService.logout(),
     onSettled: () => {
       store.setLogout();
-      queryClient.setQueryData(['me'], null);
-      queryClient.removeQueries({ queryKey: ['me'] });
+      queryClient.clear();
       navigate('/', { replace: true });
     },
   });
 
+  // 회원 탈퇴
+  const withdrawMutation = useMutation<void, AxiosError<ApiError>, void>({
+    mutationFn: () => authService.withdraw(),
+    onSuccess: () => {
+      store.setLogout();
+      queryClient.clear();
+      navigate('/', { replace: true });
+    },
+  });
+
+  // 토큰 재발급
+  const refreshMutation = useMutation<LoginResult, AxiosError<ApiError>, void>({
+    mutationFn: () => authService.refresh(),
+    onSuccess: (data) => {
+      store.setLogin(data.accessToken);
+    },
+  });
+
   return {
-    user: store.accessToken ? (userData ?? store.user) : null,
+    // 유저 정보
+    user: userData || store.user,
     isLoggedIn: !!store.accessToken,
-    isLoading: isUserLoading || loginMutation.isPending,
-    
-    // Mutation Actions
-    login: loginMutation.mutate,
-    logout: logoutMutation.mutate,
     
     // 로딩 상태
+    isLoading: isUserLoading || loginMutation.isPending || withdrawMutation.isPending,
     isLoggingIn: loginMutation.isPending,
-    isLoggingOut: logoutMutation.isPending,
-
-    // 스토어 수동 조작
-    setLogin: store.setLogin,
-    setLogout: store.setLogout,
+    isWithdrawing: withdrawMutation.isPending,
+    isRefreshing: refreshMutation.isPending,
+    
+    // 액션 함수
+    login: loginMutation.mutate,
+    logout: logoutMutation.mutate,
+    withdraw: withdrawMutation.mutate,
+    refresh: refreshMutation.mutate,
+    updateUserPhone: store.updateUserPhone,
   };
 };

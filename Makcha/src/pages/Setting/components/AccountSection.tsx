@@ -4,7 +4,7 @@ import { useAuth } from "../../../hooks/useAuth";
 import type { AccountSectionProps } from "../../../types/setting";
 
 export function AccountSection({ onNavigate }: AccountSectionProps) {
-  const { user, setLogout } = useAuth();
+  const { user, logout } = useAuth();
 
   return (
     <div className="mb-10 px-1">
@@ -12,7 +12,7 @@ export function AccountSection({ onNavigate }: AccountSectionProps) {
       
       <div className="flex flex-col">
         <p className="text-[20px] font-bold dark:text-white">
-          {user?.nickname || "사용자"} 님
+          {user?.name || "사용자"} 님
         </p>
         <div className="mt-2 flex items-center gap-2 text-sm text-gray-600 dark:text-makcha-navy-300">
           <UserIcon user={user} className="h-5 w-5" />
@@ -34,7 +34,7 @@ export function AccountSection({ onNavigate }: AccountSectionProps) {
 
       {/* 로그아웃 */}
       <button 
-        onClick={() => setLogout()} 
+        onClick={() => logout()} 
         className="mt-10 w-full rounded-xl border border-gray-400 py-4 font-medium text-gray-600 transition-all hover:bg-gray-50 dark:border-white dark:text-white dark:hover:bg-white/10"
       >
         로그아웃

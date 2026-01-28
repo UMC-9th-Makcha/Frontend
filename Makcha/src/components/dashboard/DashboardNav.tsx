@@ -5,17 +5,15 @@ import DashboardItem from './DashboardItem';
 import { UserIcon } from './UserIcon';
 import { useDashboardStore } from '../../store/useDashboardStore';
 import { useAuth } from '../../hooks/useAuth';
-import { useMediaQuery } from '../../store/useMediaQuery'; // 추가
+import { useMediaQuery } from '../../store/useMediaQuery';
 import type { DashboardNavProps } from '../../types/dashboard';
 
 const DashboardNav = memo(({ dividerClass }: DashboardNavProps) => {
-  const { user } = useAuth();
+  const { user, isLoggedIn } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const isMobile = useMediaQuery('(max-width: 768px)');
   const setSidebarOpen = useDashboardStore((state) => state.setSidebarOpen);
-
-  const isLoggedIn = !!user;
 
   const filteredMenus = isMobile ? NAV_MENUS.slice(4) : NAV_MENUS;
 
@@ -39,11 +37,11 @@ const DashboardNav = memo(({ dividerClass }: DashboardNavProps) => {
 
   return (
     <nav className="flex-1 overflow-y-auto no-scrollbar mt-2 flex flex-col gap-y-1">
-      {/* 사용자 정보 */}
-      {user && (
+      {/* 유저 정보 연동 부분 */}
+      {isLoggedIn && user && (
         <React.Fragment>
           <DashboardItem
-            label={`${user.nickname}님`}
+            label={`${user.name}님`}
             path="/setting"
             icon={({ className }: { className?: string }) => (
               <UserIcon user={user} className={className} />
@@ -55,7 +53,7 @@ const DashboardNav = memo(({ dividerClass }: DashboardNavProps) => {
         </React.Fragment>
       )}
 
-      {/* 필터링된 메뉴 렌더링 */}
+      {/* 메뉴 렌더링 */}
       {filteredMenus.map((menu) => (
         <React.Fragment key={menu.id}>
           {menu.divider && <div className={dividerClass} />}

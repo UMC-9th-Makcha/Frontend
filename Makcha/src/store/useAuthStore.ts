@@ -10,8 +10,10 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       isHydrated: false,
 
-      setLogin: (token, user) => set({ isLoggedIn: true, accessToken: token, user }),
+      setLogin: (token) => set({ isLoggedIn: true, accessToken: token }),
+      
       setLogout: () => set({ isLoggedIn: false, accessToken: null, user: null }),
+      
       setHydrated: (state) => set({ isHydrated: state }),
 
       updateUserPhone: (newPhone: string) => 
