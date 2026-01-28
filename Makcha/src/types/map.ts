@@ -24,3 +24,11 @@ export interface MapPathSegment {
   points: MapPoint[];
   type: PathType;
 }
+
+export interface BaseMapProps {
+  markers?: MapMarker[];
+  activeId?: string | number | null;
+  paths?: MapPathSegment[];
+  onMarkerClick?: (marker: MapMarker) => void;
+  onMapClick?: (pos: MapPoint) => void;
+}
