@@ -21,6 +21,7 @@ export interface MapMarker {
 }
 
 export interface MapPathSegment {
+  id: string;
   points: MapPoint[];
   type: PathType;
 }

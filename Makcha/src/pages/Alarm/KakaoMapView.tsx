@@ -23,10 +23,7 @@ function toPathType(routeType: AlarmRoute["routeType"]): PathType {
     }
 }
 
-export default function KakaoMapView({
-    routes,
-    selectedRouteId,
-}: Props) {
+export default function KakaoMapView({ routes,selectedRouteId }: Props) {
     const selectedPath = selectedRouteId ? ROUTE_PATHS_MOCK[selectedRouteId] : null;
     const start = selectedPath?.[0];
     const end = selectedPath?.[selectedPath.length - 1];
@@ -53,23 +50,23 @@ export default function KakaoMapView({
     }, [start, end]);
 
     const paths: MapPathSegment[] = useMemo(() => {
-        return routes
-            .map((r) => {
+        return routes.map((r) => {
                 const pts = ROUTE_PATHS_MOCK[r.id];
                 if (!pts || pts.length < 2) return null;
 
                 return {
+                    id: r.id,
                     type: toPathType(r.routeType),
                     points: pts,
                 } as MapPathSegment;
-            })
-            .filter(Boolean) as MapPathSegment[];
+            }).filter(Boolean) as MapPathSegment[];
     }, [routes]);
 
     return (
         <BaseMap
             markers={markers}
             paths={paths}
+            selectedPathId={selectedRouteId}
         />
     );
 }
