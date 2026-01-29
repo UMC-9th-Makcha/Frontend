@@ -19,4 +19,5 @@ export interface AuthState {
   setLogout: () => void;
   setHydrated: (state: boolean) => void;
   updateUserPhone: (newPhone: string) => void;
+  setUser: (user: User) => void;
 }

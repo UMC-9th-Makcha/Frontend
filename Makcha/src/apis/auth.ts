@@ -15,12 +15,6 @@ export const authService = {
     return data.result;
   },
 
-  // 토큰 재발급
-  refresh: async (): Promise<LoginResult> => {
-    const { data } = await api.post<BaseResponse<LoginResult>>('/auth/refresh');
-    return data.result;
-  },
-
   // 로그아웃
   logout: async (): Promise<void> => {
     await api.post<BaseResponse<null>>('/auth/logout');

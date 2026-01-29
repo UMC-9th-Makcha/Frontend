@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import type { AuthState } from '../types/auth';
+import type { AuthState, User } from '../types/auth';
 
 export const useAuthStore = create<AuthState>()(
   persist(
@@ -11,6 +11,8 @@ export const useAuthStore = create<AuthState>()(
       isHydrated: false,
 
       setLogin: (token) => set({ isLoggedIn: true, accessToken: token }),
+
+      setUser: (user: User) => set({ user }), 
       
       setLogout: () => set({ isLoggedIn: false, accessToken: null, user: null }),
       
@@ -26,7 +28,6 @@ export const useAuthStore = create<AuthState>()(
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         isLoggedIn: state.isLoggedIn,
-        accessToken: state.accessToken,
         user: state.user,
       }),
       onRehydrateStorage: () => (state) => state?.setHydrated(true),
