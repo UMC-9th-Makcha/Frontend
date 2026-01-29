@@ -4,7 +4,7 @@ import { useAuth } from "../../../hooks/useAuth";
 import type { AccountSectionProps } from "../../../types/setting";
 
 export function AccountSection({ onNavigate }: AccountSectionProps) {
-  const { user, logout } = useAuth();
+  const { user, logout, withdraw } = useAuth();
 
   return (
     <div className="mb-10 px-1">
@@ -38,6 +38,14 @@ export function AccountSection({ onNavigate }: AccountSectionProps) {
         className="mt-10 w-full rounded-xl border border-gray-400 py-4 font-medium text-gray-600 transition-all hover:bg-gray-50 dark:border-white dark:text-white dark:hover:bg-white/10"
       >
         로그아웃
+      </button>
+
+      {/* 회원 탈퇴 */}
+      <button
+        onClick={() => withdraw()}
+        className="mt-10 w-full rounded-xl border border-gray-400 py-4 font-medium text-gray-600 transition-all hover:bg-gray-50 dark:border-white dark:text-white dark:hover:bg-white/10"
+      >
+        회원 탈퇴
       </button>
     </div>
   );

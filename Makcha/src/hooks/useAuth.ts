@@ -6,11 +6,12 @@ import { authService } from '../apis/auth';
 import { useNavigate } from 'react-router-dom';
 import type { User, LoginResult } from '../types/auth';
 import type { ApiError } from '../types/api';
+import useToastStore from '../store/useToastStore';
 
 export const useAuth = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-
+  const { addToast } = useToastStore();
   const accessToken = useAuthStore((state) => state.accessToken);
   const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
   const isHydrated = useAuthStore((state) => state.isHydrated);
@@ -34,6 +35,7 @@ export const useAuth = () => {
     mutationFn: ({code, redirectUri}) => authService.requestKakaoLogin(code, redirectUri),
     onSuccess: (data) => {
       setLogin(data.accessToken);
+      addToast("환영합니다!", "success");
       navigate('/', { replace: true });
     },
   });
@@ -42,6 +44,7 @@ export const useAuth = () => {
   const logoutMutation = useMutation<void, AxiosError<ApiError>, void>({
     mutationFn: () => authService.logout(),
     onSettled: () => {
+      addToast("로그아웃이 완료되었습니다.", "success");
       setLogout();
       queryClient.clear();
       navigate('/', { replace: true });
@@ -52,6 +55,7 @@ export const useAuth = () => {
   const withdrawMutation = useMutation<void, AxiosError<ApiError>, void>({
     mutationFn: () => authService.withdraw(),
     onSuccess: () => {
+      addToast("회원 탈퇴가 완료되었습니다.", "success");
       setLogout();
       queryClient.clear();
       navigate('/', { replace: true });
