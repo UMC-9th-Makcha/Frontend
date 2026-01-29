@@ -4,8 +4,8 @@ import type { LoginResult, User } from '../types/auth';
 
 export const authService = {
   // 로그인
-  requestKakaoLogin: async (code: string): Promise<LoginResult> => {
-    const { data } = await api.post<BaseResponse<LoginResult>>('/auth/kakao', { code });
+  requestKakaoLogin: async (code: string, redirectUri: string): Promise<LoginResult> => {
+    const { data } = await api.post<BaseResponse<LoginResult>>('/auth/kakao', { code, redirectUri });
     return data.result;
   },
 

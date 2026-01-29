@@ -30,8 +30,8 @@ export const useAuth = () => {
   });
 
   // 로그인
-  const loginMutation = useMutation<LoginResult, AxiosError<ApiError>, string>({
-    mutationFn: (code: string) => authService.requestKakaoLogin(code),
+  const loginMutation = useMutation<LoginResult, AxiosError<ApiError>, { code: string; redirectUri: string }>({
+    mutationFn: ({code, redirectUri}) => authService.requestKakaoLogin(code, redirectUri),
     onSuccess: (data) => {
       setLogin(data.accessToken);
       navigate('/', { replace: true });
@@ -65,7 +65,8 @@ export const useAuth = () => {
   }, [userData, storeUser, setUser]);
 
   const login = useCallback((code: string) => {
-    loginMutation.mutate(code);
+    const redirectUri = `${window.location.origin}/kakao/callback`; 
+    loginMutation.mutate({ code, redirectUri });
   }, [loginMutation]);
 
   const logout = useCallback(() => {
