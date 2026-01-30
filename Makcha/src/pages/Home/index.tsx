@@ -6,10 +6,9 @@ export default function Home() {
   const navigate = useNavigate();
 
   return (
-    /* 1. h-full -> min-h-full / justify-between 삭제 / gap-y 추가 */
     <div className="flex flex-col gap-y-10 md:gap-y-16 p-6 md:p-10 max-w-7xl mx-auto w-full min-h-full">
       
-      {/* 헤더: 여백을 더 줄이기 위해 space-y-1 유지 */}
+      {/* 헤더 */}
       <header className="space-y-1">
         <h1 className="text-2xl md:text-3xl font-bold dark:text-white leading-tight">
           반가워요, <span className="text-blue-500">막차</span>님!<br className="md:hidden" /> 어디로 가시나요?
@@ -19,7 +18,7 @@ export default function Home() {
         </p>
       </header>
 
-      {/* 대시보드: 카드의 높이를 살짝 줄여서(h-[140px]) 더 밀도 있게 구성 */}
+      {/* 대시보드 */}
       <section>
         <HorizontalScroll<DashboardAction>
           items={DASHBOARD_ACTIONS}
@@ -52,7 +51,7 @@ export default function Home() {
         />
       </section>
 
-      {/* 세이브 리포트: 상단 제목과의 간격을 좁히기 위해 조정 */}
+      {/* 세이브 리포트 */}
       <section className="space-y-4">
         <h2 className="text-lg md:text-xl font-bold dark:text-white px-1">세이브 리포트</h2>
         <div 
@@ -63,10 +62,8 @@ export default function Home() {
           <p className="text-sm text-gray-500 dark:text-makcha-navy-300 mb-2">지금까지 아낀 택시비 🚕</p>
           <p className="text-4xl md:text-6xl font-black text-amber-400 mb-2">125,000원</p>
           <p className="text-xs text-gray-400">총 5번의 막차를 사수했어요!</p>
-          
-          {/* 캐릭터 아이콘 위치 최적화 (이미지 기준) */}
+
           <div className="absolute bottom-2 right-2 opacity-20 md:opacity-100">
-             {/* 캐릭터 이미지가 있다면 여기에 배치 */}
           </div>
         </div>
       </section>

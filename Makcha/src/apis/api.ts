@@ -1,7 +1,7 @@
 import axios, { AxiosError } from 'axios';
 import type { InternalAxiosRequestConfig, AxiosResponse } from 'axios';
 import { useAuthStore } from '../store/useAuthStore';
-import type { BaseResponse, ApiError} from '../types/api'; 
+import type { BaseResponse, ApiError } from '../types/api';
 import type { LoginResult } from '../types/auth';
 
 interface CustomConfig extends InternalAxiosRequestConfig {
@@ -50,18 +50,21 @@ api.interceptors.response.use(
 
     // 토큰 만료 에러 처리 (401)
     if ((status === 401 || errorData?.errorCode === 'AUTH-401-001') && !originalRequest._retry) {
+      
+      // 이미 갱신 중이라면 대기열에 추가
       if (isRefreshing) {
-        return new Promise<string | null>((resolve, reject) => {
-          failedQueue.push({ resolve, reject });
-        })
-          .then((token) => {
-            if (token) {
-              originalRequest.headers = originalRequest.headers || {};
-              originalRequest.headers.Authorization = `Bearer ${token}`;
-            }
-            return api(originalRequest);
-          })
-          .catch((err: unknown) => Promise.reject(err));
+        try {
+          const token = await new Promise<string | null>((resolve, reject) => {
+            failedQueue.push({ resolve, reject });
+          });
+          
+          if (token && originalRequest.headers) {
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+          }
+          return await api(originalRequest);
+        } catch (queueError) {
+          return Promise.reject(queueError);
+        }
       }
 
       originalRequest._retry = true;
@@ -69,38 +72,35 @@ api.interceptors.response.use(
 
       try {
         const { data } = await axios.post<BaseResponse<LoginResult>>(
-          `${import.meta.env.VITE_API_BASE_URL}/api/auth/refresh`,
+          `${import.meta.env.VITE_API_BASE_URL}/auth/refresh`,
           {},
           { withCredentials: true }
         );
 
-        const { accessToken, user } = data.result;
-        useAuthStore.getState().setLogin(accessToken, user);
+        const { accessToken} = data.result;
+        useAuthStore.getState().setLogin(accessToken);
         
         processQueue(null, accessToken);
         
-        originalRequest.headers = originalRequest.headers || {};
-        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+        if (originalRequest.headers) {
+          originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+        }
         
-        return api(originalRequest);
+        return await api(originalRequest);
       } catch (refreshError: unknown) {
         processQueue(refreshError, null);
         useAuthStore.getState().setLogout();
-        // 리프레시 실패 시 로그인 페이지 이동 등의 처리
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;
       }
     }
 
-    // 공통 에러 처리
     handleGlobalError(err);
-
     return Promise.reject(err);
   }
 );
 
-// 공통 에러 핸들러 함수
 function handleGlobalError(err: AxiosError) {
   const status = err.response?.status;
   const errorData = err.response?.data as ApiError | undefined;

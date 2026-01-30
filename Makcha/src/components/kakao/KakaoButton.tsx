@@ -6,7 +6,7 @@ interface Props {
 
 const KakaoLoginButton = ({ className = "" }: Props) => {
   const handleLogin = () => {
-    // 1. 보안을 위한 state 생성 및 저장
+    // 보안을 위한 state 생성 및 저장
     const state = generateRandomState();
     sessionStorage.setItem('kakao_auth_state', state);
 
@@ -15,9 +15,6 @@ const KakaoLoginButton = ({ className = "" }: Props) => {
     // 현재 접속 환경(localhost 또는 ngrok) 주소를 자동으로 획득
     const REDIRECT_URI = `${window.location.origin}/kakao/callback`;
 
-    // 디버깅용 로그
-    console.log("ID 확인:", CLIENT_ID);
-    console.log("URI 확인:", REDIRECT_URI);
 
     // 예외 처리
     if (!CLIENT_ID || CLIENT_ID === "undefined") {

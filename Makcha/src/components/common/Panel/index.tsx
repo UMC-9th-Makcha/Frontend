@@ -21,7 +21,7 @@ const Panel = ({
     <section
       className={`
         ${isMobileFull ? 'flex' : 'hidden md:flex'} 
-        relative h-full z-20 
+        relative h-full z-39 overflow-hidden
         w-full max-w-[100vw] 
         flex-col border-none md:border-r 
         bg-white dark:bg-makcha-navy-900 
@@ -33,11 +33,9 @@ const Panel = ({
       `}
     >
       <div
-        className={
-          disablePadding
-            ? `relative flex h-full min-h-0 flex-col w-full ${contentClassName}`
-            : `relative flex flex-col w-full px-4 pt-10 pb-16 md:pb-0 ${contentClassName}`
-        }
+        className={`relative flex flex-col w-full overflow-y-auto no-scrollbar ${
+          disablePadding ? "h-full min-h-0" : "px-4 pt-10 pb-16 md:pb-0"
+        } ${contentClassName}`}
       >
         {children}
       </div>

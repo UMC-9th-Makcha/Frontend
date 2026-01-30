@@ -3,16 +3,16 @@ import { useMemo, useState } from "react";
 import { WaitingSpotLayout } from "../../components/waitingspot/WaitingSpotLayout";
 import { WaitingSpotHeader } from "../../components/waitingspot/common/WaitingSpotHeader";
 import { CategoryTab } from "../../components/waitingspot/common/CategoryTab";
-import { WaitingSpotMap } from "../../components/waitingspot/WaitingSpotMap";
+import BaseMap from "../../components/common/Map"; 
 import type { Place, WaitingCategoryKey } from "../../types/waitingspot";
 import { StartLocationSearch } from "../../components/waitingspot/StartLocationSearch";
 import { PlaceList } from "../../components/waitingspot/PlaceList";
 import { PlaceDetailPanel } from "../../components/waitingspot/PlaceDetailPanel";
 import { FALLBACK_CENTER, waitingCategories } from "../../components/waitingspot/constants";
 import WalkingDirections from "./WalkingDirections";
+import { useGeoLocation } from "../../hooks/useGeoLocation"; 
 import { mockPlaces } from "../../components/waitingspot/common/mock";
-import { FooterButton } from "../../components/waitingspot/common/FooterButton";
-import { useGeoLocation } from "../../hooks/useGeoLocation";
+import type { MapMarker } from "../../types/map";
 
 export default function WaitingSpot() {
   //지도 현위치 좌표
@@ -40,6 +40,16 @@ export default function WaitingSpot() {
   const selectedPlace = useMemo<Place | null>(() => {
     return mockPlaces.find((p) => p.id === selectedPlaceId) ?? null;
   }, [selectedPlaceId]);
+
+  // 마커 데이터 변환 
+  const mapMarkers = useMemo<MapMarker[]>(() => {
+    return mockPlaces.map(p => ({
+      id: p.id,
+      name: p.name,
+      position: { lat: p.lat, lng: p.lng },
+      variant: 'spot' 
+    }));
+  }, []);
 
   //지도 center 좌표 반영
   const center = useMemo(() => {
@@ -84,7 +94,6 @@ export default function WaitingSpot() {
     return <WalkingDirections onBack={() => setShowDirections(false)} />;
   }
 
-
   return (
     <div className="min-h-dvh w-full">
       <WaitingSpotLayout
@@ -96,17 +105,13 @@ export default function WaitingSpot() {
           selectedPlaceId={selectedPlaceId}
           onSelectPlaceId={handleSelectList}
         />}
-        footer={
-          <FooterButton
-          onClick={onStartDirection}
-          content={`도보 길 안내 시작`}/>
+        map={
+          <BaseMap 
+            markers={mapMarkers}
+            activeId={selectedPlaceId}
+            onMarkerClick={(marker) => handleSelectMarker(marker.id as number)}
+          />
         }
-        map={<WaitingSpotMap 
-          center={center}
-          places={mockPlaces}
-          onClickMarker={handleSelectMarker}
-          selectedPlaceId={selectedPlaceId}
-        />}
         detail={isDetailOpen && selectedPlace ?
           <PlaceDetailPanel
             place={selectedPlace}
