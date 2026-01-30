@@ -1,5 +1,5 @@
-import type { DirectionCardProps } from "../../types/walking-direction";
-import { routeCategories } from "./constants";
+import type { DirectionCardProps } from "../../../types/walking-direction";
+import { routeCategories } from "../common/constants";
 
 export const DirectionCard = ({ summary }: DirectionCardProps) => {
   const getRouteCategoryLabel = (key: string) =>

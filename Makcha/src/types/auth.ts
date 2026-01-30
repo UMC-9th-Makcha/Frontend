@@ -1,14 +1,13 @@
 export interface User {
   id: string;
-  nickname: string;
+  name: string;
   profileImage?: string;
   email?: string;
+  phone?: string;
 }
 
 export interface LoginResult {
   accessToken: string; 
-  expiresIn: number;
-  user: User;
 }
 
 export interface AuthState {
@@ -16,7 +15,9 @@ export interface AuthState {
   accessToken: string | null;
   user: User | null;
   isHydrated: boolean;
-  setLogin: (token: string, user: User) => void;
+  setLogin: (token: string) => void;
   setLogout: () => void;
   setHydrated: (state: boolean) => void;
+  updateUserPhone: (newPhone: string) => void;
+  setUser: (user: User) => void;
 }

@@ -1,41 +1,70 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Map, CustomOverlayMap, Polyline, useKakaoLoader } from "react-kakao-maps-sdk";
 import { MapPin, Navigation } from "lucide-react";
 import { useCurrentLocation } from "../../../hooks/useCurrentLocation";
 import { useUIStore } from "../../../store/useUIStore";
 import { DEFAULT_MAP_CENTER, PATH_COLORS, MARKER_COLORS } from "./constant";
-import type { MapPoint, MapMarker, MapPathSegment } from "../../../types/map";
-
-export interface BaseMapProps {
-  markers?: MapMarker[];                       // 지도에 표시할 모든 마커(출발, 도착, 장소 등) 리스트
-  activeId?: string | number | null;           // 현재 선택되어 강조 및 포커스할 마커의 ID
-  paths?: MapPathSegment[];                    // 지도에 그릴 경로 선(도보 점선, 교통 실선 등) 리스트
-  selectedPathId?: string | null;
-  onMarkerClick?: (marker: MapMarker) => void; // 마커를 클릭했을 때 실행할 함수
-  onMapClick?: (pos: MapPoint) => void;        // 지도의 빈 곳을 클릭했을 때 실행할 함수
-}
+import type { BaseMapProps } from "../../../types/map";
 
 const BaseMap = ({ markers = [], activeId, paths = [], selectedPathId, onMarkerClick, onMapClick }: BaseMapProps) => {
   const [loading, sdkError] = useKakaoLoader({ appkey: import.meta.env.VITE_KAKAO_JS_KEY });
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const { location: userLoc } = useCurrentLocation();
   const isDarkMode = useUIStore((s) => s.isDarkMode);
+  
+  const isInitialCenterSet = useRef(false);
+  const lastDataKey = useRef("");
+
+  // 지도 초기 위치
+  useEffect(() => {
+    if (!map) return;
+
+    const startMarker = markers.find(m => m.variant === 'start');
+    
+    if (startMarker && !isInitialCenterSet.current) {
+      map.setCenter(new kakao.maps.LatLng(startMarker.position.lat, startMarker.position.lng));
+      isInitialCenterSet.current = true;
+    } else if (userLoc && !isInitialCenterSet.current) {
+      map.setCenter(new kakao.maps.LatLng(userLoc.lat, userLoc.lng));
+      isInitialCenterSet.current = true;
+    }
+  }, [map, userLoc, markers]);
 
   useEffect(() => {
     if (!map || (markers.length === 0 && paths.length === 0)) return;
-    const bounds = new kakao.maps.LatLngBounds();
-    markers.forEach(m => bounds.extend(new kakao.maps.LatLng(m.position.lat, m.position.lng)));
-    paths.forEach(p => p.points.forEach(pt => bounds.extend(new kakao.maps.LatLng(pt.lat, pt.lng))));
-    map.setBounds(bounds, 80);
-  }, [map, markers, paths]);
+
+    const currentDataKey = `m:${markers.length}-p:${paths.length}-a:${activeId}`;
+    if (lastDataKey.current !== currentDataKey) {
+      const bounds = new kakao.maps.LatLngBounds();
+      markers.forEach(m => bounds.extend(new kakao.maps.LatLng(m.position.lat, m.position.lng)));
+      paths.forEach(p => p.points.forEach(pt => bounds.extend(new kakao.maps.LatLng(pt.lat, pt.lng))));
+      
+      map.setBounds(bounds, 30);
+      lastDataKey.current = currentDataKey;
+    }
+  }, [map, markers, paths, activeId]);
 
   if (loading || sdkError) return <div className="h-full w-full bg-gray-100 animate-pulse" />;
 
   return (
-    <div className="h-full w-full relative kakao-map-wrapper">
-      <Map center={DEFAULT_MAP_CENTER} style={{ width: "100%", height: "100%" }} onCreate={setMap}
-        onClick={(_t, e) => onMapClick?.({ lat: e.latLng.getLat(), lng: e.latLng.getLng() })}>
+    <div className={`h-full w-full relative kakao-map-wrapper ${isDarkMode ? "map-dark-mode" : ""}`}>
+      <style>{`
+        .map-dark-mode .kakao-map-wrapper [style*="background-color: white"],
+        .map-dark-mode .kakao-map-wrapper canvas,
+        .map-dark-mode .kakao-map-wrapper img[src*="t1.daumcdn.net/mapjsapi"] {
+          filter: invert(95%) hue-rotate(180deg) brightness(0.9) contrast(1.1) !important;
+        }
+        .map-dark-mode .anti-invert {
+          filter: invert(100%) hue-rotate(-180deg) !important;
+        }
+      `}</style>
 
+      <Map 
+        center={DEFAULT_MAP_CENTER} 
+        style={{ width: "100%", height: "100%" }} 
+        onCreate={setMap}
+        onClick={(_t, e) => onMapClick?.({ lat: e.latLng.getLat(), lng: e.latLng.getLng() })}
+      >
         {paths.map((seg, i) => {
           const isWalk = seg.type === "WALK";
           // 선택된 경로가 없으면 모두 색이 나타나고, 선택한 경로가 있으면 그것만 색 나머진 회색

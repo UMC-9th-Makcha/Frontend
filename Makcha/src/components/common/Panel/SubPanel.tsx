@@ -47,7 +47,7 @@ const SubPanel = ({
   return (
     <section
       className={`
-        fixed inset-0 z-50 flex flex-col bg-white dark:bg-makcha-navy-900 md:h-[calc(100vh-48px)]
+        fixed inset-0 z-49 flex flex-col bg-white dark:bg-makcha-navy-900 md:h-[calc(100vh-48px)]
         md:relative md:inset-auto md:z-0 md:ml-4 
         h-full w-full ${width} shrink-0
         border-none md:border md:border-gray-100 dark:md:border-white/10

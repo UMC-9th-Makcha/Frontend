@@ -1,8 +1,8 @@
-import type { RouteDetailPanelProps } from "../../types/walking-direction";
-import { routeCategories } from "./constants";
-import { RouteDetailCard } from "./RouteDetailCard";
+import type { DirectionDetailPanelProps } from "../../../types/walking-direction";
+import { DirectionDetailCard } from "../components/DirectionDetailCard";
+import { routeCategories } from "../common/constants";
 
-export const RouteDetailPanel = ({ direction, routeDetail }: RouteDetailPanelProps) => {
+export const DirectionDetailPanel = ({ direction, routeDetail }: DirectionDetailPanelProps) => {
   const getRouteCategoryLabel = (key: string) =>
     routeCategories.find((v) => v.key === key)?.label;
 
@@ -29,7 +29,7 @@ export const RouteDetailPanel = ({ direction, routeDetail }: RouteDetailPanelPro
       <hr className="text-[#E2E2E2] -mx-4" />
       <div className="flex flex-col gap-2 mt-4">
         {steps.map((step) => (
-          <RouteDetailCard key={step.order} step={step} />
+          <DirectionDetailCard key={step.order} step={step} />
         ))}
       </div>
     </div>

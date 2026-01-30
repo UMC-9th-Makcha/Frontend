@@ -1,7 +1,7 @@
-import type { RouteDetailCardProps } from "../../types/walking-direction";
-import { StepIcon } from "./constants";
+import type { DirectionDetailCardProps } from "../../../types/walking-direction";
+import { StepIcon } from "../common/StepIcon";
 
-export const RouteDetailCard = ({ step }: RouteDetailCardProps) => {
+export const DirectionDetailCard = ({ step }: DirectionDetailCardProps) => {
   return (
     <div className="flex items-start gap-4 rounded-xl bg-white px-4 py-3 shadow-sm
       dark:bg-makcha-navy-900">
