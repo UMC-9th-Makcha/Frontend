@@ -2,7 +2,6 @@ import type { AlarmRoute } from "../types/alarm";
 import type { OriginSearchItem } from "../types/search";
 import { CheckCircle } from "lucide-react";
 import { ROUTE_TYPE_LABEL } from "../constants";
-import FrequentRoutesCard from "../components/FrequentRoutesCard";
 
 type Props = {
     origin: OriginSearchItem;
@@ -64,14 +63,6 @@ const AlarmSuccessPanel = ({ origin, destination, route, onGoAlarmList }: Props)
                         지금부터 문자 메시지로 출발 알림을 보내드릴게요!
                     </div>
                 </div>
-            </div>
-
-            <div className="mt-4">
-                <FrequentRoutesCard
-                    titleBold={`도착지를 [자주가는경로]에 저장할까요?`}
-                    subtitle="다음에 이용할 땐 클릭 한 번으로 알림을 받을 수 있어요!"
-                    onSave={() => { }}
-                />
             </div>
 
             <div className="mt-auto pt-6 pb-[max(20px,env(safe-area-inset-bottom))]">
