@@ -1,6 +1,6 @@
-import type { WaitingSpotLayoutProps } from "../../types/waitingspot";
-import Panel from "../common/Panel";
-import SubPanel from "../common/Panel/SubPanel";
+import type { WaitingSpotLayoutProps } from "../../../types/waitingspot";
+import Panel from "../../../components/common/Panel";
+import SubPanel from "../../../components/common/Panel/SubPanel";
 
 export const WalkingDirectionLayout = ({header, controls, map, search, list, detail, footer, onDetailBack}: WaitingSpotLayoutProps) => {
   return (

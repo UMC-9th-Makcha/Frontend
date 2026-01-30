@@ -1,5 +1,5 @@
-import BaseMap from "../common/Map/index"
-import type { MapMarker, MapPathSegment } from "../../types/map";
+import BaseMap from "../../../components/common/Map/index"
+import type { MapMarker, MapPathSegment } from "../../../types/map";
 
 type DirectionMapProps = {
   markers: MapMarker[];

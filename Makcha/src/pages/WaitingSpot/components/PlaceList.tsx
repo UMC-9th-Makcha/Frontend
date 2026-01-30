@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import type { PlaceListProps, SortValue } from "../../types/waitingspot";
 import { PlaceCard } from "./PlaceCard";
 import { SortToggle } from "./SortToggle";
+import type { PlaceListProps, SortValue } from "../../../types/waitingspot";
 
 export const PlaceList = ({ places, selectedPlaceId, onSelectPlaceId }: PlaceListProps) => {
   const [sort, setSort] = useState<SortValue>("distance");

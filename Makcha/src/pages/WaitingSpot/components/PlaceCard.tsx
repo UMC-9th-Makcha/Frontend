@@ -1,4 +1,4 @@
-import type { PlaceCardProps } from "../../types/waitingspot";
+import type { PlaceCardProps } from "../../../types/waitingspot";
 
 export const PlaceCard = ({ place, onSelect }: PlaceCardProps) => {
   return (

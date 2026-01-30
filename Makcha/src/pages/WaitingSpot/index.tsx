@@ -1,18 +1,19 @@
-import { useParams } from "react-router-dom";
-import { useMemo, useState } from "react";
-import { WaitingSpotLayout } from "../../components/waitingspot/WaitingSpotLayout";
-import { WaitingSpotHeader } from "../../components/waitingspot/common/WaitingSpotHeader";
-import { CategoryTab } from "../../components/waitingspot/common/CategoryTab";
 import BaseMap from "../../components/common/Map"; 
 import type { Place, WaitingCategoryKey } from "../../types/waitingspot";
-import { StartLocationSearch } from "../../components/waitingspot/StartLocationSearch";
-import { PlaceList } from "../../components/waitingspot/PlaceList";
-import { PlaceDetailPanel } from "../../components/waitingspot/PlaceDetailPanel";
-import { FALLBACK_CENTER, waitingCategories } from "../../components/waitingspot/constants";
+import type { MapMarker } from "../../types/map";
+import { useParams } from "react-router-dom";
+import { useMemo, useState } from "react";
+import { WaitingSpotLayout } from "./layouts/WaitingSpotLayout";
+import { WaitingSpotHeader } from "./common/WaitingSpotHeader";
+import { CategoryTab } from "./common/CategoryTab";
+import { PlaceDetailPanel } from "./panels/PlaceDetailPanel";
+import { FALLBACK_CENTER, waitingCategories } from "./common/constants";
 import WalkingDirections from "./WalkingDirections";
 import { useGeoLocation } from "../../hooks/useGeoLocation"; 
-import { mockPlaces } from "../../components/waitingspot/common/mock";
-import type { MapMarker } from "../../types/map";
+import { mockPlaces } from "./common/mock";
+import { FooterButton } from "./common/FooterButton";
+import { StartLocationSearch } from "./components/StartLocationSearch";
+import { PlaceList } from "./components/PlaceList";
 
 export default function WaitingSpot() {
   //지도 현위치 좌표
@@ -105,6 +106,11 @@ export default function WaitingSpot() {
           selectedPlaceId={selectedPlaceId}
           onSelectPlaceId={handleSelectList}
         />}
+        footer={
+          <FooterButton
+          onClick={onStartDirection}
+          content={`도보 길 안내 시작`}/>
+        }
         map={
           <BaseMap 
             markers={mapMarkers}

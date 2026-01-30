@@ -1,4 +1,4 @@
-import type { DirectionListProps } from "../../types/walking-direction";
+import type { DirectionListProps } from "../../../types/walking-direction";
 import { DirectionCard } from "./DirectionCard"
 
 export const DirectionList = ({direction} : DirectionListProps) => {

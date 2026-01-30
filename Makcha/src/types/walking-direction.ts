@@ -44,9 +44,9 @@ export type DirectionSummaryProps = {
   onSubmitOrigin?: (value: string) => void;
 }
 
-export type RouteDetailPanelProps = {
+export type DirectionDetailPanelProps = {
   direction: Direction;
-  routeDetail: RouteDetail;
+  routeDetail: DirectionDetail;
 };
 
 export type DirectionStepType =
@@ -69,12 +69,12 @@ export type DirectionStep = {
   };
 };
 
-export type RouteDetail = {
+export type DirectionDetail = {
   routeId: number | string;
   steps: DirectionStep[];
 };
 
-export type RouteDetailCardProps = {
+export type DirectionDetailCardProps = {
   step: DirectionStep;
 };
 

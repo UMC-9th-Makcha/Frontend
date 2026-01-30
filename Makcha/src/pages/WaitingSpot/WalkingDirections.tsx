@@ -1,17 +1,17 @@
-import { useEffect, useState } from "react";
-import { WaitingSpotHeader } from "../../components/waitingspot/common/WaitingSpotHeader";
-import { CategoryTab } from "../../components/waitingspot/common/CategoryTab";
-import { DirectionSummary } from "../../components/walking-directions/DirectionSummary";
-import { DirectionList } from "../../components/walking-directions/DirectionList";
-import { DirectionMap } from "../../components/walking-directions/DirectionMap";
-import type { Direction, RouteCategoryKey, RouteDetail } from "../../types/walking-direction";
-import { routeCategories } from "../../components/walking-directions/constants";
-import { mockCategories, mockRouteDetail } from "../../components/waitingspot/common/mock";
-import { WalkingDirectionLayout } from "../../components/walking-directions/WalkingDirectionLayout";
-import { RouteDetailPanel } from "../../components/walking-directions/RouteDetailPanel";
-import { ChevronLeft } from "lucide-react";
 import LoadingSpinner from "../../components/common/loadingSpinner";
-import { FooterButton } from "../../components/waitingspot/common/FooterButton";
+import type { Direction, DirectionDetail, RouteCategoryKey,  } from "../../types/walking-direction";
+import { useEffect, useState } from "react";
+import { WaitingSpotHeader } from "./common/WaitingSpotHeader";
+import { CategoryTab } from "./common/CategoryTab";
+import { DirectionList } from "./components/DirectionList";
+import { DirectionMap } from "./maps/DirectionMap";
+import { mockCategories, mockRouteDetail } from "./common/mock";
+import { WalkingDirectionLayout } from "./layouts/WalkingDirectionLayout";
+import { DirectionDetailPanel } from "./panels/DirectionDetailPanel";
+import { ChevronLeft } from "lucide-react";
+import { FooterButton } from "./common/FooterButton";
+import { routeCategories } from "./common/constants";
+import { DirectionSearch } from "./components/DirectionSearch";
 
 type WalkingDirectionsProps = {
   onBack?: () => void;
@@ -20,7 +20,7 @@ type WalkingDirectionsProps = {
 export default function WalkingDirections({onBack}: WalkingDirectionsProps) {
   //임시 데이터 저장
   const [direction, setDirection] = useState<Direction | null>(null);
-  const [routeDetail,setRouteDetail] = useState<RouteDetail | null>(null);
+  const [routeDetail,setRouteDetail] = useState<DirectionDetail | null>(null);
 
   const [routeCategory, setRouteCategory] = useState<RouteCategoryKey>("shortest");
 
@@ -71,12 +71,12 @@ export default function WalkingDirections({onBack}: WalkingDirectionsProps) {
             <WaitingSpotHeader title="도보 안내" />
           </div>
         }
-        search={<DirectionSummary origin={direction.origin.name} destination={direction.destination.name} />}
+        search={<DirectionSearch origin={direction.origin.name} destination={direction.destination.name} />}
         controls={<CategoryTab selected={routeCategory} onChange={setRouteCategory} categories={routeCategories} />}
         list={<DirectionList direction={direction}/>}
         footer={<FooterButton onClick={onDirectionStart} content={`길 안내`}/>}
         detail={
-          isDetailOpen && routeDetail ? <RouteDetailPanel direction={direction} routeDetail={routeDetail} /> : null
+          isDetailOpen && routeDetail ? <DirectionDetailPanel direction={direction} routeDetail={routeDetail} /> : null
         }
         onDetailBack={() => setIsDetailOpen(false)}
         map={<DirectionMap

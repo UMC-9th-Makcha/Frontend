@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import blueblur from '../../assets/blue-blur.svg'
-import yellowblur from '../../assets/yellow-blur.svg'
-import type { DirectionSummaryProps } from '../../types/walking-direction'
-import { mockOrigins } from '../waitingspot/common/mock';
-import { InputDropdown } from '../waitingspot/common/InputDropdown';
+import blueblur from '../../../assets/blue-blur.svg'
+import yellowblur from '../../../assets/yellow-blur.svg'
+import type { DirectionSummaryProps } from '../../../types/walking-direction'
+import { mockOrigins } from '../common/mock';
+import { InputDropdown } from '../common/InputDropdown';
 
-export const DirectionSummary = ({origin, destination, onSubmitOrigin} : DirectionSummaryProps) => {
+export const DirectionSearch = ({origin, destination, onSubmitOrigin} : DirectionSummaryProps) => {
   const [value, setValue] = useState<string>("");
   const [dropdown,setDropdown] = useState<boolean>(false);
   //검색 결과 없어요 창 띄우는 용도
