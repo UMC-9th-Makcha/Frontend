@@ -1,6 +1,6 @@
-import { useUIStore } from '../../store/useUIStore';
+import { useUIStore } from '../../../store/useUIStore';
 import { motion, AnimatePresence } from 'framer-motion';
-import { sidebarSpring, toggleVariants } from './constants';
+import { sidebarSpring, toggleVariants } from '../constants';
 
 const DarkModeToggle = ({ isCollapsed }: { isCollapsed: boolean }) => {
   const isDarkMode = useUIStore((state) => state.isDarkMode);

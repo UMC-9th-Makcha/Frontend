@@ -1,4 +1,4 @@
-import owlImage from "../../assets/owl.png";
+import owlImage from "../../../assets/owl.png";
 
 export const DownloadHero = () => {
   return (

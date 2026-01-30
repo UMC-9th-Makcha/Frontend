@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import type { ViewType } from "../pages/Setting/constants";
+import type { ViewType } from "../constants";
 
 export const useBack = (view: ViewType, onBack: () => void) => {
   useEffect(() => {

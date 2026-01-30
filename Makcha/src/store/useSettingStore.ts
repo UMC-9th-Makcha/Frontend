@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import type { ViewType } from '../pages/Setting/constants';
-import type { Place } from '../types/setting';
+import type { Place } from '../pages/Setting/types/setting';
 
 interface SettingState {
   home: Place;

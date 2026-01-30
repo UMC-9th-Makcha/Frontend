@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { ViewType } from "../pages/Setting/constants";
+import type { ViewType } from "../constants";
 
 export interface Place {
   id: string;

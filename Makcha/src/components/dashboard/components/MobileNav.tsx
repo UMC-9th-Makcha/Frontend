@@ -2,8 +2,8 @@ import { useMemo, useCallback } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { NAV_MENUS } from './constants';
-import { useDashboardStore } from '../../store/useDashboardStore';
+import { NAV_MENUS } from '../constants';
+import { useDashboardStore } from '../../../store/useDashboardStore';
 
 const ACT = "bg-gray-100 dark:bg-makcha-navy-800 text-blue-600 dark:text-white font-bold";
 const DFT = "text-gray-400 dark:text-gray-500";

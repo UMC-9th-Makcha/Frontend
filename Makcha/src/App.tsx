@@ -10,7 +10,7 @@ import History from "./pages/History";
 import Settings from "./pages/Setting";
 import Download from "./pages/Download";
 
-import DashboardLayout from "./components/dashboard/DashboardLayout";
+import DashboardLayout from "./components/dashboard/components/DashboardLayout";
 import ErrorPage from "./pages/Error";
 import { ProtectedRoute, PublicRoute } from "./components/kakao/KakaoRoute";
 import KakaoCallback from "./components/kakao/KakaoCallback";

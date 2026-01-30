@@ -1,7 +1,7 @@
 import { ChevronRight } from "lucide-react";
-import { UserIcon } from "../../../components/dashboard/UserIcon";
+import { UserIcon } from "../../../components/dashboard/components/UserIcon";
 import { useAuth } from "../../../hooks/useAuth";
-import type { AccountSectionProps } from "../../../types/setting";
+import type { AccountSectionProps } from "../types/setting";
 
 export function AccountSection({ onNavigate }: AccountSectionProps) {
   const { user, logout, withdraw } = useAuth();

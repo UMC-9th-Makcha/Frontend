@@ -1,7 +1,7 @@
 import { useState, useCallback, memo, useEffect } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import { Trash2 } from "lucide-react";
-import type { Place, PlaceSettingProps } from "../../../types/setting";
+import type { Place, PlaceSettingProps } from "../types/setting";
 import SubPanel from "../../../components/common/Panel/SubPanel";
 
 const PlaceSetting = memo(({ place, onBack, onSave, onDelete }: PlaceSettingProps) => {
