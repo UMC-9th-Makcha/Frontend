@@ -13,6 +13,7 @@ import WalkingDirections from "./WalkingDirections";
 import { useGeoLocation } from "../../hooks/useGeoLocation"; 
 import { mockPlaces } from "../../components/waitingspot/common/mock";
 import type { MapMarker } from "../../types/map";
+import { FooterButton } from "../../components/waitingspot/common/FooterButton";
 
 export default function WaitingSpot() {
   //지도 현위치 좌표
@@ -105,6 +106,11 @@ export default function WaitingSpot() {
           selectedPlaceId={selectedPlaceId}
           onSelectPlaceId={handleSelectList}
         />}
+        footer={
+          <FooterButton
+          onClick={onStartDirection}
+          content={`도보 길 안내 시작`}/>
+        }
         map={
           <BaseMap 
             markers={mapMarkers}
