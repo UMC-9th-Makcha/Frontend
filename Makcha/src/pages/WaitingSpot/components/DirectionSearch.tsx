@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import blueblur from '../../../assets/blue-blur.svg'
-import yellowblur from '../../../assets/yellow-blur.svg'
+import { Circle } from 'lucide-react'; 
 import type { DirectionSummaryProps } from '../../../types/walking-direction'
 import { mockOrigins } from '../common/mock';
 import { InputDropdown } from '../common/InputDropdown';
@@ -20,7 +19,10 @@ export const DirectionSearch = ({origin, destination, onSubmitOrigin} : Directio
       dark:bg-makcha-navy-900 dark:text-makcha-navy-200">
         <div className="flex items-center px-4 py-3 gap-2">
           <dt className="sr-only">출발지</dt>
-          <img src={blueblur} alt="" aria-hidden className="w-4 h-4" />
+          <div className="relative flex items-center justify-center w-4 h-4 shrink-0">
+            <div className="absolute inset-0 bg-blue-400 rounded-full blur-[2px] opacity-60" />
+            <Circle className="relative w-2 h-2 fill-blue-600 text-blue-600" />
+          </div>
           <dd className="flex-1 min-w-0">
             <input
               value={value}
@@ -60,11 +62,13 @@ export const DirectionSearch = ({origin, destination, onSubmitOrigin} : Directio
         <hr className="text-[#DCDCDC] dark:text-makcha-navy-800" />
         <div className="flex items-center px-4 py-3 gap-2">
           <dt className="sr-only">도착지</dt>
-          <img src={yellowblur} alt="" aria-hidden className="w-4 h-4" />
-          <dd>{destination}</dd>
+          <div className="relative flex items-center justify-center w-4 h-4 shrink-0">
+            <div className="absolute inset-0 bg-makcha-yellow-400 rounded-full blur-[2px] opacity-60" />
+            <Circle className="relative w-3 h-3 fill-makcha-yellow-600 text-makcha-yellow-600" />
+          </div>
+          <dd className="truncate">{destination}</dd>
         </div>
       </dl>
     </section>
-
   )
 }

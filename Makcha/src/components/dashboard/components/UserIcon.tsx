@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import type { User } from "../../types/auth";
-import type { IconProps } from '../../types/dashboard';
+import type { User } from "../../../types/auth";
+import type { IconProps } from '../types/dashboard';
 
 const KakaoIcon = React.memo(({ className = '' }: IconProps) => (
   <div className={`flex items-center justify-center bg-[#FEE500] rounded-full p-[6px] ${className}`}>

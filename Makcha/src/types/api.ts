@@ -6,7 +6,6 @@ export interface BaseResponse<T> {
     result: T;
   }
 
-
 /* 백엔드 에러 응답 규격 */
 export interface ApiError {
     errorCode: string;

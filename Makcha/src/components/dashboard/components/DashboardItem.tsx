@@ -1,10 +1,10 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { sidebarSpring } from './constants';
-import { useDashboardStore } from '../../store/useDashboardStore';
-import { useMediaQuery } from '../../store/useMediaQuery';
-import type { DashboardItemProps } from '../../types/dashboard';
+import { sidebarSpring } from '../constants';
+import { useDashboardStore } from '../../../store/useDashboardStore';
+import { useMediaQuery } from '../../../store/useMediaQuery';
+import type { DashboardItemProps } from '../types/dashboard';
 
 const DashboardItem = React.memo(({ 
   label, 

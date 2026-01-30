@@ -1,5 +1,4 @@
-import { Search } from 'lucide-react'
-import blueblur from '../../../assets/blue-blur.svg'
+import { Search, Circle } from 'lucide-react'
 import { useState } from 'react';
 import { mockOrigins } from '../common/mock';
 import { InputDropdown } from '../common/InputDropdown';
@@ -27,10 +26,10 @@ export const StartLocationSearch = ({onSubmitOrigin} : StartLocationSearchProps 
         출발지
       </label>
       <div className='relative flex-1'>
-        <img src={blueblur} 
-        alt="" 
-        aria-hidden 
-        className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" />
+        <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center justify-center w-4 h-4">
+          <div className="absolute inset-0 bg-blue-400 rounded-full blur-[2px] opacity-60" />
+          <Circle className="relative w-2 h-2 fill-blue-600 text-blue-600" />
+        </div>
         <input
         value={value}
               onChange={(e) => {

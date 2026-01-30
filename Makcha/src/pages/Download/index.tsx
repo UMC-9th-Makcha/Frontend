@@ -1,6 +1,6 @@
 import { usePWAInstall } from '../../hooks/usePWAInstall';
-import { DownloadButton } from './DownloadButton';
-import { DownloadHero } from './DownloadHero';
+import { DownloadButton } from './components/DownloadButton';
+import { DownloadHero } from './components/DownloadHero';
 
 export default function DownloadPage() {
   const { canInstall, install } = usePWAInstall();

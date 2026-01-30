@@ -1,7 +1,7 @@
 import { memo } from "react";
 import { Home, Star, Plus, ChevronRight } from "lucide-react";
 import { useSettingStore } from "../../../store/useSettingStore";
-import type { Place } from "../../../types/setting";
+import type { Place } from "../types/setting";
 import type { ViewType } from "../constants";
 
 const PlaceListItem = memo(({ icon, place, onClick }: { icon: React.ReactNode; place: Place; onClick: () => void }) => (

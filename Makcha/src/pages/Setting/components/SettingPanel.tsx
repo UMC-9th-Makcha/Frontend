@@ -2,7 +2,7 @@ import { memo } from "react";
 import { AccountSection } from "./AccountSection";
 import Panel from "../../../components/common/Panel";
 import { AlarmSection } from "./AlarmSection";
-import type { SettingPanelProps } from "../../../types/setting";
+import type { SettingPanelProps } from "../types/setting";
 import { PlacesSection } from "./PlaceSection";
 import PolicyLinks from "../../../components/common/PolicyLinks";
 
