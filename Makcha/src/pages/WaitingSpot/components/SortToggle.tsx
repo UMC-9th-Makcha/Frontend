@@ -1,6 +1,6 @@
 import { useState } from "react";
-import type { SortToggleProps } from "../../types/waitingspot";
-import { toggleLabel } from "./constants";
+import type { SortToggleProps } from "../../../types/waitingspot";
+import { toggleLabel } from "../common/constants";
 
 export const SortToggle = ({ value, onChange }: SortToggleProps) => {
   const [open, setOpen] = useState(false);

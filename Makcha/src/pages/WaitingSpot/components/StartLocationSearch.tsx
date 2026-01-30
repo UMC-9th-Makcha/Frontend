@@ -1,8 +1,8 @@
 import { Search } from 'lucide-react'
-import blueblur from '../../assets/blue-blur.svg'
+import blueblur from '../../../assets/blue-blur.svg'
 import { useState } from 'react';
-import { mockOrigins } from './common/mock';
-import { InputDropdown } from './common/InputDropdown';
+import { mockOrigins } from '../common/mock';
+import { InputDropdown } from '../common/InputDropdown';
 
 type StartLocationSearchProps  = {
   onSubmitOrigin:(value: string) => void;

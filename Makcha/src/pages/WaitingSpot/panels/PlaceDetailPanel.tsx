@@ -1,5 +1,5 @@
-import type { PlaceDetailProps } from "../../types/waitingspot";
-import { mockPlaceDetails } from "./common/mock";
+import type { PlaceDetailProps } from "../../../types/waitingspot";
+import { mockPlaceDetails } from "../common/mock";
 
 export const PlaceDetailPanel = ({ place }: PlaceDetailProps) => {
 

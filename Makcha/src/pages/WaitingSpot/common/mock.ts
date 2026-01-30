@@ -1,7 +1,6 @@
-
 import type { MapMarker, MapPathSegment } from "../../../types/map";
 import type { Place, PlaceDetail } from "../../../types/waitingspot";
-import type { Direction, RouteCategoryKey, RouteDetail } from "../../../types/walking-direction";
+import type { Direction, DirectionDetail, RouteCategoryKey } from "../../../types/walking-direction";
 
 //도보 안내 data (카테고리 별)
 export const mockShortest = {
@@ -150,7 +149,7 @@ export const mockCategories = {
 };
 
 //도보 안내 상세 패널 data
-export const mockRouteDetail: Record<RouteCategoryKey, RouteDetail> = {
+export const mockRouteDetail: Record<RouteCategoryKey, DirectionDetail> = {
   shortest: {
     routeId: 1,
     steps: [

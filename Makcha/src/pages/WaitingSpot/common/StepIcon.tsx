@@ -1,11 +1,5 @@
 import { ArrowUp,ArrowLeft,ArrowRight,PersonStanding,MapPin,Navigation } from "lucide-react";
-import type { DirectionStepType } from "../../types/walking-direction";
-
-export const routeCategories = [
-    { key: "shortest", label: "최단" },
-    { key: "safe", label: "안전우선" },
-    { key: "bright", label: "밝은길" },
-  ] as const;
+import type { DirectionStepType } from "../../../types/walking-direction";
 
 export const StepIcon = ({ type }: { type: DirectionStepType }) => {
   const cls = "w-5 h-5 text-makcha-navy-600";

@@ -1,7 +1,7 @@
-import type { WaitingSpotLayoutProps } from "../../types/waitingspot";
-import Panel from "../common/Panel";
-import SubPanel from "../common/Panel/SubPanel";
-import { MobileBottomSheet } from "./common/MobileBottomSheet";
+import type { WaitingSpotLayoutProps } from "../../../types/waitingspot";
+import Panel from "../../../components/common/Panel";
+import SubPanel from "../../../components/common/Panel/SubPanel";
+import { MobileBottomSheet } from "../common/MobileBottomSheet";
 
 export const WaitingSpotLayout = ({header, controls, map, search, list, detail, footer, onDetailBack} : WaitingSpotLayoutProps) => {
   return (
