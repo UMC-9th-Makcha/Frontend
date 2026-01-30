@@ -39,9 +39,7 @@ export function useAlarmFlow() {
             const mockRoutes = ALARM_ROUTES_MOCK;
             setRoutes(mockRoutes);
 
-            // 최적 route 기본 선택
-            const optimal = mockRoutes.find((r) => r.isOptimal) ?? mockRoutes[0] ?? null;
-            setSelectedRoute(optimal);
+            setSelectedRoute(null);
 
             setStep("RESULT");
         }, 1200);

@@ -1,27 +1,37 @@
-import type { WaitingSpotLayoutProps } from "../../types/waitingspot"
-import Panel from "../common/Panel"
+import type { WaitingSpotLayoutProps } from "../../types/waitingspot";
+import Panel from "../common/Panel";
 import SubPanel from "../common/Panel/SubPanel";
+import { MobileBottomSheet } from "./common/MobileBottomSheet";
 
-export const WaitingSpotLayout = ({header, controls, map, search, list, detail, onDetailBack} : WaitingSpotLayoutProps) => {
+export const WaitingSpotLayout = ({header, controls, map, search, list, detail, footer, onDetailBack} : WaitingSpotLayoutProps) => {
   return (
-    <div className="relative h-dvh w-full">
-      {/* map */}
-      <div className="absolute inset-0 z-0">
-        <div className="h-full w-full">{map}</div>
-      </div>
+    <div className="relative h-dvh w-full overflow-hidden">
+      <div className="absolute inset-0 z-0">{map}</div>
 
-      <div className="relative z-10 h-full w-full pointer-events-none md:flex">
+      <div className="relative h-full pointer-events-none md:flex md:items-center">
         <Panel
           width="md:w-100"
           isMobileFull
-          className="pointer-events-auto md:shadow-[5px_0px_15px_0px_#88888859]"
+          disablePadding
+          className="md:pointer-events-auto !bg-transparent md:!bg-white"
         >
-          <div className="flex flex-col gap-0">
+          <div className="hidden md:flex h-full flex-col px-4 pt-10">
             {header}
             {search}
             {controls}
             {list}
           </div>
+
+          <MobileBottomSheet
+            title="첫차 대기 장소"
+            top={
+              <>
+                {search}
+                {controls}
+              </>
+            }>
+            {list}
+          </MobileBottomSheet>
         </Panel>
 
         <SubPanel
@@ -30,6 +40,7 @@ export const WaitingSpotLayout = ({header, controls, map, search, list, detail, 
           title="상세 정보"
           width="md:w-100"
           className="pointer-events-auto"
+          footer={footer}
         >
           {detail}
         </SubPanel>

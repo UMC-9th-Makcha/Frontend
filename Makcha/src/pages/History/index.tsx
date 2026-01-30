@@ -1,10 +1,11 @@
 import { useMemo, useState } from "react";
+import Panel from "../../components/common/Panel";
 import CurrentAlarmCard from "./components/CurrentAlarmCard";
 import PastSummaryCard from "./components/PastSummaryCard";
 import MonthSection from "./components/MonthSection";
 import SaveReportPanel from "./components/SaveReportPanel";
 import { CURRENT_ALARM_MOCK, PAST_SUMMARY_MOCK, MONTH_SECTIONS_MOCK } from "./mocks/historyMock";
-import type { HistoryItem } from "./types/history";  
+import type { HistoryItem } from "./types/history";
 import { ROUTE_CONFIRM_DETAIL_MOCK } from "../Alarm/mocks/routeConfirmMock";
 import RouteConfirmPanel from "../Alarm/panels/RouteConfirmPanel";
 import type { AlarmRoute } from "../Alarm/types/alarm";
@@ -19,7 +20,6 @@ const HistoryHome = () => {
 
   const confirmRoute: AlarmRoute | null = useMemo(() => {
     if (!selectedItem) return null;
-
     return {
       id: selectedItem.routeId,
       isOptimal: true,
@@ -38,6 +38,7 @@ const HistoryHome = () => {
     return ROUTE_CONFIRM_DETAIL_MOCK[selectedItem.routeId];
   }, [selectedItem]);
 
+  {/* 상세보기 클릭 → Panel 열기 */}
   const openConfirm = (item: HistoryItem) => {
     setSelectedItem(item);
     setIsConfirmOpen(true);
@@ -49,7 +50,7 @@ const HistoryHome = () => {
   };
 
   return (
-    <div className="relative h-full w-full p-5 pt-13 md:pt-24">
+    <div className="relative h-dvh w-full overflow-hidden bg-white dark:bg-makcha-navy-900">
       <SaveReportPanel
         open={isSaveReportOpen}
         onClose={() => setIsSaveReportOpen(false)}
@@ -57,68 +58,73 @@ const HistoryHome = () => {
         items={reportItems}
       />
 
+      <main className="h-full w-full overflow-y-auto p-5 pt-13 md:p-10 md:pt-24">
+        <div className="relative grid grid-cols-1 gap-10 md:grid-cols-2">
+
+          {/* 구분선: PC에서만 */}
+          <div className="pointer-events-none absolute top-0 bottom-0 left-1/2 translate-x-[20px] hidden w-px bg-[#E2E2E2] dark:bg-makcha-navy-800 md:block" />
+          {/* 왼쪽 */}
+          <section className="min-w-0">
+            <h1 className="text-[32px] font-medium text-black dark:text-white">
+              알림 내역
+            </h1>
+
+            <p className="mt-[10px] text-[20px] text-[#5F5F5F] dark:text-makcha-navy-200">
+              현재 신청한 알림을 확인할 수 있어요
+            </p>
+
+            <div className="mt-7">
+              <CurrentAlarmCard alarm={CURRENT_ALARM_MOCK} />
+            </div>
+          </section>
+
+          {/* 오른쪽: PC에서만 */}
+          <section className="min-w-0 md:pl-10">
+            <h1 className="text-[32px] font-medium text-black dark:text-white">
+              과거 알림 내역
+            </h1>
+            <div className="mt-7">
+              <PastSummaryCard
+                summary={PAST_SUMMARY_MOCK}
+                onDetail={() => setIsSaveReportOpen(true)}
+              />
+            </div>
+            <div className="mt-9 space-y-10">
+              {MONTH_SECTIONS_MOCK.map((sec) => (
+                <MonthSection
+                  key={sec.monthLabel}
+                  monthLabel={sec.monthLabel}
+                  items={sec.items}
+                  onDetail={openConfirm}
+                />
+              ))}
+            </div>
+          </section>
+        </div>
+      </main>
+
+      {/* 상세 패널 오버레이 */}
       {isConfirmOpen && confirmRoute && confirmDetail && (
-        <div className="fixed inset-0 z-[100] bg-black/30" onClick={closeConfirm}>
+        <div className="absolute inset-0 z-50 flex">
           <div
-            className="absolute inset-0 bg-white dark:bg-makcha-navy-900"
-            onClick={(e) => e.stopPropagation()}
+            className="absolute inset-0 bg-black/10 dark:bg-black/30 transition-opacity"
+            onClick={closeConfirm} />
+
+          <Panel
+            width="md:w-100"
+            disablePadding
+            className="shadow-2xl"
           >
             <RouteConfirmPanel
               route={confirmRoute}
               detail={confirmDetail}
               onBack={closeConfirm}
-              onConfirm={closeConfirm} onClickSms={function (): void {
-                throw new Error("Function not implemented.");
-              } }            />
-          </div>
+              onConfirm={closeConfirm}
+              onClickSms={() => console.log("SMS 클릭")}
+            />
+          </Panel>
         </div>
       )}
-
-      {/* 구분선: PC에서만 */}
-      <div className="pointer-events-none absolute top-10 bottom-10 left-1/2 translate-x-[20px] hidden w-px bg-[#E2E2E2] dark:bg-makcha-navy-800 md:block" />
-
-      {/* 본문 */}
-      <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
-        {/* 왼쪽 */}
-        <section className="min-w-0">
-          <h1 className="text-[32px] font-medium text-black dark:text-white">
-            알림 내역
-          </h1>
-
-          <p className="mt-[10px] text-[20px] text-[#5F5F5F] dark:text-makcha-navy-200">
-            현재 신청한 알림을 확인할 수 있어요
-          </p>
-
-          <div className="mt-7">
-            <CurrentAlarmCard alarm={CURRENT_ALARM_MOCK} />
-          </div>
-        </section>
-
-        {/* 오른쪽: PC에서만 */}
-        <section className="min-w-0 md:pl-10">
-          <h1 className="text-[32px] font-medium text-black dark:text-white">
-            과거 알림 내역
-          </h1>
-
-          <div className="mt-7">
-            <PastSummaryCard
-              summary={PAST_SUMMARY_MOCK}
-              onDetail={() => setIsSaveReportOpen(true)}
-            />
-          </div>
-
-          <div className="mt-9 space-y-10">
-            {MONTH_SECTIONS_MOCK.map((sec) => (
-              <MonthSection
-                key={sec.monthLabel}
-                monthLabel={sec.monthLabel}
-                items={sec.items}
-                onDetail={openConfirm}
-              />
-            ))}
-          </div>
-        </section>
-      </div>
     </div>
   );
 };

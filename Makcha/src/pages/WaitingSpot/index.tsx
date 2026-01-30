@@ -79,6 +79,12 @@ export default function WaitingSpot() {
     setOrigin(value);
   }
 
+  //길찾기 시작 -> 도보 안내 
+  const onStartDirection = () => {
+    setIsDetailOpen(false);
+    setShowDirections(true);
+  }
+
   const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   //도보 안내 페이지 렌더링 유무
@@ -89,7 +95,7 @@ export default function WaitingSpot() {
   }
 
   return (
-    <div className="min-h-dvh w-full overflow-hidden">
+    <div className="min-h-dvh w-full">
       <WaitingSpotLayout
         header={<WaitingSpotHeader title={pageTitle} content={"막차를 놓쳐서 첫차까지 대기하시는 분들을 위한 추천 장소를 안내드립니다."} />}
         search={<StartLocationSearch onSubmitOrigin={handleSubmitOrigin}/>}
@@ -109,10 +115,6 @@ export default function WaitingSpot() {
         detail={isDetailOpen && selectedPlace ?
           <PlaceDetailPanel
             place={selectedPlace}
-            onStartDirection={() => {
-              setIsDetailOpen(false);
-              setShowDirections(true);
-            }}
           /> : null
         }
         onDetailBack={() => setIsDetailOpen(false)}

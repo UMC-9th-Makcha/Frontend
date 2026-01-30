@@ -6,7 +6,7 @@ import { useUIStore } from "../../../store/useUIStore";
 import { DEFAULT_MAP_CENTER, PATH_COLORS, MARKER_COLORS } from "./constant";
 import type { BaseMapProps } from "../../../types/map";
 
-const BaseMap = ({ markers = [], activeId, paths = [], onMarkerClick, onMapClick }: BaseMapProps) => {
+const BaseMap = ({ markers = [], activeId, paths = [], selectedPathId, onMarkerClick, onMapClick }: BaseMapProps) => {
   const [loading, sdkError] = useKakaoLoader({ appkey: import.meta.env.VITE_KAKAO_JS_KEY });
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const { location: userLoc } = useCurrentLocation();
@@ -67,21 +67,30 @@ const BaseMap = ({ markers = [], activeId, paths = [], onMarkerClick, onMapClick
       >
         {paths.map((seg, i) => {
           const isWalk = seg.type === "WALK";
+          // 선택된 경로가 없으면 모두 색이 나타나고, 선택한 경로가 있으면 그것만 색 나머진 회색
+          const isSelected = !selectedPathId || seg.id === selectedPathId;
+
+          // 미선택 
+          const inactiveColor = isDarkMode ? "#374151" : "#D1D5DB";
           return (
             <React.Fragment key={`path-${i}`}>
-              <Polyline 
-                path={seg.points} 
-                strokeWeight={12} 
-                strokeColor={isWalk ? (isDarkMode ? "#4B5563" : "#9CA3AF") : (isDarkMode ? "#1A1A1A" : "#FFFFFF")}
-                strokeOpacity={0.8} 
-                zIndex={1} 
+              <Polyline
+                path={seg.points}
+                strokeWeight={12}
+                strokeColor={isSelected
+                  ? (isWalk ? (isDarkMode ? "#4B5563" : "#9CA3AF") : (isDarkMode ? "#1A1A1A" : "#FFFFFF"))
+                  : (isDarkMode ? "#111827" : "#E5E7EB")}
+                strokeOpacity={0.8}
+                zIndex={isSelected ? 2 : 1}
               />
-              <Polyline 
-                path={seg.points} 
-                strokeWeight={8} 
-                strokeColor={isWalk ? "#FFFFFF" : (isDarkMode ? PATH_COLORS[seg.type]?.dark : PATH_COLORS[seg.type]?.light)}
-                zIndex={3} 
-                strokeStyle={isWalk ? "dash" : "solid"} 
+              <Polyline
+                path={seg.points}
+                strokeWeight={8}
+                strokeColor={isSelected
+                  ? (isWalk ? "#FFFFFF" : (isDarkMode ? PATH_COLORS[seg.type]?.dark : PATH_COLORS[seg.type]?.light))
+                  : inactiveColor}
+                zIndex={isSelected ? 4 : 3}
+                strokeStyle={isWalk ? "dash" : "solid"}
               />
             </React.Fragment>
           );
