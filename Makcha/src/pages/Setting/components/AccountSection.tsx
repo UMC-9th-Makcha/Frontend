@@ -2,9 +2,19 @@ import { ChevronRight } from "lucide-react";
 import { UserIcon } from "../../../components/dashboard/components/UserIcon";
 import { useAuth } from "../../../hooks/useAuth";
 import type { AccountSectionProps } from "../types/setting";
+import { useMemo } from "react";
 
 export function AccountSection({ onNavigate }: AccountSectionProps) {
   const { user, logout, withdraw } = useAuth();
+
+  const formattedPhone = useMemo(() => {
+    if (!user?.phone) return "전화번호를 등록하세요";
+    
+    // 숫자만 추출
+    const cleaned = user.phone.replace(/\D/g, "");
+
+    return cleaned.replace(/^(\d{3})(\d{3,4})(\d{4})$/, "$1-$2-$3");
+  }, [user]);
 
   return (
     <div className="mb-10 px-1">
@@ -27,7 +37,7 @@ export function AccountSection({ onNavigate }: AccountSectionProps) {
       >
         <span className="text-gray-500 text-[15px]">연락처</span>
         <div className="flex items-center gap-1 font-medium dark:text-white">
-          <span>010-1234-5678</span> 
+          <span>{formattedPhone}</span> 
           <ChevronRight size={18} className="text-gray-300 transition-transform group-active:translate-x-1" />
         </div>
       </button>
