@@ -1,0 +1,200 @@
+import { useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
+import { MapPin, Search, X } from "lucide-react";
+import type { OriginSearchItem } from "../../types/search";
+
+type Props = {
+    open: boolean;
+    onClose: () => void;
+    title: string;
+    onSelect: (item: OriginSearchItem) => void;
+    onPickCurrent: () => void;
+    query: string;
+    setQuery: (v: string) => void;
+    results: OriginSearchItem[];
+    hasQuery: boolean;
+};
+
+const SearchSheetMobile = ({
+    open,
+    onClose,
+    title,
+    onSelect,
+    onPickCurrent,
+    query,
+    setQuery,
+    results,
+    hasQuery,
+}: Props) => {
+    const mainRef = useRef<HTMLElement | null>(null);
+
+    useEffect(() => {
+        if (!open) return;
+
+        const prevOverflow = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+
+        requestAnimationFrame(() => {
+            mainRef.current?.scrollTo({ top: 0, left: 0, behavior: "auto" });
+        });
+
+        return () => {
+            document.body.style.overflow = prevOverflow;
+        };
+    }, [open]);
+
+    if (!open) return null;
+
+    return createPortal(
+        <div className="fixed inset-0 z-[9999] flex h-dvh w-screen flex-col overflow-hidden overscroll-contain bg-white dark:bg-makcha-navy-900">
+            <header className="sticky top-0 z-10 bg-white px-5 pt-[env(safe-area-inset-top)] dark:bg-makcha-navy-900">
+                <div className="pt-4 pb-2">
+                    <div className="relative flex items-center justify-center">
+                        <h2 className="text-center text-[20px] font-normal text-makcha-navy-900 dark:text-white">
+                            {title}
+                        </h2>
+
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            aria-label="닫기"
+                            className="
+                                absolute right-0
+                                rounded-lg p-2
+                                text-gray-500
+                                hover:bg-gray-100
+                                dark:hover:bg-white/10
+                            "
+                        >
+                            <X className="h-7 w-7" strokeWidth={2} />
+                        </button>
+                    </div>
+                </div>
+
+                <div className="border-t border-[#E2E2E2]" />
+            </header>
+
+            <main
+                ref={mainRef}
+                className="min-h-0 flex-1 overflow-y-auto pb-[env(safe-area-inset-bottom)]"
+            >
+                {/* 검색 input */}
+                <div className="mt-9 px-5">
+                    <div
+                        className="
+                            flex h-[50px] items-center
+                            rounded-[30px]
+                            border border-gray-200
+                            bg-white px-4 shadow-sm
+                            dark:bg-makcha-navy-900
+                        "
+                    >
+                        <input
+                            value={query}
+                            onChange={(e) => setQuery(e.target.value)}
+                            placeholder="지번 혹은 도로명 주소 검색"
+                            className="
+                                flex-1 min-w-0 bg-transparent text-[16px] text-gray-900 outline-none
+                                placeholder:text-gray-500 caret-gray-900
+                                dark:text-white dark:placeholder:text-white/40
+                            "
+                        />
+
+                        <button
+                            type="button"
+                            onClick={() => setQuery("")}
+                            className={`mr-2 shrink-0 whitespace-nowrap text-[16px] text-gray-400 ${hasQuery ? "opacity-100" : "opacity-0 pointer-events-none"
+                                }`}
+                            aria-label="검색어 지우기"
+                        >
+                            지우기
+                        </button>
+
+                        <Search
+                            className="h-6 w-6 text-[#5F5F5F] dark:text-white/60"
+                            strokeWidth={2}
+                        />
+                    </div>
+                </div>
+
+                <div className="mt-2">
+                    <div className="px-5 pt-3 pb-3">
+                        {hasQuery ? (
+                            <div className="text-[18px] font-medium text-makcha-navy-900 dark:text-white">
+                                검색 결과
+                            </div>
+                        ) : (
+                            <button
+                                type="button"
+                                onClick={onPickCurrent}
+                                className="flex w-full items-center gap-1.5 text-[18px] text-gray-700 dark:text-white/80"
+                            >
+                                <MapPin
+                                    className="h-5 w-5 text-gray-700 dark:text-white/70"
+                                    strokeWidth={1.5}
+                                />
+                                <span>현위치</span>
+                            </button>
+                        )}
+                    </div>
+
+                    <div className="mx-5 border-t border-[#E2E2E2] dark:border-makcha-navy-800" />
+                    {hasQuery ? (
+                        results.length === 0 ? (
+                            <div className="px-5 py-10 text-center text-[18px] text-gray-500 dark:text-white/40">
+                                검색 결과가 없습니다.
+                            </div>
+                        ) : (
+                            <ul className="py-2">
+                                {results.map((item) => (
+                                    <li key={item.id}>
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                onSelect(item);
+                                                onClose();
+                                            }}
+                                            className="w-full px-5 py-1 text-left active:bg-gray-50 dark:active:bg-white/5"
+                                        >
+                                            <div className="text-[18px] font-semibold text-makcha-navy-900 dark:text-white">
+                                                {item.title}
+                                            </div>
+                                            <div className="mt-[1px] text-[14px] text-gray-500 dark:text-white/50">
+                                                {item.address}
+                                            </div>
+                                        </button>
+                                    </li>
+                                ))}
+                            </ul>
+                        )
+                    ) : (
+                        <>
+                            {/* 주소록 */}
+                            <div className="pt-4">
+                                <div className="flex items-center justify-between px-5">
+                                    <span className="text-[18px] text-makcha-navy-900 dark:text-white">
+                                        주소록
+                                    </span>
+                                    <button
+                                        type="button"
+                                        className="text-[18px] text-makcha-navy-900 dark:text-white"
+                                    >
+                                        전체보기
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* 최근 주소 없음 */}
+                            <div className="px-7 py-60 text-center text-[18px] text-gray-500 dark:text-white/40">
+                                최근에 선택한 주소가 없습니다.
+                            </div>
+                        </>
+                    )}
+                </div>
+            </main>
+        </div>,
+        document.body
+    );
+};
+
+export default SearchSheetMobile;

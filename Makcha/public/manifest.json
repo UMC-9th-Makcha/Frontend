@@ -1,0 +1,22 @@
+{
+  "short_name": "Makcha",
+  "name": "막차 확인 서비스",
+  "icons": [
+  {
+    "src": "/makcha.png",
+    "sizes": "512x512",
+    "type": "image/png",
+    "purpose": "any" 
+  },
+  {
+    "src": "/makcha.png",
+    "sizes": "512x512",
+    "type": "image/png",
+    "purpose": "maskable"
+  }
+],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#00163D",
+  "background_color": "#00163D"
+}

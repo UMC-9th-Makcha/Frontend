@@ -1,46 +1,130 @@
+import BaseMap from "../../components/common/Map"; 
+import type { Place, WaitingCategoryKey } from "../../types/waitingspot";
+import type { MapMarker } from "../../types/map";
 import { useParams } from "react-router-dom";
+import { useMemo, useState } from "react";
+import { WaitingSpotLayout } from "./layouts/WaitingSpotLayout";
+import { WaitingSpotHeader } from "./common/WaitingSpotHeader";
+import { CategoryTab } from "./common/CategoryTab";
+import { PlaceDetailPanel } from "./panels/PlaceDetailPanel";
+import { FALLBACK_CENTER, waitingCategories } from "./common/constants";
+import WalkingDirections from "./WalkingDirections";
+import { useGeoLocation } from "../../hooks/useGeoLocation"; 
+import { mockPlaces } from "./common/mock";
+import { FooterButton } from "./common/FooterButton";
+import { StartLocationSearch } from "./components/StartLocationSearch";
+import { PlaceList } from "./components/PlaceList";
 
 export default function WaitingSpot() {
+  //지도 현위치 좌표
+  const { location, loading, error } = useGeoLocation({
+    enableHighAccuracy: true,
+    timeout: 10000,
+    maximumAge: 0,
+  });
+
   // 1. 타입을 string으로 받거나, 명시적으로 단언하여 에러를 방지합니다.
   const { type } = useParams() as { type: string };
-  
+
   // 2. 잘못된 경로(예: /spot/abc)로 들어왔을 때를 대비한 방어 로직
   const isFirst = type === 'first';
   const isLast = type === 'last';
-  
+
   // 첫차도 막차도 아닌 경로일 경우 대시보드로 안내하거나 제목을 기본값으로 설정
   const pageTitle = isFirst ? "첫차 대기 장소" : isLast ? "막차 대기 장소" : "대기 장소 확인";
 
+  const [category, setCategory] = useState<WaitingCategoryKey>("all");
+
+  //선택된 장소 id (카드 클릭 시 저장)
+  const [selectedPlaceId, setSelectedPlaceId] = useState<number | null>(null);
+
+  const selectedPlace = useMemo<Place | null>(() => {
+    return mockPlaces.find((p) => p.id === selectedPlaceId) ?? null;
+  }, [selectedPlaceId]);
+
+  // 마커 데이터 변환 
+  const mapMarkers = useMemo<MapMarker[]>(() => {
+    return mockPlaces.map(p => ({
+      id: p.id,
+      name: p.name,
+      position: { lat: p.lat, lng: p.lng },
+      variant: 'spot' 
+    }));
+  }, []);
+
+  //지도 center 좌표 반영
+  const center = useMemo(() => {
+    if (selectedPlace) {
+      return { lat: selectedPlace.lat, lng: selectedPlace.lng };
+    } //리스트 장소
+    if (location) {
+      return { lat: location.latitude, lng: location.longitude };
+    }//현위치
+    return FALLBACK_CENTER;//임시 좌표
+  }, [selectedPlace, location]);
+
+  const handleSelectList = (id: number) => {
+    setSelectedPlaceId(id);
+    setIsDetailOpen(true);
+  };
+
+  //마커 클릭 -> 선택, 상세 열기
+  const handleSelectMarker = (id: number) => {
+    setSelectedPlaceId(id);
+    setIsDetailOpen(true);
+  };
+
+  //출발지 검색
+  const [origin, setOrigin] = useState<string>("현위치");
+  const handleSubmitOrigin = (value: string) => {
+    setOrigin(value);
+  }
+
+  //길찾기 시작 -> 도보 안내 
+  const onStartDirection = () => {
+    setIsDetailOpen(false);
+    setShowDirections(true);
+  }
+
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+
+  //도보 안내 페이지 렌더링 유무
+  const [showDirections, setShowDirections] = useState(false);
+
+  if (showDirections) {
+    return <WalkingDirections onBack={() => setShowDirections(false)} />;
+  }
+
   return (
-    <div className="p-4 flex flex-col min-h-screen">
-      <header className="flex items-center mb-6 py-2">
-        <button 
-          onClick={() => window.history.back()} 
-          className="mr-4 text-makcha-navy-400"
-        >
-          ←
-        </button>
-        <h1 className="text-xl font-bold text-white">{pageTitle}</h1>
-      </header>
-
-      {/* 실시간 위치 확인 영역 (피그마 3번 프레임 반영) */}
-      <div className="flex-1 w-full bg-makcha-navy-800 rounded-3xl overflow-hidden border border-makcha-navy-600 relative">
-        {/* 실제 지도가 들어갈 자리입니다. */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center space-y-4">
-          <div className="w-12 h-12 border-4 border-makcha-yellow-500 border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-makcha-navy-200 font-medium">
-            {isFirst ? "첫차" : "막차"} 위치 정보를 가져오고 있습니다...
-          </p>
-        </div>
-      </div>
-
-      {/* 하단 안내 문구 */}
-      <div className="mt-6 p-4 bg-makcha-navy-900/50 rounded-2xl border border-dashed border-makcha-navy-600">
-        <p className="text-sm text-makcha-navy-400 leading-relaxed text-center">
-          지도상의 위치는 실시간 교통 상황에 따라<br />
-          실제와 **최대 1~2분** 정도 차이가 날 수 있습니다.
-        </p>
-      </div>
+    <div className="min-h-dvh w-full">
+      <WaitingSpotLayout
+        header={<WaitingSpotHeader title={pageTitle} content={"막차를 놓쳐서 첫차까지 대기하시는 분들을 위한 추천 장소를 안내드립니다."} />}
+        search={<StartLocationSearch onSubmitOrigin={handleSubmitOrigin}/>}
+        controls={<CategoryTab selected={category} onChange={setCategory} categories={waitingCategories} />}
+        list={<PlaceList
+          places={mockPlaces}
+          selectedPlaceId={selectedPlaceId}
+          onSelectPlaceId={handleSelectList}
+        />}
+        footer={
+          <FooterButton
+          onClick={onStartDirection}
+          content={`도보 길 안내 시작`}/>
+        }
+        map={
+          <BaseMap 
+            markers={mapMarkers}
+            activeId={selectedPlaceId}
+            onMarkerClick={(marker) => handleSelectMarker(marker.id as number)}
+          />
+        }
+        detail={isDetailOpen && selectedPlace ?
+          <PlaceDetailPanel
+            place={selectedPlace}
+          /> : null
+        }
+        onDetailBack={() => setIsDetailOpen(false)}
+      />
     </div>
   );
 }
