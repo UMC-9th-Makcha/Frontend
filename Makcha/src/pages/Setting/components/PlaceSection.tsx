@@ -14,7 +14,10 @@ const PlaceListItem = memo(({ icon, place, onClick }: { icon: React.ReactNode; p
       <div className="shrink-0 rounded-full bg-gray-50 p-2 dark:bg-makcha-navy-800">{icon}</div>
       <div className="min-w-0">
         <p className="truncate text-[16px] font-bold dark:text-white">{place.name || "새 장소"}</p>
-        <p className="mt-0.5 truncate text-xs text-gray-400 w-[160px] md:w-[200px]">{place.address || "주소를 등록해주세요"}</p>
+
+        <p className="mt-0.5 truncate text-xs text-gray-400 w-[160px] md:w-[200px]">
+          {place.place_address || "주소를 등록해주세요"}
+        </p>
       </div>
     </div>
     <ChevronRight size={18} className="shrink-0 text-gray-300" />
@@ -29,7 +32,14 @@ export function PlacesSection({ onNavigate }: { onNavigate: (v: ViewType, p?: Pl
       <div className="mb-4 flex items-center justify-between px-1">
         <p className="text-[18px] font-semibold dark:text-white">장소</p>
         <button 
-          onClick={() => onNavigate('EDIT_FAVORITE', { id: Date.now().toString(), name: '', address: '', detail: '' })} 
+          onClick={() => onNavigate('EDIT_FAVORITE', { 
+            id: Date.now().toString(), 
+            name: '', 
+            place_address: '',
+            place_detail_address: '',
+            latitude: 0,
+            longitude: 0
+          })} 
           className="flex items-center gap-0.5 text-sm font-bold text-blue-500 hover:text-blue-600"
         >
           <Plus size={14} strokeWidth={3} /> 추가
