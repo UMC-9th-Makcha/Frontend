@@ -3,6 +3,8 @@ export type DestinationCard = {
     label: string;
     time: string;
     address: string;
+    lat: number;
+    lng: number;
 };
 
 export type RecentDestination = {

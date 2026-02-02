@@ -48,13 +48,13 @@ const DestinationCarousel = ({ onSelectDestination }: Props) => {
                         </div>
                     </button>
                 )}
-                onItemClick={(d, moved) => {
-                    if (moved) return;
-
+                onItemClick={(d) => {
                     onSelectDestination({
                         id: String(d.id),
                         title: d.label,
                         address: d.address,
+                        lat: d.lat,
+                        lng: d.lng,
                     });
                 }}
             />

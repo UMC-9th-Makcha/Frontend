@@ -88,6 +88,8 @@ const Alarm = () => {
                 id: "current",
                 title: "현위치",
                 address: addressText,
+                lat,
+                lng,
             });
         } catch (err: unknown) {
             if (err && typeof err === "object" && "code" in err) {

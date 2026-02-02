@@ -8,12 +8,16 @@ export const DESTINATIONS: DestinationCard[] = [
         label: "집으로",
         time: "01:20 출발",
         address: "서울 성북구 삼선동5가, 0동 123호",
+        lat: 37.5862,
+        lng: 127.0104,
     },
     {
         id: "parents",
         label: "본가로",
         time: "00:14 출발",
         address: "경기도 수원시 ...",
+        lat: 37.5862,
+        lng: 127.0104,
     },
 ];
 
@@ -51,10 +55,13 @@ export const MOCK_PLACES: PlaceItem[] = [
 export const ALARM_ROUTES_MOCK: AlarmRoute[] = [
     {
         id: "r1",
+        cacheKey: "rt_mock_r1",
+        routeToken: "rt_mock_r1",
         isOptimal: true,
         routeType: "SUBWAY",
         lines: ["2호선", "472"],
         departureTime: "23:55",
+        minutesLeft: 12,
         timeUntilDeparture: "출발까지 12분",
         totalDurationMin: 45,
         transferCount: 1,
@@ -62,10 +69,13 @@ export const ALARM_ROUTES_MOCK: AlarmRoute[] = [
     },
     {
         id: "r2",
+        cacheKey: "rt_mock_r2",
+        routeToken: "rt_mock_r2",
         isOptimal: false,
         routeType: "SUBWAY",
         lines: ["2호선"],
         departureTime: "01:20",
+        minutesLeft: 90,
         timeUntilDeparture: "출발까지 1시간 30분",
         totalDurationMin: 50,
         transferCount: 0,
@@ -73,10 +83,13 @@ export const ALARM_ROUTES_MOCK: AlarmRoute[] = [
     },
     {
         id: "r3",
+        cacheKey: "rt_mock_r3",
+        routeToken: "rt_mock_r3",
         isOptimal: false,
         routeType: "NIGHT_BUS",
         lines: ["N26"],
         departureTime: "02:40",
+        minutesLeft: 170,
         timeUntilDeparture: "출발까지 2시간 50분",
         totalDurationMin: 50,
         transferCount: 0,

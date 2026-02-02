@@ -15,7 +15,7 @@ const textClass = (s: RouteConfirmSegment) => {
     return "text-white";
 };
 
-const labelText = (min: number) => (min < 1 ? "1분 미만" : `${min}분`);
+const labelText = (min: number) => `${Math.max(1, Math.ceil(min))}분`;
 
 export default function SegmentBar({ segments }: Props) {
     const total = segments.reduce((a, s) => a + s.durationMin, 0);
@@ -23,7 +23,7 @@ export default function SegmentBar({ segments }: Props) {
     // 너무 얇으면 안 보이니 최소폭 보정 
     const widths = segments.map((s) => {
         const pct = total === 0 ? 0 : (s.durationMin / total) * 100;
-        const minPct = s.durationMin <= 1 ? 10 : 0; 
+        const minPct = s.durationMin <= 1 ? 10 : 0;
         return Math.max(pct, minPct);
     });
 

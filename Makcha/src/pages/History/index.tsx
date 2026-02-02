@@ -82,18 +82,23 @@ const HistoryHome = () => {
 
   const confirmRoute: AlarmRoute | null = useMemo(() => {
     if (!selectedItem) return null;
+
     return {
       id: selectedItem.routeId,
+      cacheKey: "",
+      routeToken: "",
       isOptimal: true,
       routeType: "SUBWAY",
       lines: [],
       departureTime: selectedItem.departAt,
-      timeUntilDeparture: "",
+      minutesLeft: 0,          
+      timeUntilDeparture: "",  
       totalDurationMin: 0,
       transferCount: 0,
       walkingTimeMin: 0,
-    } as AlarmRoute;
+    };
   }, [selectedItem]);
+
 
   const confirmDetail = useMemo(() => {
     if (!selectedItem) return undefined;
