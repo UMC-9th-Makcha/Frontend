@@ -14,7 +14,7 @@ export default defineConfig({
       registerType: 'autoUpdate',
       devOptions: {
         enabled: false,
-        type: 'module', 
+        type: 'module',
       },
       manifest: {
         name: 'Makcha',
@@ -47,5 +47,17 @@ export default defineConfig({
   server: {
     allowedHosts: true,
     host: true,
+    proxy: {
+      '/api': {
+        target: 'https://api.makcha.store',
+        changeOrigin: true,
+        secure: true,
+      },
+      '/route': {
+        target: 'https://api.makcha.store',
+        changeOrigin: true,
+        secure: true,
+      },
+    },
   },
 })

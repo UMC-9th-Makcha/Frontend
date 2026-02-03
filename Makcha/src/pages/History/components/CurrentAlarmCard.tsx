@@ -28,7 +28,7 @@ const CurrentAlarmCard = ({ alarm, onCreate, onCancel }: Props) => {
                 <p className="mt-1 px-6 text-[16px] text-gray-500 dark:text-white/60">
                     아래 버튼을 클릭하여 막차 시간 알림을 생성하고
                     <br />
-                    카카오톡으로 알림을 확인하세요!
+                    문자메시지로 알림을 확인하세요!
                 </p>
 
                 <div className="mt-8 flex justify-end pr-8 pb-5">

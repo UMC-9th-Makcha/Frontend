@@ -27,7 +27,7 @@ const AlarmPanel = ({ onOpenOrigin, onOpenDestination, onSelectDestination, orig
                         max-md:text-[#5F5F5F] max-md:dark:text-white/60
                     "
                 >
-                    오늘도 놓치지 않게{"\n"}카카오톡으로 알림을 보내드릴게요!
+                    오늘도 놓치지 않게{"\n"}문자 메시지로 알림을 보내드릴게요!
                 </p>
 
                 <div className="mt-6 max-md:mt-5 max-md:space-y-4 space-y-5">
