@@ -1,12 +1,25 @@
+import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { HorizontalScroll } from "../../components/common/HorizontalScroll";
 import { DASHBOARD_ACTIONS } from "./constant";
 import type { DashboardAction } from "./types/home";
 import { useAuthStore } from "../../store/useAuthStore";
+import { useSaveReports } from "../History/hooks/useSaveReports"; 
 
 export default function Home() {
   const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
+  const { data: saveReport, isLoading } = useSaveReports(true);
+  const { totalAmount, totalCount } = useMemo(() => {
+    if (!saveReport?.chart) return { totalAmount: 0, totalCount: 0 };
+    return saveReport.chart.reduce(
+      (acc, cur) => ({
+        totalAmount: acc.totalAmount + cur.savedAmount,
+        totalCount: acc.totalCount + cur.totalCount,
+      }),
+      { totalAmount: 0, totalCount: 0 }
+    );
+  }, [saveReport]);
 
   return (
     <div className="flex flex-col gap-y-10 md:gap-y-16 p-6 md:p-10 max-w-7xl mx-auto w-full min-h-full">
@@ -70,9 +83,22 @@ export default function Home() {
                      hover:shadow-md hover:border-blue-400
                      active:bg-gray-50 dark:active:bg-white/10"
         >
-          <p className="text-sm text-gray-600 font-bold dark:text-makcha-navy-300 mb-2">지금까지 아낀 택시비 🚕</p>
-          <p className="text-4xl md:text-6xl font-black text-amber-400 mb-2 tracking-tight">125,000원</p>
-          <p className="text-xs text-gray-500 font-medium dark:text-gray-400">총 5번의 막차를 사수했어요!</p>
+          <p className="text-sm text-gray-600 font-bold dark:text-makcha-navy-300 mb-2">
+            최근 3개월간 아낀 택시비 🚕
+          </p>
+
+          <p className="text-4xl md:text-6xl font-black text-amber-400 mb-2 tracking-tight">
+            {isLoading ? "..." : `${totalAmount.toLocaleString()}원`}
+          </p>
+
+          <p className="text-xs text-gray-500 font-medium dark:text-gray-400">
+            {isLoading 
+               ? "데이터를 불러오고 있어요"
+               : totalCount > 0 
+                 ? `총 ${totalCount}번의 막차를 사수했어요!`
+                 : "최근 3개월간 막차 기록이 없어요!"
+            }
+          </p>
         </div>
       </section>
       
