@@ -1,3 +1,5 @@
+import type { Place } from "./types/setting";
+
 export type ViewType = 'MAIN' | 'EDIT_HOME' | 'EDIT_FAVORITE' | 'EDIT_CONTACT';
 export const TIME_LABELS = ['30분 전', '10분 전', '3분 전', '출발 알림'];
 
@@ -12,3 +14,11 @@ export const REVERSE_TIME_MAPPING: Record<number, string> = Object.entries(TIME_
   (acc, [key, value]) => ({ ...acc, [value]: key }),
   {}
 );
+
+export const DEFAULT_HOME: Place = {
+  id: 'home',
+  place_address: '',
+  place_detail_address: '',
+  latitude: 0,
+  longitude: 0
+};

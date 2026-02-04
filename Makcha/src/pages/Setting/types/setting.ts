@@ -3,8 +3,6 @@ import type { ViewType } from "../constants";
 
 export interface Place {
   id: string;
-  name: string;
-
   provider_place_id?: string;
   place_address: string;
   place_detail_address?: string;
