@@ -29,3 +29,21 @@ export type MonthSectionData = {
     monthLabel: string;
     items: HistoryItem[];
 };
+
+export type ApiResponse<T> = {
+    successCode: string;
+    statusCode: number;
+    message: string;
+    result: T;
+};
+
+export type AlertsHistoryDto = {
+    history: Array<{
+        id: string;
+        origin: string;
+        destination: string;
+        departure_time: string; 
+        arrival_time: string;  
+        duration: number;     
+    }>;
+};

@@ -4,12 +4,13 @@ import CurrentAlarmCard from "./components/CurrentAlarmCard";
 import PastSummaryCard from "./components/PastSummaryCard";
 import MonthSection from "./components/MonthSection";
 import SaveReportPanel from "./components/SaveReportPanel";
-import { CURRENT_ALARM_MOCK, MONTH_SECTIONS_MOCK } from "./mocks/historyMock";
+import { CURRENT_ALARM_MOCK } from "./mocks/historyMock";
 import type { HistoryItem, PastSummary } from "./types/history";
 import { ROUTE_CONFIRM_DETAIL_MOCK } from "../Alarm/mocks/routeConfirmMock";
 import RouteConfirmPanel from "../Alarm/panels/RouteConfirmPanel";
 import type { AlarmRoute } from "../Alarm/types/alarm";
 import { useSaveReports } from "./hooks/useSaveReports";
+import { useAlertsHistory } from "./hooks/useAlertsHistory";
 
 const toKoreanDate = (iso: string) => {
   const d = new Date(iso);
@@ -77,6 +78,37 @@ const HistoryHome = () => {
     }));
   }, [saveReport]);
 
+  const { data: alertsHistory } = useAlertsHistory();
+
+  const monthSections = useMemo(() => {
+    const list = alertsHistory?.history ?? [];
+    const map = new Map<string, HistoryItem[]>();
+
+    for (const it of list) {
+      const yyyyMm = it.departure_time.slice(0, 7);
+      const monthLabel = toMonthLabel(yyyyMm);
+
+      const item: HistoryItem = {
+        id: it.id,
+        routeId: it.id,
+        date: toKoreanDate(it.departure_time),
+        from: it.origin,
+        to: it.destination,
+        departAt: toHHMM(it.departure_time),
+        arriveAt: toHHMM(it.arrival_time),
+      };
+
+      const arr = map.get(monthLabel) ?? [];
+      arr.push(item);
+      map.set(monthLabel, arr);
+    }
+
+    return Array.from(map.entries()).map(([monthLabel, items]) => ({
+      monthLabel,
+      items,
+    }));
+  }, [alertsHistory]);
+
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<HistoryItem | null>(null);
 
@@ -91,14 +123,13 @@ const HistoryHome = () => {
       routeType: "SUBWAY",
       lines: [],
       departureTime: selectedItem.departAt,
-      minutesLeft: 0,          
-      timeUntilDeparture: "",  
+      minutesLeft: 0,
+      timeUntilDeparture: "",
       totalDurationMin: 0,
       transferCount: 0,
       walkingTimeMin: 0,
     };
   }, [selectedItem]);
-
 
   const confirmDetail = useMemo(() => {
     if (!selectedItem) return undefined;
@@ -165,7 +196,7 @@ const HistoryHome = () => {
             </div>
 
             <div className="mt-9 space-y-10">
-              {MONTH_SECTIONS_MOCK.map((sec) => (
+              {monthSections.map((sec) => (
                 <MonthSection
                   key={sec.monthLabel}
                   monthLabel={sec.monthLabel}
