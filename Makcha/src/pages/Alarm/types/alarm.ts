@@ -1,8 +1,8 @@
 import type { RouteConfirmSegment } from "./routeConfirm";
 
 export type AlarmRoute = {
-    id: string;                 // candidate_key
-    routeToken: string;         // route_token
+    id: string;                
+    routeToken: string;     
     isOptimal: boolean;
     routeType: "SUBWAY" | "BUS" | "NIGHT_BUS";
     lines: string[];

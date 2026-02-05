@@ -5,6 +5,7 @@ import KakaoMapView from "./KakaoMapView";
 import SearchSheet from "./sheets/SearchSheet";
 import AlarmPanelSwitch from "./panels/AlarmPanelSwitch";
 import { useAlarmFlow } from "./hooks/useAlarmFlow";
+import { useAuth } from "../../hooks/useAuth";
 
 // Setting → Alarm 복귀
 type FromSettingToAlarmState = {
@@ -21,6 +22,7 @@ const Alarm = () => {
     const flow = useAlarmFlow();
     const navigate = useNavigate();
     const location = useLocation();
+    const { user } = useAuth();
 
     // Setting에서 전화번호 인증 완료 후 돌아오면 SUCCESS로 전환
     useEffect(() => {
@@ -32,11 +34,16 @@ const Alarm = () => {
         }
     }, [location.state, flow, navigate]);
 
-    // 문자 알림 버튼 누르면 Setting으로 이동
+    // phone 없으면 Setting으로 보내기
     const goToSettingForSms = () => {
-        navigate("/setting", {
-            state: { from: "ALARM_SMS", returnTo: "/alarm" },
-        });
+        if (!user?.phone) {
+            navigate("/setting", {
+                state: { from: "ALARM_SMS", returnTo: "/alarm" },
+            });
+            return;
+        }
+
+        flow.confirmRoute();
     };
 
     const pickCurrentLocation = async () => {
@@ -118,15 +125,11 @@ const Alarm = () => {
                             destination: flow.destination,
                             routes: flow.routes,
                             selectedRoute: flow.selectedRoute,
-
                             getConfirmDetail: flow.getConfirmDetail,
-
                             openOriginSheet: flow.openOriginSheet,
                             openDestinationSheet: flow.openDestinationSheet,
                             handleSelectDestinationFromPanel: flow.handleSelectDestinationFromPanel,
-
                             handleSelectRoute: flow.handleSelectRoute,
-
                             backFromConfirm: flow.backFromConfirm,
                             confirmRoute: flow.confirmRoute,
                             goAlarmList: flow.goAlarmList,

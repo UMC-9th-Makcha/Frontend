@@ -24,7 +24,7 @@ export type AlarmFlowUI = {
     handleSelectRoute: (route: AlarmRoute) => void;
 
     backFromConfirm: () => void;
-    confirmRoute: () => void;
+    confirmRoute: () => void | Promise<void>;
     goAlarmList: () => void;
     goToSettingForSms: () => void;
 };

@@ -8,12 +8,19 @@ type RouteCandidatesResponse = {
     tags: Array<"SUBWAY" | "BUS" | "NIGHT_BUS" | string>;
 
     card: {
-        traveler_time: number;
+        traveled_time: number;
         transfer_count: number;
         walk_time: number;
         deadline_at: string;
         minutes_left: number;
     };
+};
+
+type BaseResponse<T> = {
+    successCode: string;
+    statusCode: number;
+    message: string;
+    result: T;
 };
 
 function toAlarmRoute(r: RouteCandidatesResponse): AlarmRoute {
@@ -33,7 +40,7 @@ function toAlarmRoute(r: RouteCandidatesResponse): AlarmRoute {
         lines: r.tags.filter((t) => t !== "SUBWAY" && t !== "BUS" && t !== "NIGHT_BUS"),
         minutesLeft,
         timeUntilDeparture: minutesLeft <= 0 ? "지금 출발" : `출발까지 ${minutesLeft}분`,
-        totalDurationMin: r.card.traveler_time,
+        totalDurationMin: r.card.traveled_time,
         transferCount: r.card.transfer_count,
         walkingTimeMin: r.card.walk_time,
         departureTime: undefined,
@@ -52,4 +59,28 @@ export async function postRouteCandidates(body: {
 
     const list = data.result ?? [];
     return list.map(toAlarmRoute);
+}
+
+export type PolylinePoint = { lat: number; lng: number };
+
+export type PolylinePath = {
+    class: number;
+    type: number;
+    map_type?: string;   
+    order?: number;                
+    points: PolylinePoint[];
+};
+
+export type RoutePolylinesResult = {
+    route_token: string;
+    map_object: string;
+    paths: PolylinePath[];
+    boundary?: { top: number; left: number; bottom: number; right: number };
+};
+
+export async function fetchRoutePolylines(routeToken: string): Promise<RoutePolylinesResult> {
+    const { data } = await api.get<BaseResponse<RoutePolylinesResult>>(
+        `/api/routes/polylines/${encodeURIComponent(routeToken)}`
+    );
+    return data.result;
 }

@@ -4,9 +4,16 @@ import type { OriginSearchItem } from "../types/search";
 import type { AlarmRoute } from "../types/alarm";
 import type { RouteConfirmDetail, RouteConfirmSegment } from "../types/routeConfirm";
 import { api } from "../../../apis/api";
+import type { PathType } from "../../../types/map";
 
 export type Step = "INPUT" | "LOADING" | "RESULT" | "CONFIRM" | "SUCCESS";
 export type SearchTarget = "ORIGIN" | "DESTINATION";
+
+type CreateAlertBody = {
+    cacheKey: string;
+    alert_time?: number;
+};
+
 
 type NavState = {
     from?: "history";
@@ -19,6 +26,11 @@ type BaseResponse<T> = {
     statusCode: number;
     message: string;
     result: T;
+};
+
+const createAlert = async (body: CreateAlertBody) => {
+    const res = await api.post<BaseResponse<unknown>>("/api/alerts", body);
+    return res.data.result;
 };
 
 type CandidatePoint = { lat: number; lng: number };
@@ -59,8 +71,8 @@ type Candidate = {
         transfer_count: number;
         public_transit_fare: number;
         walk_time: number;
-        deadline_at: string;   
-        minutes_left: number; 
+        deadline_at: string;
+        minutes_left: number;
     };
     detail: {
         steps: CandidateStep[];
@@ -132,6 +144,23 @@ export function useAlarmFlow() {
         return chips.length ? chips : (cand.tags ?? []);
     };
 
+    const busTypeToMapType = (t?: number | null): PathType => {
+        if (t === 4 || t === 6 || t === 14 || t === 15) return "BUS_RED";
+        if (t === 11) return "BUS_BLUE";
+        if (t === 1 || t === 2 || t === 3 || t === 12) return "BUS_GREEN";
+
+        return "BUS_BLUE";
+    };
+
+    const subwayTypeToMapType = (t?: number | null): PathType => {
+        const n = Number(t);
+        if (Number.isFinite(n)) {
+            if (n >= 1 && n <= 9) return `SUBWAY_${n}` as PathType;
+            if (n === 116) return "SUBWAY_SUIN";
+        }
+        return "SUBWAY_2";
+    };
+
     function stepsToSegments(steps: CandidateStep[]): RouteConfirmSegment[] {
         return steps.map((s) => {
             if (s.type === "WALK") {
@@ -139,6 +168,7 @@ export function useAlarmFlow() {
                     mode: "WALK",
                     durationMin: s.section_time ?? 0,
                     distanceM: s.distance ?? undefined,
+                    mapType: "WALK",
                 };
             }
 
@@ -154,11 +184,13 @@ export function useAlarmFlow() {
                     to: s.to?.name ?? "도착",
                     durationMin: s.section_time ?? 0,
                     stops: s.station_count ?? undefined,
+                    mapType: subwayTypeToMapType(s.subway_type),
                 };
             }
 
             if (s.type === "BUS" || (typeof s.type === "string" && s.type.startsWith("BUS"))) {
                 const busNo = s.bus_numbers?.[0] ?? "버스";
+                const busType = s.bus_types?.[0] ?? null;
                 return {
                     mode: "BUS",
                     lineLabel: busNo,
@@ -166,6 +198,7 @@ export function useAlarmFlow() {
                     to: s.to?.name ?? "도착",
                     durationMin: s.section_time ?? 0,
                     stops: s.station_count ?? undefined,
+                    mapType: busTypeToMapType(busType),
                 };
             }
 
@@ -173,6 +206,7 @@ export function useAlarmFlow() {
                 mode: "WALK",
                 durationMin: s.section_time ?? 0,
                 distanceM: s.distance ?? undefined,
+                mapType: "WALK",
             };
         });
     }
@@ -310,7 +344,25 @@ export function useAlarmFlow() {
         setStep("RESULT");
     };
 
-    const confirmRoute = () => setStep("SUCCESS");
+    const confirmRoute = async () => {
+        if (!selectedRoute?.cacheKey) {
+            alert("경로 cacheKey가 없습니다.");
+            return;
+        }
+
+        try {
+            await createAlert({
+                cacheKey: selectedRoute.cacheKey,
+                alert_time: 10,
+            });
+
+            setStep("SUCCESS");
+        } catch (e) {
+            console.error("[alerts:create] failed", e);
+            alert("알림 예약 생성 실패");
+        }
+    };
+
     const goAlarmList = () => navigate("/history");
 
     useEffect(() => {
