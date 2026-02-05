@@ -1,23 +1,101 @@
 import { X } from "lucide-react";
+import LoadingLogo from "../../../assets/icons/logo.svg";
 import EmptyHistoryCard from "./EmptyHistoryCard";
 import type { HistoryItem } from "../types/history";
 import SaveReportGraph from "./SaveReportGraph";
+
+type ChartPoint = { month: string; value: number; highlight?: boolean };
 
 type Props = {
     open: boolean;
     onClose: () => void;
     totalSavedAmount: number;
     items: HistoryItem[];
+    loading?: boolean;
+    yearLabel?: string;
+    chartData?: ChartPoint[];
 };
 
 const COFFEE_PRICE = 5000;   // 커피 1잔 기준가
 const CHICKEN_PRICE = 25000; // 치킨 1마리 기준가
 
-const SaveReportPanel = ({ open, onClose, totalSavedAmount, items }: Props) => {
+const SaveReportPanel = ({
+    open,
+    onClose,
+    totalSavedAmount,
+    items,
+    loading,
+    yearLabel,
+    chartData = [],
+}: Props) => {
     if (!open) return null;
 
+    if (loading) {
+        return (
+            <>
+                <button
+                    type="button"
+                    aria-label="close save report"
+                    onClick={onClose}
+                    className="fixed inset-0 z-60 bg-black/10 dark:bg-black/30 md:inset-y-0 md:right-0 md:left-62"
+                />
+
+                <aside
+                    className="
+                        fixed inset-0 z-70
+                        h-dvh w-full
+                        bg-white
+                        shadow-[8px_0_20px_rgba(0,0,0,0.08)]
+                        dark:bg-makcha-navy-900
+                        md:inset-y-0 md:left-62 md:right-auto md:w-100
+                        md:border-r md:border-[#E2E2E2] md:dark:border-makcha-navy-800
+                    "
+                >
+                    <div className="h-full overflow-y-auto px-5 pt-6 pb-10 pt-13 md:pt-15">
+                        {/* 헤더 */}
+                        <div className="flex items-start justify-between">
+                            <div>
+                                <h2 className="text-[32px] font-medium text-makcha-navy-900 dark:text-white">
+                                    세이브 리포트
+                                </h2>
+                            </div>
+
+                            <button
+                                type="button"
+                                onClick={onClose}
+                                aria-label="닫기"
+                                className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 dark:text-white/70 dark:hover:bg-white/10"
+                            >
+                                <X className="h-6 w-6" strokeWidth={2} />
+                            </button>
+                        </div>
+
+                        <div className="flex h-full w-full items-center justify-center">
+                            <div className="flex flex-col items-center justify-center translate-y-80 max-md:translate-y-80">
+                                <img
+                                    src={LoadingLogo}
+                                    alt="로딩"
+                                    className="h-30 w-30 max-md:h-[140px] max-md:w-[140px]"
+                                />
+                                <p
+                                    className="
+                                        mt-6 text-center text-[20px] font-medium
+                                        text-makcha-navy-900 dark:text-white
+                                        max-md:text-[25px] max-md:font-bold
+                                    "
+                                >
+                                    세이브 리포트를 불러오는 중...
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+            </>
+        );
+    }
+
     const totalCount = items.length;
-    const isEmpty = totalCount === 0;
+    const isEmpty = totalSavedAmount === 0; 
 
     // 보상문구 생성
     const rewardMessage = (() => {
@@ -36,14 +114,8 @@ const SaveReportPanel = ({ open, onClose, totalSavedAmount, items }: Props) => {
         return `치킨 ${chickenCount}마리 값이에요!`;
     })();
 
-    const chartData = [
-        { year: 2025, month: "11월", value: 39700 },
-        { year: 2025, month: "12월", value: 86400 },
-        { year: 2026, month: "1월", value: 53400 },
-    ];
-
-    const yearLabel = `${chartData[0]?.year ?? new Date().getFullYear()}년`;
-    const highlightMonth = chartData[1]?.month;
+    const graphYearLabel = yearLabel ?? `${new Date().getFullYear()}년`;
+    const highlightMonth = chartData.find((d) => d.highlight)?.month;
 
     return (
         <>
@@ -57,10 +129,8 @@ const SaveReportPanel = ({ open, onClose, totalSavedAmount, items }: Props) => {
             <aside
                 className="
                     fixed inset-0 z-70
-                    h-dvh w-full
-                    bg-white
-                    shadow-[8px_0_20px_rgba(0,0,0,0.08)]
-                    dark:bg-makcha-navy-900
+                    h-dvh w-full bg-white
+                    shadow-[8px_0_20px_rgba(0,0,0,0.08)] dark:bg-makcha-navy-900
                     md:inset-y-0 md:left-62 md:right-auto md:w-100
                     md:border-r md:border-[#E2E2E2] md:dark:border-makcha-navy-800
                 "
@@ -72,7 +142,7 @@ const SaveReportPanel = ({ open, onClose, totalSavedAmount, items }: Props) => {
                             <h2 className="text-[32px] font-medium text-makcha-navy-900 dark:text-white">
                                 세이브 리포트
                             </h2>
-                            
+
                             {isEmpty ? (
                                 <>
                                     <p className="mt-4 text-[32px] md:text-[20px] font-bold text-makcha-navy-900 dark:text-white">
@@ -122,11 +192,13 @@ const SaveReportPanel = ({ open, onClose, totalSavedAmount, items }: Props) => {
                         </>
                     ) : (
                         <>
-                            <SaveReportGraph
-                                yearLabel={yearLabel}
-                                data={chartData.map(({ month, value }) => ({ month, value }))}
-                                highlightMonth={highlightMonth}
-                            />
+                            {chartData.length > 0 && (
+                                <SaveReportGraph
+                                    yearLabel={graphYearLabel}
+                                    data={chartData.map(({ month, value }) => ({ month, value }))}
+                                    highlightMonth={highlightMonth}
+                                />
+                            )}
 
                             <div className="mt-6 flex items-end justify-between">
                                 <div className="text-[24px] md:text-[20px] font-medium text-makcha-navy-900 dark:text-white">

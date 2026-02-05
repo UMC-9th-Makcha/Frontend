@@ -18,7 +18,7 @@ const RouteResultPanel = ({ origin, destination, routes, onSelectRoute }: Props)
             </div>
 
             <p className="mt-2 text-[18px] text-gray-500 dark:text-white/60">
-                카카오톡으로 받으실 알림을 선택해 주세요!
+                문자 메시지로 받으실 알림을 선택해 주세요!
             </p>
 
             <div className="mt-6 space-y-[14px] max-md:mt-5 max-md:space-y-3">

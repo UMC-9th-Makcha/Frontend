@@ -24,4 +24,19 @@ export const authService = {
   withdraw: async (): Promise<void> => {
     await api.delete<BaseResponse<null>>('/auth/withdraw');
   },
+
+  //전화번호 인증번호 발송
+  sendPhoneCode: async (phoneNumber: string): Promise<void> => {
+    const rawPhone = phoneNumber.replace(/\D/g, ""); // "01012345678"
+    await api.post<BaseResponse<null>>('/auth/phone/send', { phoneNumber: rawPhone });
+  },
+
+  //전화번호 인증번호 검증 및 저장
+  verifyPhoneCode: async (phoneNumber: string, code: string): Promise<void> => {
+    const rawPhone = phoneNumber.replace(/\D/g, "");
+    await api.post<BaseResponse<null>>('/auth/phone/verify', { 
+      phoneNumber: rawPhone, 
+      code 
+    });
+  },
 };

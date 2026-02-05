@@ -83,3 +83,18 @@ export const ALARM_ROUTES_MOCK: AlarmRoute[] = [
         walkingTimeMin: 5,
     },
 ];
+
+export const RECENT_DESTINATIONS_API_MOCK = [
+    {
+        recentId: "4",
+        userId: "2",
+        title: "스타벅스 강남역점",
+        roadAddress: "서울 서초구 강남대로 375",
+        detailAddress: "2층",
+        placeId: "1234567890",
+        latitude: 37.497942,
+        longitude: 127.027621,
+        usedAt: "2026-01-15T13:12:29.942Z",
+        createdAt: "2026-01-15T13:07:43.477Z",
+    },
+];
