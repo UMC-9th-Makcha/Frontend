@@ -12,10 +12,12 @@ export const useAuth = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { addToast } = useToastStore();
+
   const accessToken = useAuthStore((state) => state.accessToken);
   const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
   const isHydrated = useAuthStore((state) => state.isHydrated);
   const storeUser = useAuthStore((state) => state.user);
+
   const setUser = useAuthStore((state) => state.setUser);
   const setLogin = useAuthStore((state) => state.setLogin);
   const setLogout = useAuthStore((state) => state.setLogout);
@@ -25,7 +27,7 @@ export const useAuth = () => {
   const { data: userData, isLoading: isUserLoading } = useQuery<User, AxiosError<ApiError>>({
     queryKey: ['me'],
     queryFn: () => authService.getMe(),
-    enabled: isLoggedIn && isHydrated, 
+    enabled: isLoggedIn && isHydrated && !!accessToken, 
     retry: false,
     staleTime: 1000 * 60 * 5,
   });
@@ -62,9 +64,16 @@ export const useAuth = () => {
     },
   });
 
+  // 데이터 동기화
   useEffect(() => {
-    if (userData && JSON.stringify(userData) !== JSON.stringify(storeUser)) {
-      setUser(userData);
+    if (userData && (
+      !storeUser || 
+      userData.id !== storeUser.id ||
+      userData.name !== storeUser.name ||
+      userData.phone !== storeUser.phone ||
+      userData.email !== storeUser.email
+    )) {
+    setUser(userData);
     }
   }, [userData, storeUser, setUser]);
 
@@ -89,7 +98,7 @@ export const useAuth = () => {
     user: userData || storeUser,
     isLoggedIn,
     accessToken,
-    
+
     isLoading: isUserLoading || loginMutation.isPending || withdrawMutation.isPending,
     isLoggingIn: loginMutation.isPending,
     isWithdrawing: withdrawMutation.isPending,
