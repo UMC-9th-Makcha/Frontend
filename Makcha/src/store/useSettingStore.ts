@@ -1,58 +1,88 @@
 import { create } from 'zustand';
+import * as placeApi from '../apis/place';
+import type { Place } from '../pages/Setting/types/setting';
 import type { ViewType } from '../pages/Setting/constants';
-import type { Place } from '../types/setting';
 
 interface SettingState {
-  home: Place;
+  home: Place | null;
   favorites: Place[];
-  selectedTimes: string[];
+  isLoading: boolean;
   view: ViewType;
-  setHome: (place: Place) => void;
-  setFavorites: (favorites: Place[]) => void;
-  setSelectedTimes: (times: string[]) => void;
+
+  fetchPlaces: () => Promise<void>;
+  savePlace: (updated: Place) => Promise<void>;
+  deletePlace: (id: string) => Promise<void>;
   setView: (view: ViewType) => void;
-  toggleTime: (time: string, dragMoved: boolean) => void;
-  savePlace: (updated: Place) => void;
-  deleteFavorite: (id: string) => void;
 }
 
-export const useSettingStore = create<SettingState>((set) => ({
-  home: { id: 'home', name: '집', address: '', detail: '' },
+// Backend DTO -> Frontend Model 변환
+const mapResponseToPlace = (res: placeApi.MyPlaceResponse, isHome: boolean): Place => ({
+  id: isHome ? 'home' : res.myplace_id,
+  provider_place_id: res.provider_place_id,
+  place_address: res.place_address,
+  place_detail_address: res.place_detail_address,
+  latitude: res.latitude,
+  longitude: res.longitude,
+});
+
+export const useSettingStore = create<SettingState>((set, get) => ({
+  home: null,
   favorites: [],
-  selectedTimes: ['10분 전'],
+  isLoading: false,
   view: 'MAIN',
 
-  setHome: (home) => set({ home }),
-  setFavorites: (favorites) => set({ favorites }),
-  setSelectedTimes: (selectedTimes) => set({ selectedTimes }),
+
+  // 조회
+  fetchPlaces: async () => {
+    set({ isLoading: true });
+    try {
+      const { home, places } = await placeApi.getMyPlaces();
+      set({
+        home: home ? mapResponseToPlace(home, true) : null,
+        favorites: places.map((p) => mapResponseToPlace(p, false)),
+      });
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  // 통합 저장
+  savePlace: async (updated: Place) => {
+    const payload: placeApi.MyPlaceRequest = {
+      provider_place_id: updated.provider_place_id,
+      place_address: updated.place_address,
+      place_detail_address: updated.place_detail_address,
+      latitude: updated.latitude || 0,
+      longitude: updated.longitude || 0,
+    };
+
+    if (updated.id === 'home') {
+      await placeApi.upsertHome(payload);
+    } else {
+      const isNew = updated.id.length >= 10; 
+      
+      if (isNew) {
+        await placeApi.createFavorite(payload);
+      } else {
+        await placeApi.updateFavorite(updated.id, payload);
+      }
+    }
+
+    await get().fetchPlaces();
+  },
+
+  // 통합 삭제
+  deletePlace: async (id: string) => {
+    if (id === 'home') {
+      await placeApi.deleteHome();
+      set({ home: null }); 
+    } else {
+      if (id.length >= 10) return;
+
+      await placeApi.deleteFavorite(id);
+      await get().fetchPlaces();
+    }
+  },
+
   setView: (view) => set({ view }),
-
-  toggleTime: (time, dragMoved) => {
-    if (dragMoved) return;
-    set((state) => ({
-      selectedTimes: state.selectedTimes.includes(time)
-        ? state.selectedTimes.filter((t) => t !== time)
-        : [...state.selectedTimes, time],
-    }));
-  },
-
-  savePlace: (updated) => {
-    set((state) => {
-      if (updated.id === 'home') return { home: updated };
-
-      const isExisting = state.favorites.some((p) => p.id === updated.id);
-      return {
-        favorites: isExisting
-          ? state.favorites.map((p) => (p.id === updated.id ? updated : p))
-          : [...state.favorites, updated],
-      };
-    });
-  },
-
-  deleteFavorite: (id) => {
-    if (id === 'home') return;
-    set((state) => ({
-      favorites: state.favorites.filter((p) => p.id !== id),
-    }));
-  },
 }));

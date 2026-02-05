@@ -1,7 +1,4 @@
-interface DownloadButtonProps {
-  onClick: () => void;
-  isInstallable: boolean; // 설치 가능 여부를 boolean으로 받음
-}
+import type { DownloadButtonProps } from "../types/download";
 
 export const DownloadButton = ({ onClick, isInstallable }: DownloadButtonProps) => {
   return (

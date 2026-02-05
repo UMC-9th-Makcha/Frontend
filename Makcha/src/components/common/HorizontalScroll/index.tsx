@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { useDragScroll } from "../../../hooks/useDragScroll";
+import { useDragScroll } from "./hooks/useDragScroll";
 
 interface HorizontalScrollProps<T> {
   items: T[];

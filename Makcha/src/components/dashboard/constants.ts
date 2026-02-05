@@ -1,5 +1,5 @@
 import { LayoutDashboard, AlarmClock, Moon, History, Settings, Download } from 'lucide-react';
-import type { MenuItem } from '../../types/dashboard';
+import type { MenuItem } from './types/dashboard';
 
 export const NAV_MENUS: readonly MenuItem[] = [
   { id: 'home', label: '대시보드', path: '/home', icon: LayoutDashboard },

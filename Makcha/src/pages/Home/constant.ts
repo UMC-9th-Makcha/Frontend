@@ -1,12 +1,6 @@
-export interface DashboardAction {
-    id: string;
-    title: string;
-    description: string;
-    path: string;
-    variant: "primary" | "secondary";
-  }
-  
-export const DASHBOARD_ACTIONS: DashboardAction[] = [
+import type { DashboardAction } from "./types/home";
+
+  export const DASHBOARD_ACTIONS: DashboardAction[] = [
     {
       id: "create",
       title: "막차 알림\n생성하기",

@@ -1,12 +1,12 @@
 import React, { memo, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { NAV_MENUS, PUBLIC_MENU_IDS } from './constants';
+import { NAV_MENUS, PUBLIC_MENU_IDS } from '../constants';
 import DashboardItem from './DashboardItem';
 import { UserIcon } from './UserIcon';
-import { useDashboardStore } from '../../store/useDashboardStore';
-import { useAuth } from '../../hooks/useAuth';
-import { useMediaQuery } from '../../store/useMediaQuery';
-import type { DashboardNavProps } from '../../types/dashboard';
+import { useDashboardStore } from '../../../store/useDashboardStore';
+import { useAuth } from '../../../hooks/useAuth';
+import { useMediaQuery } from '../../../store/useMediaQuery';
+import type { DashboardNavProps } from '../types/dashboard';
 
 const DashboardNav = memo(({ dividerClass }: DashboardNavProps) => {
   const { user, isLoggedIn } = useAuth();
