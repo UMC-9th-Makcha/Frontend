@@ -7,21 +7,14 @@ import { WaitingSpotLayout } from "./layouts/WaitingSpotLayout";
 import { WaitingSpotHeader } from "./common/WaitingSpotHeader";
 import { CategoryTab } from "./common/CategoryTab";
 import { PlaceDetailPanel } from "./panels/PlaceDetailPanel";
-import { FALLBACK_CENTER, waitingCategories } from "./common/constants";
-import WalkingDirections from "./WalkingDirections";
-import { useGeoLocation } from "../../hooks/useGeoLocation"; 
+import { waitingCategories } from "./common/constants";
+import WalkingDirections from "./WalkingDirections"; 
 import { mockPlaces } from "./common/mock";
 import { FooterButton } from "./common/FooterButton";
 import { StartLocationSearch } from "./components/StartLocationSearch";
 import { PlaceList } from "./components/PlaceList";
 
 export default function WaitingSpot() {
-  //지도 현위치 좌표
-  const { location, loading, error } = useGeoLocation({
-    enableHighAccuracy: true,
-    timeout: 10000,
-    maximumAge: 0,
-  });
 
   // 1. 타입을 string으로 받거나, 명시적으로 단언하여 에러를 방지합니다.
   const { type } = useParams() as { type: string };
@@ -52,17 +45,6 @@ export default function WaitingSpot() {
     }));
   }, []);
 
-  //지도 center 좌표 반영
-  const center = useMemo(() => {
-    if (selectedPlace) {
-      return { lat: selectedPlace.lat, lng: selectedPlace.lng };
-    } //리스트 장소
-    if (location) {
-      return { lat: location.latitude, lng: location.longitude };
-    }//현위치
-    return FALLBACK_CENTER;//임시 좌표
-  }, [selectedPlace, location]);
-
   const handleSelectList = (id: number) => {
     setSelectedPlaceId(id);
     setIsDetailOpen(true);
@@ -75,7 +57,7 @@ export default function WaitingSpot() {
   };
 
   //출발지 검색
-  const [origin, setOrigin] = useState<string>("현위치");
+  const [, setOrigin] = useState<string>("현위치");
   const handleSubmitOrigin = (value: string) => {
     setOrigin(value);
   }

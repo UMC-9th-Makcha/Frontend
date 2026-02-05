@@ -7,7 +7,7 @@ export const useBack = (view: ViewType, onBack: () => void) => {
 
     window.history.pushState(null, '', '');
 
-    const handlePopState = (event: PopStateEvent) => {
+    const handlePopState = () => {
       onBack();
     };
 
