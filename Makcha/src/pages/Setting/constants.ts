@@ -22,3 +22,8 @@ export const DEFAULT_HOME: Place = {
   latitude: 0,
   longitude: 0
 };
+
+export const SETTING_KEYS = {
+  alarm: ['alarmSetting'] as const,
+  place: ['placeSetting'] as const,
+};

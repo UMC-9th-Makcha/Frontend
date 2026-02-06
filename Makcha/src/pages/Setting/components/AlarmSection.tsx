@@ -1,16 +1,10 @@
-import { useEffect, useCallback } from "react";
+import { useCallback } from "react";
 import { HorizontalScroll } from "../../../components/common/HorizontalScroll";
-import { TIME_LABELS } from "../constants"; // TIME_LABELS가 있는 경로
-import { useAlarmStore } from "../../../store/useAlarmStore";
+import { TIME_LABELS } from "../constants";
+import { useAlarmSetting } from "../hooks/useAlarmSetting";
 
 export function AlarmSection() {
-  const selectedTimes = useAlarmStore((state) => state.selectedTimes);
-  const toggleTime = useAlarmStore((state) => state.toggleTime);
-  const fetchSettings = useAlarmStore((state) => state.fetchSettings);
-
-  useEffect(() => {
-    fetchSettings();
-  }, [fetchSettings]);
+  const { selectedTimes, toggleTime } = useAlarmSetting();
 
   const handleItemClick = useCallback((t: string, moved: boolean) => {
     if (moved) return;

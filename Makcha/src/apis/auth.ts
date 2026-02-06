@@ -12,7 +12,6 @@ export const authService = {
   // AccessToken 재발급
   refreshAccessToken: async (): Promise<string> => {
     const { data } = await api.post<BaseResponse<{ accessToken: string }>>('/auth/refresh');
-    console.log(data);
     return data.result.accessToken;
   },
 

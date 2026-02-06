@@ -50,16 +50,13 @@ api.interceptors.response.use(
 
     // 요청 취소, 네트워크 중단 에러 무시
     if (axios.isCancel(err) || err.code === 'ECONNABORTED' || err.code === 'ERR_NETWORK') {
-      return new Promise(() => {}); 
-    }
-
-    // 429 (Too Many Requests) 에러 방어
-    if (status === 429) {
-      return new Promise(() => {});
+      return Promise.reject(err);
     }
 
     // 401 (토큰 만료) 에러 처리
     if ((status === 401 || errorData?.errorCode === 'AUTH-401-001') && !originalRequest._retry) {
+      
+      // 이미 갱신 중이라면 대기열에 추가
       if (isRefreshing) {
         try {
           const token = await new Promise<string | null>((resolve, reject) => {
@@ -68,12 +65,14 @@ api.interceptors.response.use(
           if (token && originalRequest.headers) {
             originalRequest.headers.Authorization = `Bearer ${token}`;
           }
+          originalRequest._retry = true; 
           return await api(originalRequest);
         } catch (queueError) {
           return Promise.reject(queueError);
         }
       }
 
+      // 갱신 시작
       originalRequest._retry = true;
       isRefreshing = true;
 
@@ -86,20 +85,23 @@ api.interceptors.response.use(
 
         const { accessToken } = data.result;
         useAuthStore.getState().setLogin(accessToken);
-        
-        processQueue(null, accessToken);
-        
+
         if (originalRequest.headers) {
           originalRequest.headers.Authorization = `Bearer ${accessToken}`;
         }
-        
+
+        // 대기열 처리
+        processQueue(null, accessToken);
+        isRefreshing = false;
+
         return await api(originalRequest);
+
       } catch (refreshError: unknown) {
+        // 재발급 실패 시 로그아웃
         processQueue(refreshError, null);
         useAuthStore.getState().setLogout();
-        return Promise.reject(refreshError);
-      } finally {
         isRefreshing = false;
+        return Promise.reject(refreshError);
       }
     }
 

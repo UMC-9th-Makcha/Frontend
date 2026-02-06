@@ -2,22 +2,20 @@ import { useState, useCallback, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { SettingPanel } from "./components/SettingPanel";
 import { SettingBg } from "./components/BgSection";
-import { useSettingStore } from "../../store/useSettingStore";
 import { useBack } from "./hooks/useBack";
 import type { Place } from "./types/setting";
 import { DEFAULT_HOME, type ViewType } from "./constants";
 import PlaceSetting from "./components/PlaceSetting";
 import { PhonenumberSetting } from "./components/PhonenumberSetting";
+import { usePlaceSetting } from "./hooks/usePlaceSetting";
+
 
 export default function Setting() {
   const navigate = useNavigate();
   const location = useLocation();
-  const view = useSettingStore((state) => state.view);
-  const setView = useSettingStore((state) => state.setView);
-  const home = useSettingStore((state) => state.home);
-  const savePlace = useSettingStore((state) => state.savePlace);
-  const deletePlace = useSettingStore((state) => state.deletePlace);
 
+  const [view, setView] = useState<ViewType>("MAIN");
+  const { home, savePlace, deletePlace } = usePlaceSetting();
   const [editingPlace, setEditingPlace] = useState<Place | null>(null);
 
   const navState = location.state as { from?: string; returnTo?: string } | undefined;
@@ -27,14 +25,14 @@ export default function Setting() {
   const handleBack = useCallback(() => {
     setView("MAIN");
     setEditingPlace(null);
-  }, [setView]);
+  }, []);
 
   useBack(view, handleBack);
 
   const handleNavigate = useCallback((v: ViewType, p?: Place) => {
     setView(v);
     if (p) setEditingPlace(p);
-  }, [setView]);
+  }, []);
 
   const handleContactComplete = useCallback((payload?: { phone: string }) => {
     const phone = payload?.phone ?? "";
@@ -62,7 +60,7 @@ export default function Setting() {
             place={safeHome}
             {...props} 
             onDelete={async (id) => {
-                await deletePlace(id);
+              await deletePlace(id);
             }}
           />
         );
