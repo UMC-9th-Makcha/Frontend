@@ -58,9 +58,6 @@ export default function WaitingSpot() {
     isHydrated,
     accessToken,
   });
-  useEffect(() => {
-    console.log('useWaitingSpot : ', places);
-  }, [places])
 
   //검색 API
   const [keyword, setKeyword] = useState("");
@@ -85,10 +82,6 @@ export default function WaitingSpot() {
     isHydrated,
     accessToken,
   })
-
-  useEffect(() => {
-    console.log('useFacilitiesCategory : ', categoryData);
-  }, [categoryData]);
 
   const isAll = category === "ALL";
 
@@ -119,9 +112,6 @@ export default function WaitingSpot() {
     isHydrated,
     accessToken,
   });
-  useEffect(() => {
-    console.log('Detail : ', placeDetail);
-  }, [placeDetail]);
 
   // 마커 데이터 변환 
   const mapMarkers = useMemo<MapMarker[]>(() => {
@@ -228,10 +218,12 @@ export default function WaitingSpot() {
           <BaseMap
             markers={mapMarkers}
             activeId={selectedPlaceId}
-            onMarkerClick={(marker) => handleSelectMarker(String(marker.id))}
-          />
-        }
-        detail={isDetailOpen && selectedPlace ?
+            onMarkerClick={
+              (marker) => {
+                if (marker.variant === "current") return;
+                handleSelectMarker(String(marker.id)); }}
+              />}
+        detail={isDetailOpen && selectedPlaceId ?
           <PlaceDetailPanel
             place={placeDetail ?? null}
             loading={DetailLoading}
