@@ -1,12 +1,13 @@
 export type CurrentAlarm = {
-    routeId: string;
-    isOptimal: boolean;
-    lines: string[];
-    departureTime: string;
-    timeUntilDepartureText: string;
-    totalDurationMin: number;
-    transferCount: number;
-    walkingTimeMin: number;
+    notificationId: number;
+    routeId?: string;
+    isOptimal?: boolean;
+    lines?: string[];
+    departureTime?: string;
+    timeUntilDepartureText?: string;
+    totalDurationMin?: number;
+    transferCount?: number;
+    walkingTimeMin?: number;
 };
 
 export type PastSummary = {
@@ -38,12 +39,25 @@ export type ApiResponse<T> = {
 };
 
 export type AlertsHistoryDto = {
+    user_setting: {
+        user_id: string;
+        notify_mask: number;
+        enabled: boolean;
+        timeList: number[];
+    };
+
+    current_alert: null | {
+        id: string;
+        station_name: string;
+        scheduled_time: string;
+    };
+
     history: Array<{
         id: string;
         origin: string;
         destination: string;
-        departure_time: string; 
-        arrival_time: string;  
-        duration: number;     
+        departure_time: string;
+        arrival_time: string;
+        duration: number;
     }>;
 };

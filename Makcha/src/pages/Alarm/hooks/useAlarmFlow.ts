@@ -217,7 +217,7 @@ export function useAlarmFlow() {
 
             return {
                 id: c.candidate_key,
-                cacheKey: c.candidate_key,
+                cacheKey: c.route_token,
                 routeToken: c.route_token,
                 isOptimal: c.is_optimal,
                 routeType: c.tags?.includes("SUBWAY")

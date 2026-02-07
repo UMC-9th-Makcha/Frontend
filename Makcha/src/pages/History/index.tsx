@@ -4,13 +4,13 @@ import CurrentAlarmCard from "./components/CurrentAlarmCard";
 import PastSummaryCard from "./components/PastSummaryCard";
 import MonthSection from "./components/MonthSection";
 import SaveReportPanel from "./components/SaveReportPanel";
-import { CURRENT_ALARM_MOCK } from "./mocks/historyMock";
-import type { HistoryItem, PastSummary } from "./types/history";
+import type { CurrentAlarm, HistoryItem, PastSummary } from "./types/history";
 import { ROUTE_CONFIRM_DETAIL_MOCK } from "../Alarm/mocks/routeConfirmMock";
 import RouteConfirmPanel from "../Alarm/panels/RouteConfirmPanel";
 import type { AlarmRoute } from "../Alarm/types/alarm";
 import { useSaveReports } from "./hooks/useSaveReports";
 import { useAlertsHistory } from "./hooks/useAlertsHistory";
+import { useNavigate } from "react-router-dom";
 
 const toKoreanDate = (iso: string) => {
   const d = new Date(iso);
@@ -30,6 +30,7 @@ const toHHMM = (iso: string) => {
 const toMonthLabel = (yyyyMm: string) => `${Number(yyyyMm.split("-")[1])}월`;
 
 const HistoryHome = () => {
+  const navigate = useNavigate();
   const [isSaveReportOpen, setIsSaveReportOpen] = useState(false);
   const [reportMonth, setReportMonth] = useState<string | undefined>(undefined);
 
@@ -79,6 +80,23 @@ const HistoryHome = () => {
   }, [saveReport]);
 
   const { data: alertsHistory } = useAlertsHistory();
+
+  const currentAlarm: CurrentAlarm | null = useMemo(() => {
+    const ca = alertsHistory?.current_alert;
+    if (!ca) return null;
+
+    return {
+      notificationId: Number(ca.id),
+      routeId: String(ca.id),
+      isOptimal: true,
+      lines: [],
+      departureTime: toHHMM(ca.scheduled_time),
+      timeUntilDepartureText: "",
+      totalDurationMin: 0,
+      transferCount: 0,
+      walkingTimeMin: 0,
+    };
+  }, [alertsHistory]);
 
   const monthSections = useMemo(() => {
     const list = alertsHistory?.history ?? [];
@@ -175,7 +193,10 @@ const HistoryHome = () => {
             </p>
 
             <div className="mt-7">
-              <CurrentAlarmCard alarm={CURRENT_ALARM_MOCK} />
+              <CurrentAlarmCard
+                alarm={currentAlarm}
+                onCreate={() => navigate("/alarm")}
+              />
             </div>
           </section>
 
