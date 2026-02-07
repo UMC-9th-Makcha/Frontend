@@ -1,23 +1,26 @@
-import { Search, Circle } from 'lucide-react'
-import { useState } from 'react';
-import { mockOrigins } from '../common/mock';
-import { InputDropdown } from '../common/InputDropdown';
+import { Search, Circle } from "lucide-react";
+import { useMemo, useState } from "react";
+import { InputDropdown } from "../common/InputDropdown";
+import type { StartLocationSearchProps } from "../../../types/waitingspot";
 
-type StartLocationSearchProps  = {
-  onSubmitOrigin:(value: string) => void;
-}
-export const StartLocationSearch = ({onSubmitOrigin} : StartLocationSearchProps ) => {
-  const [value, setValue] = useState<string>("");
-    const [dropdown,setDropdown] = useState<boolean>(false);
-    //검색 결과 없어요 창 띄우는 용도
-    const [submitted, setSubmitted] = useState<boolean>(false);
-  
-    const filtered = mockOrigins.filter(v => v.includes(value) && value.trim().length > 0);
-    const showNoResult = submitted && dropdown && filtered.length === 0;
+export const StartLocationSearch = ({value,onChangeValue,items,loading,error,onSelect}: StartLocationSearchProps) => {
+  const [dropdown, setDropdown] = useState(false);
+
+  const names = useMemo(() => items.map((x) => x.name), [items]);
+
+  const showNoResult = dropdown && !loading && !error && value.trim().length > 0 && items.length === 0;
+
+  const handleSelectByName = (name: string) => {
+    const picked = items.find((x) => x.name === name);
+    if (!picked) return;
+    onSelect(picked);
+    onChangeValue(picked.name);
+    setDropdown(false);
+  };
+
   return (
-    <form 
+    <div 
     role="search"
-    onSubmit={(e) => e.preventDefault()}
     className="flex flex-col w-full py-1 px-2 gap-2">
       <label
         htmlFor="start-location"
@@ -30,50 +33,53 @@ export const StartLocationSearch = ({onSubmitOrigin} : StartLocationSearchProps 
           <div className="absolute inset-0 bg-blue-400 rounded-full blur-[2px] opacity-60" />
           <Circle className="relative w-2 h-2 fill-blue-600 text-blue-600" />
         </div>
-        <input
-        value={value}
-              onChange={(e) => {
-                setValue(e.target.value);
-                setDropdown(true);
-                setSubmitted(false);
-              }}
-              placeholder="현위치"
-              onBlur={() => setTimeout(() => setDropdown(false), 100)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  setSubmitted(true);
-                  setDropdown(true);
 
-                  if(filtered.length > 0) {
-                    onSubmitOrigin?.(value);
-                    setDropdown(false);
-                  }
-                }
-              }}
+        <input
           id="start-location"
+          value={value}
+          onChange={(e) => {
+            onChangeValue(e.target.value);
+            setDropdown(true);
+          }}
+          onFocus={() => setDropdown(true)}
+          placeholder="현위치"
+          onBlur={() => setTimeout(() => setDropdown(false), 100)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              setDropdown(true);
+              }
+            }
+          }
           className="w-full h-[42px] px-2 pl-10 bg-white shadow-[0_0_5px_0_#88888840] rounded-[20px] text-[#5F5F5F] font-light text-sm outline-none
           placeholder:text-[#5F5F5F] placeholder:font-light placeholder:text-sm placeholder:opacity-100
           dark:placeholder-makcha-navy-200"
         />
+
         <button
           type="button"
           aria-label="출발지 검색"
           className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-full"
+          onClick={() => {
+            setDropdown(true);
+            if (!loading && !error && items.length > 0) {
+              const first = items[0];
+              onSelect(first);
+              onChangeValue(first.name);
+              setDropdown(false);
+            }
+          }}
         >
           <Search className='w-5 h-5 text-[#5F5F5F]
           dark:text-makcha-navy-400'/>
         </button>
+
         <InputDropdown
           open={dropdown && value.trim().length > 0}
           showNoResult={showNoResult}
-          items={filtered}
-          onSelect={(item) => {
-            setValue(item);
-            onSubmitOrigin?.(item);
-            setDropdown(false);
-          }}
+          items={names}
+          onSelect={handleSelectByName}
         />
       </div>
-    </form>
-  )
-}
+    </div>
+  );
+};

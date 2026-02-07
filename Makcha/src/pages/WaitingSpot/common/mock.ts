@@ -1,5 +1,4 @@
 import type { MapMarker, MapPathSegment } from "../../../types/map";
-import type { Place, PlaceDetail } from "../../../types/waitingspot";
 import type { Direction, DirectionDetail, RouteCategoryKey } from "../../../types/walking-direction";
 
 //도보 안내 data (카테고리 별)
@@ -184,88 +183,88 @@ export const mockRouteDetail: Record<RouteCategoryKey, DirectionDetail> = {
 };
 
 
-//장소 mock data
-export const mockPlaces: Place[] = [
-  {
-    id: 1,
-    name: "24시 별빛 카페",
-    category: "night-cafe",
-    address: "서울 용산구 한강대로",
-    distanceMeter: 400,
-    durationSeconds: 90,
-    badge: "곧 마감 04:00까지 운영",
-    lat: 37.5294,
-    lng: 126.9677,
-  },
-  {
-    id: 2,
-    name: "용산 PC존",
-    category: "pc-cafe",
-    address: "서울 용산구 이태원로",
-    distanceMeter: 400,
-    durationSeconds: 90,
-    badge: "곧 마감 04:00까지 운영",
-    lat: 37.5349,
-    lng: 126.9946,
-  },
-  {
-    id: 3,
-    name: "한강 사우나",
-    category: "sauna",
-    address: "서울 용산구 서빙고로",
-    distanceMeter: 400,
-    durationSeconds: 90,
-    badge: "곧 마감 04:00까지 운영",
-    lat: 37.5206,
-    lng: 126.9723,
-  },
-  {
-    id: 4,
-    name: "미드나잇 스터디 카페",
-    category: "night-cafe",
-    address: "서울 용산구 후암로",
-    distanceMeter: 400,
-    durationSeconds: 90,
-    badge: "곧 마감 04:00까지 운영",
-    lat: 37.5482,
-    lng: 126.9758,
-  },
-];
+// //장소 mock data
+// export const mockPlaces: Place[] = [
+//   {
+//     id: 1,
+//     name: "24시 별빛 카페",
+//     category: "night-cafe",
+//     address: "서울 용산구 한강대로",
+//     distanceMeter: 400,
+//     durationSeconds: 90,
+//     badge: "곧 마감 04:00까지 운영",
+//     lat: 37.5294,
+//     lng: 126.9677,
+//   },
+//   {
+//     id: 2,
+//     name: "용산 PC존",
+//     category: "pc-cafe",
+//     address: "서울 용산구 이태원로",
+//     distanceMeter: 400,
+//     durationSeconds: 90,
+//     badge: "곧 마감 04:00까지 운영",
+//     lat: 37.5349,
+//     lng: 126.9946,
+//   },
+//   {
+//     id: 3,
+//     name: "한강 사우나",
+//     category: "sauna",
+//     address: "서울 용산구 서빙고로",
+//     distanceMeter: 400,
+//     durationSeconds: 90,
+//     badge: "곧 마감 04:00까지 운영",
+//     lat: 37.5206,
+//     lng: 126.9723,
+//   },
+//   {
+//     id: 4,
+//     name: "미드나잇 스터디 카페",
+//     category: "night-cafe",
+//     address: "서울 용산구 후암로",
+//     distanceMeter: 400,
+//     durationSeconds: 90,
+//     badge: "곧 마감 04:00까지 운영",
+//     lat: 37.5482,
+//     lng: 126.9758,
+//   },
+// ];
 
-export const mockPlaceDetails: PlaceDetail[] = [
-  {
-    id: 1,
-    subcategory: "스터디 카페",
-    imageUrl: "https://placehold.co/400x300",
-    accessInfo: "당곡역 2번 출구에서 152m",
-    phone: "02-1234-5678",
-    badge: ["24시간", "연중무휴"],
-  },
-  {
-    id: 2,
-    subcategory: "PC방",
-    imageUrl: "https://placehold.co/400x300",
-    accessInfo: "당곡역 2번 출구에서 152m",
-    phone: "02-1234-5678",
-    badge: ["24시간", "연중무휴"],
-  },
-  {
-    id: 3,
-    subcategory: "찜질방",
-    imageUrl: "https://placehold.co/400x300",
-    accessInfo: "당곡역 2번 출구에서 152m",
-    phone: "02-1234-5678",
-    badge: ["24시간", "연중무휴"],
-  },
-  {
-    id: 4,
-    subcategory: "스터디 카페",
-    imageUrl: "https://placehold.co/400x300",
-    accessInfo: "당곡역 2번 출구에서 152m",
-    phone: "02-1234-5678",
-    badge: ["24시간", "연중무휴"],
-  },
-];
+// export const mockPlaceDetails: PlaceDetail[] = [
+//   {
+//     id: 1,
+//     subcategory: "스터디 카페",
+//     imageUrl: "https://placehold.co/400x300",
+//     accessInfo: "당곡역 2번 출구에서 152m",
+//     phone: "02-1234-5678",
+//     badge: ["24시간", "연중무휴"],
+//   },
+//   {
+//     id: 2,
+//     subcategory: "PC방",
+//     imageUrl: "https://placehold.co/400x300",
+//     accessInfo: "당곡역 2번 출구에서 152m",
+//     phone: "02-1234-5678",
+//     badge: ["24시간", "연중무휴"],
+//   },
+//   {
+//     id: 3,
+//     subcategory: "찜질방",
+//     imageUrl: "https://placehold.co/400x300",
+//     accessInfo: "당곡역 2번 출구에서 152m",
+//     phone: "02-1234-5678",
+//     badge: ["24시간", "연중무휴"],
+//   },
+//   {
+//     id: 4,
+//     subcategory: "스터디 카페",
+//     imageUrl: "https://placehold.co/400x300",
+//     accessInfo: "당곡역 2번 출구에서 152m",
+//     phone: "02-1234-5678",
+//     badge: ["24시간", "연중무휴"],
+//   },
+// ];
 
 export const mockOrigins = [
   "서울역",

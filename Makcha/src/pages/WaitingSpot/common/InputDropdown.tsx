@@ -8,12 +8,18 @@ type InputDropdownProps = {
 export const InputDropdown = ({ open, showNoResult, items, onSelect }: InputDropdownProps) => {
   if (!open) return null;
 
+  const MAX_RENDER = 10;
+  const visibleItems = items.slice(0, MAX_RENDER);
+
   return (
-    <ul className="absolute w-full bg-white dark:bg-makcha-navy-800 rounded-xl shadow-lg overflow-hidden z-10 text-[14px] text-[#5F5F5F] font-light">
+    <ul className="absolute w-full bg-white dark:bg-makcha-navy-800 rounded-xl shadow-lg z-10
+      text-[14px] text-[#5F5F5F] font-light
+      max-h-64 overflow-y-auto">
       {showNoResult && (
         <li className="px-4 py-2 opacity-70 cursor-default">검색 결과가 없어요</li>
       )}
-      {items.map((item) => (
+
+      {visibleItems.map((item) => (
         <li
           key={item}
           onMouseDown={() => onSelect(item)}
