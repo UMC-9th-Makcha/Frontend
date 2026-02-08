@@ -1,6 +1,7 @@
 import { ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import type { CurrentAlarm } from "../types/history";
+import { useCancelAlert } from "../hooks/useCancelAlert";
 
 type Props = {
     alarm: CurrentAlarm | null;
@@ -10,6 +11,7 @@ type Props = {
 
 const CurrentAlarmCard = ({ alarm, onCreate, onCancel }: Props) => {
     const navigate = useNavigate();
+    const { mutate: cancelMutate, isPending } = useCancelAlert();
 
     // 1) 알림 없음
     if (!alarm) {
@@ -73,7 +75,7 @@ const CurrentAlarmCard = ({ alarm, onCreate, onCancel }: Props) => {
                                 </span>
                             )}
 
-                            {alarm.lines.map((line) => (
+                            {(alarm.lines ?? []).map((line) => (
                                 <span
                                     key={line}
                                     className="
@@ -138,13 +140,24 @@ const CurrentAlarmCard = ({ alarm, onCreate, onCancel }: Props) => {
             <div className="mt-5 flex justify-center">
                 <button
                     type="button"
-                    onClick={onCancel}
+                    disabled={isPending}
+                    onClick={() => {
+                        cancelMutate(alarm.notificationId, {
+                            onSuccess: () => {
+                                onCancel?.(); 
+                            },
+                            onError: () => {
+                                alert("알림 취소 실패");
+                            },
+                        });
+                    }}
                     className="
                         h-[50px] w-full rounded-[30px]
                         bg-makcha-navy-400 text-[20px] font-medium text-white
+                        disabled:opacity-60
                     "
                 >
-                    알림 취소하기
+                    {isPending ? "취소 중..." : "알림 취소하기"}
                 </button>
             </div>
         </div>

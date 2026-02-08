@@ -6,8 +6,16 @@ const RouteLoadingPanel = ({ open }: Props) => {
     if (!open) return null;
 
     return (
-        <div className="flex h-full w-full items-center justify-center">
-            <div className="flex flex-col items-center justify-center translate-y-80 max-md:translate-y-80">
+        <div
+            className="
+                w-full bg-white dark:bg-makcha-navy-900
+                min-h-dvh
+                flex justify-center
+                pt-[22vh] max-md:pt-[26vh]
+                pb-24
+            "
+        >
+            <div className="flex flex-col items-center">
                 <img
                     src={LoadingLogo}
                     alt="로딩"

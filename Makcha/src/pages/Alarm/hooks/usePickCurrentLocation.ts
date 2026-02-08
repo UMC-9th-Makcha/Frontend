@@ -54,6 +54,8 @@ export function usePickCurrentLocation(params: {
                 id: "current",
                 title: "현위치",
                 address: addressText,
+                lat, 
+                lng,
             };
 
             handleSelect(targetSnapshot, item);

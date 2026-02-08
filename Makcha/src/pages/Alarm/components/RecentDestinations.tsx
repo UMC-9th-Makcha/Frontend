@@ -63,9 +63,9 @@ const RecentDestinations = ({ onSelectDestination }: Props) => {
                                     dark:hover:bg-white/10 dark:active:bg-white/15
                                 "
                                 onClick={(e) => {
-                                    e.stopPropagation(); 
+                                    e.stopPropagation();
                                     if (isPending) return;
-                                    removeRecent(item.recentId); 
+                                    removeRecent(item.recentId);
                                 }}
                                 onKeyDown={(e) => {
                                     if (e.key !== "Enter" && e.key !== " ") return;
@@ -83,7 +83,7 @@ const RecentDestinations = ({ onSelectDestination }: Props) => {
                         if (moved) return;
 
                         onSelectDestination({
-                            id: item.placeId, 
+                            id: item.placeId,
                             title: item.title,
                             address: `${item.roadAddress} ${item.detailAddress ?? ""}`.trim(),
                             lat: item.latitude,
