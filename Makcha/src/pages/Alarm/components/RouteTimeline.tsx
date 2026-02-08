@@ -1,5 +1,6 @@
 import { Footprints, BusFront } from "lucide-react";
 import type { RouteConfirmSegment } from "../types/routeConfirm";
+import { PATH_COLORS } from "../../../components/common/Map/constant";
 
 const fmtMin = (min: number) => (min < 1 ? "1분 미만" : `${min}분`);
 
@@ -8,10 +9,10 @@ const extractSubwayNumber = (label: string) => {
     return m?.[0] ?? label.replace("호선", "").trim().slice(0, 2);
 };
 
-const LineColor = (mode: RouteConfirmSegment["mode"]) => {
-    if (mode === "SUBWAY") return "border-green-500";
-    if (mode === "BUS") return "border-blue-500";
-    return "border-gray-300 dark:border-white/20";
+const getStrokeColor = (mapType?: string, dark = false) => {
+    if (!mapType) return dark ? "#6B7280" : "#9CA3AF";
+    const c = PATH_COLORS[mapType as keyof typeof PATH_COLORS];
+    return dark ? c?.dark ?? "#6B7280" : c?.light ?? "#9CA3AF";
 };
 
 type Props = {
@@ -23,12 +24,11 @@ export function RouteTimeline({ segments }: Props) {
         | Extract<RouteConfirmSegment, { mode: "SUBWAY" | "BUS" }>
         | undefined;
 
-    const startLabel = firstTransit?.from ?? "출발지";
-
     const lastTransit = [...segments].reverse().find((s) => s.mode !== "WALK") as
         | Extract<RouteConfirmSegment, { mode: "SUBWAY" | "BUS" }>
         | undefined;
 
+    const startLabel = firstTransit?.from ?? "출발지";
     const endLabel = lastTransit?.to ?? "도착지";
 
     return (
@@ -48,8 +48,14 @@ export function RouteTimeline({ segments }: Props) {
                             return <WalkMeta key={`walk-${idx}`} meta={meta} />;
                         }
 
-                        const transit = s as Extract<RouteConfirmSegment, { mode: "SUBWAY" | "BUS" }>;
-                        const meta = `${fmtMin(transit.durationMin)}${typeof transit.stops === "number" ? ` | ${transit.stops}개 정거장` : ""
+                        const transit = s as Extract<
+                            RouteConfirmSegment,
+                            { mode: "SUBWAY" | "BUS" }
+                        >;
+
+                        const meta = `${fmtMin(transit.durationMin)}${typeof transit.stops === "number"
+                                ? ` | ${transit.stops}개 정거장`
+                                : ""
                             }`;
 
                         return (
@@ -61,13 +67,15 @@ export function RouteTimeline({ segments }: Props) {
                                 to={transit.to}
                                 meta={meta}
                                 isLast={idx === segments.length - 1}
+                                mapType={transit.mapType}
                             />
                         );
                     })}
 
-                    {segments.length > 0 && segments[segments.length - 1].mode === "WALK" && (
-                        <StationNode tone="end" label={endLabel} />
-                    )}
+                    {segments.length > 0 &&
+                        segments[segments.length - 1].mode === "WALK" && (
+                            <StationNode tone="end" label={endLabel} />
+                        )}
                 </div>
             </div>
         </div>
@@ -85,16 +93,20 @@ function MarkerSlot({
 }
 
 function StationNode({ tone, label }: { tone: "start" | "end"; label: string }) {
-    const dotBase = "h-4 w-4";
-    const dotColor = tone === "end" ? "bg-blue-500" : "bg-gray-500 dark:bg-white/30";
+    const dotColor =
+        tone === "end"
+            ? "bg-gray-500 dark:bg-white/30"
+            : "bg-gray-500 dark:bg-white/30";
 
     return (
         <div className="relative pb-3">
             <MarkerSlot className="top-2 translate-x-[3px]">
-                <div className={`rounded-full ${dotBase} ${dotColor}`} />
+                <div className={`h-4 w-4 rounded-full ${dotColor}`} />
             </MarkerSlot>
 
-            <p className="text-[18px] font-semibold text-gray-900 dark:text-white">{label}</p>
+            <p className="text-[18px] font-semibold text-gray-900 dark:text-white">
+                {label}
+            </p>
         </div>
     );
 }
@@ -110,18 +122,34 @@ function WalkMeta({ meta }: { meta: string }) {
     );
 }
 
-function TransitBadge({ mode, lineLabel }: { mode: "SUBWAY" | "BUS"; lineLabel: string }) {
+function TransitBadge({
+    mode,
+    lineLabel,
+    mapType,
+}: {
+    mode: "SUBWAY" | "BUS";
+    lineLabel: string;
+    mapType?: string;
+}) {
+    const bg = getStrokeColor(mapType, false);
+
     if (mode === "SUBWAY") {
         const n = extractSubwayNumber(lineLabel);
         return (
-            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-500 text-[12px] font-bold text-white">
+            <div
+                className="flex h-6 w-6 items-center justify-center rounded-full text-[12px] font-bold text-white"
+                style={{ backgroundColor: bg }}
+            >
                 {n}
             </div>
         );
     }
 
     return (
-        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-500 text-white">
+        <div
+            className="flex h-6 w-6 items-center justify-center rounded-full text-white"
+            style={{ backgroundColor: bg }}
+        >
             <BusFront className="h-4 w-4" />
         </div>
     );
@@ -134,6 +162,7 @@ function TransitBlock({
     to,
     meta,
     isLast,
+    mapType,
 }: {
     mode: "SUBWAY" | "BUS";
     lineLabel: string;
@@ -141,35 +170,53 @@ function TransitBlock({
     to: string;
     meta: string;
     isLast: boolean;
+    mapType?: string;
 }) {
-    const colorBorder = LineColor(mode);
+    const borderLight = getStrokeColor(mapType, false);
 
     return (
         <div className="relative pb-3">
             <div className="absolute -left-[46px] top-0 bottom-0 flex flex-col items-center">
                 <div className="h-6 flex items-center">
-                    <TransitBadge mode={mode} lineLabel={lineLabel} />
+                    <TransitBadge
+                        mode={mode}
+                        lineLabel={lineLabel}
+                        mapType={mapType}
+                    />
                 </div>
 
-                <div className={["flex-1 border-l-2 border-dashed", colorBorder].join(" ")} />
+                <div
+                    className="flex-1 border-l-2 border-dashed"
+                    style={{ borderColor: borderLight }}
+                />
 
                 <div className="h-6 flex items-center">
                     {isLast ? (
-                        <div className="h-4 w-4 rounded-full bg-blue-500" />
+                        <div className="h-4 w-4 rounded-full bg-gray-500 dark:bg-white/30" />
                     ) : (
-                        <TransitBadge mode={mode} lineLabel={lineLabel} />
+                        <TransitBadge
+                            mode={mode}
+                            lineLabel={lineLabel}
+                            mapType={mapType}
+                        />
                     )}
                 </div>
             </div>
 
             <div className="pb-2">
-                <p className="text-[18px] font-semibold text-gray-900 dark:text-white">{from}</p>
+                <p className="text-[18px] font-semibold text-gray-900 dark:text-white">
+                    {from}
+                </p>
             </div>
 
-            <div className="pb-2 text-[14px] text-gray-600 dark:text-white/60">{meta}</div>
+            <div className="pb-2 text-[14px] text-gray-600 dark:text-white/60">
+                {meta}
+            </div>
 
             <div>
-                <p className="text-[18px] font-semibold text-gray-900 dark:text-white">{to}</p>
+                <p className="text-[18px] font-semibold text-gray-900 dark:text-white">
+                    {to}
+                </p>
             </div>
         </div>
     );

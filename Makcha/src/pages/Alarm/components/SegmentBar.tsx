@@ -1,13 +1,15 @@
+import { PATH_COLORS } from "../../../components/common/Map/constant";
 import type { RouteConfirmSegment } from "../types/routeConfirm";
 
 type Props = {
     segments: RouteConfirmSegment[];
 };
 
-const bgClass = (s: RouteConfirmSegment) => {
-    if (s.mode === "SUBWAY") return "bg-green-500";
-    if (s.mode === "BUS") return "bg-blue-500";
-    return "bg-gray-500 dark:bg-white/30";
+const labelText = (min: number) => `${Math.max(1, Math.ceil(min))}분`;
+
+const getSegColor = (s: RouteConfirmSegment) => {
+    const t = s.mapType ?? (s.mode === "WALK" ? "WALK" : "UNKNOWN");
+    return PATH_COLORS[t]?.light ?? "#9CA3AF";
 };
 
 const textClass = (s: RouteConfirmSegment) => {
@@ -15,19 +17,17 @@ const textClass = (s: RouteConfirmSegment) => {
     return "text-white";
 };
 
-const labelText = (min: number) => (min < 1 ? "1분 미만" : `${min}분`);
-
 export default function SegmentBar({ segments }: Props) {
     const total = segments.reduce((a, s) => a + s.durationMin, 0);
 
-    // 너무 얇으면 안 보이니 최소폭 보정 
+    // 너무 얇으면 안 보이니 최소폭 보정
     const widths = segments.map((s) => {
         const pct = total === 0 ? 0 : (s.durationMin / total) * 100;
-        const minPct = s.durationMin <= 1 ? 10 : 0; 
+        const minPct = s.durationMin <= 1 ? 10 : 0;
         return Math.max(pct, minPct);
     });
 
-    // 100% 초과 방지: 합이 100 넘으면 비율로 다시 줄이기
+    // 100% 초과 방지
     const sum = widths.reduce((a, v) => a + v, 0);
     const scale = sum > 100 ? 100 / sum : 1;
     const scaledWidths = widths.map((w) => w * scale);
@@ -41,14 +41,18 @@ export default function SegmentBar({ segments }: Props) {
                         {segments.map((s, idx) => (
                             <div
                                 key={idx}
-                                className={[bgClass(s), "h-full"].join(" ")}
-                                style={{ width: `${scaledWidths[idx]}%` }}
+                                className="h-full"
+                                style={{
+                                    width: `${scaledWidths[idx]}%`,
+                                    backgroundColor: getSegColor(s),
+                                }}
                                 aria-label={`${s.mode} ${labelText(s.durationMin)}`}
                             />
                         ))}
                     </div>
                 </div>
 
+                {/* labels */}
                 <div className="pointer-events-none absolute inset-0 flex">
                     {segments.map((s, idx) => (
                         <div

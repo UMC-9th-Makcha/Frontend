@@ -1,21 +1,32 @@
-export type RouteConfirmMode = "SUBWAY" | "BUS" | "WALK";
+import type { PathType } from "../../../types/map";
 
 export type RouteConfirmSegment =
     | {
         mode: "WALK";
         durationMin: number;
         distanceM?: number;
+        mapType?: PathType; 
     }
     | {
-        mode: "SUBWAY" | "BUS";
-        lineLabel: string; // "2호선", "472"
-        from: string;      
-        to: string;       
+        mode: "SUBWAY";
+        lineLabel: string;
+        from: string;
+        to: string;
         durationMin: number;
         stops?: number;
+        mapType?: PathType; 
+    }
+    | {
+        mode: "BUS";
+        lineLabel: string;
+        from: string;
+        to: string;
+        durationMin: number;
+        stops?: number;
+        mapType?: PathType; 
     };
 
 export type RouteConfirmDetail = {
-    etaText: string; // "00:40 도착"
+    etaText: string;
     segments: RouteConfirmSegment[];
 };

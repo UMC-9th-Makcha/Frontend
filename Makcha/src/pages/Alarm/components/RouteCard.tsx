@@ -1,8 +1,6 @@
 import type { AlarmRoute } from "../types/alarm";
 import { ROUTE_TYPE_LABEL } from "../constants";
 import SegmentBar from "./SegmentBar";
-import type { RouteConfirmDetail } from "../types/routeConfirm";
-import { ROUTE_CONFIRM_DETAIL_MOCK } from "../mocks/routeConfirmMock";
 
 type Props = {
     route: AlarmRoute;
@@ -11,53 +9,76 @@ type Props = {
 
 const Badge = ({ children }: { children: React.ReactNode }) => {
     return (
-        <span className="rounded-full border px-3 py-1 text-[13px] text-gray-600 dark:text-white/70 dark:border-makcha-navy-700">
+        <span
+            className="
+                inline-flex shrink-0
+                rounded-full border px-3 py-1
+                text-[13px] text-gray-600
+                dark:text-white/70 dark:border-makcha-navy-700
+            "
+        >
             {children}
         </span>
     );
 };
 
 const RouteCard = ({ route, onSelect }: Props) => {
-    const detail: RouteConfirmDetail | undefined = ROUTE_CONFIRM_DETAIL_MOCK[route.id];
-    const segments = detail?.segments ?? [];
+    const segments = route.segments ?? [];
 
     return (
         <button
             type="button"
             onClick={() => onSelect(route)}
             className="
-                relative mx-auto w-full max-w-full h-[178px]
+                relative mx-auto w-full max-w-full
                 rounded-[20px]
-                border border-gray-200
-                bg-white
+                border border-gray-200 bg-white
                 px-[14px] py-[15px]
                 text-left
                 shadow-[0_4px_20px_rgba(0,0,0,0.06)]
                 hover:bg-gray-50 dark:hover:bg-makcha-navy-800/30
                 dark:border-makcha-navy-800 dark:bg-makcha-navy-900
                 flex flex-col
+                md:h-[178px]
                 max-md:h-auto max-md:px-4 max-md:pt-4 max-md:pb-2
             "
         >
             {/* 상단 */}
             <div className="flex w-full items-start justify-between gap-3">
-                <div className="flex flex-wrap items-center gap-2">
-                    {route.isOptimal ? <Badge>최적</Badge> : <Badge>{ROUTE_TYPE_LABEL[route.routeType]}</Badge>}
-                    {route.lines.map((l) => (
-                        <Badge key={l}>{l}</Badge>
-                    ))}
+                <div className="flex flex-1 min-w-0">
+                    <div className="hidden md:block min-w-0 flex-1 overflow-x-auto no-scrollbar">
+                        <div className="flex items-center gap-2 whitespace-nowrap">
+                            {route.isOptimal ? <Badge>최적</Badge> : <Badge>{ROUTE_TYPE_LABEL[route.routeType]}</Badge>}
+                            {route.lines.map((l) => (
+                                <Badge key={l}>{l}</Badge>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="md:hidden flex flex-wrap items-center gap-2">
+                        {route.isOptimal ? <Badge>최적</Badge> : <Badge>{ROUTE_TYPE_LABEL[route.routeType]}</Badge>}
+                        {route.lines.map((l) => (
+                            <Badge key={l}>{l}</Badge>
+                        ))}
+                    </div>
                 </div>
 
-                <div className="flex items-center gap-1 text-[14px] text-gray-500 dark:text-white/50">
+                <div className="flex shrink-0 items-center gap-1 text-[14px] text-gray-500 dark:text-white/50">
                     <span>상세보기</span>
                     <span className="text-[18px] leading-none">›</span>
                 </div>
             </div>
 
             {/* 가운데 */}
-            <div className="flex flex-1 w-full flex-col md:mt-2 items-center text-center md:items-center md:text-center items-start text-left max-md:pt-3 max-md:pb-3">
+            <div
+                className="
+                    flex flex-1 w-full flex-col
+                    md:mt-2 md:items-center md:text-center
+                    max-md:pt-3 max-md:pb-3 max-md:items-start max-md:text-left
+                "
+            >
                 <div className="text-[30px] font-bold text-gray-900 leading-tight dark:text-white">
-                    {route.departureTime} 출발
+                    {(route.departureTime ?? "--:--")} 출발
                 </div>
 
                 <div className="mt-1 text-[16px] text-gray-900 dark:text-white/80">
@@ -84,7 +105,7 @@ const RouteCard = ({ route, onSelect }: Props) => {
                     <span>도보 {route.walkingTimeMin}분</span>
                 </div>
             </div>
-        </button >
+        </button>
     );
 };
 

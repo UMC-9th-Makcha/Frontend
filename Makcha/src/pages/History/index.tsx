@@ -4,12 +4,13 @@ import CurrentAlarmCard from "./components/CurrentAlarmCard";
 import PastSummaryCard from "./components/PastSummaryCard";
 import MonthSection from "./components/MonthSection";
 import SaveReportPanel from "./components/SaveReportPanel";
-import { CURRENT_ALARM_MOCK, MONTH_SECTIONS_MOCK } from "./mocks/historyMock";
-import type { HistoryItem, PastSummary } from "./types/history";
+import type { CurrentAlarm, HistoryItem, PastSummary } from "./types/history";
 import { ROUTE_CONFIRM_DETAIL_MOCK } from "../Alarm/mocks/routeConfirmMock";
 import RouteConfirmPanel from "../Alarm/panels/RouteConfirmPanel";
 import type { AlarmRoute } from "../Alarm/types/alarm";
 import { useSaveReports } from "./hooks/useSaveReports";
+import { useAlertsHistory } from "./hooks/useAlertsHistory";
+import { useNavigate } from "react-router-dom";
 
 const toKoreanDate = (iso: string) => {
   const d = new Date(iso);
@@ -29,6 +30,7 @@ const toHHMM = (iso: string) => {
 const toMonthLabel = (yyyyMm: string) => `${Number(yyyyMm.split("-")[1])}월`;
 
 const HistoryHome = () => {
+  const navigate = useNavigate();
   const [isSaveReportOpen, setIsSaveReportOpen] = useState(false);
   const [reportMonth, setReportMonth] = useState<string | undefined>(undefined);
 
@@ -77,22 +79,74 @@ const HistoryHome = () => {
     }));
   }, [saveReport]);
 
+  const { data: alertsHistory } = useAlertsHistory();
+
+  const currentAlarm: CurrentAlarm | null = useMemo(() => {
+    const ca = alertsHistory?.current_alert;
+    if (!ca) return null;
+
+    return {
+      notificationId: Number(ca.id),
+      routeId: String(ca.id),
+      isOptimal: true,
+      lines: [],
+      departureTime: toHHMM(ca.scheduled_time),
+      timeUntilDepartureText: "",
+      totalDurationMin: 0,
+      transferCount: 0,
+      walkingTimeMin: 0,
+    };
+  }, [alertsHistory]);
+
+  const monthSections = useMemo(() => {
+    const list = alertsHistory?.history ?? [];
+    const map = new Map<string, HistoryItem[]>();
+
+    for (const it of list) {
+      const yyyyMm = it.departure_time.slice(0, 7);
+      const monthLabel = toMonthLabel(yyyyMm);
+
+      const item: HistoryItem = {
+        id: it.id,
+        routeId: it.id,
+        date: toKoreanDate(it.departure_time),
+        from: it.origin,
+        to: it.destination,
+        departAt: toHHMM(it.departure_time),
+        arriveAt: toHHMM(it.arrival_time),
+      };
+
+      const arr = map.get(monthLabel) ?? [];
+      arr.push(item);
+      map.set(monthLabel, arr);
+    }
+
+    return Array.from(map.entries()).map(([monthLabel, items]) => ({
+      monthLabel,
+      items,
+    }));
+  }, [alertsHistory]);
+
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<HistoryItem | null>(null);
 
   const confirmRoute: AlarmRoute | null = useMemo(() => {
     if (!selectedItem) return null;
+
     return {
       id: selectedItem.routeId,
+      cacheKey: "",
+      routeToken: "",
       isOptimal: true,
       routeType: "SUBWAY",
       lines: [],
       departureTime: selectedItem.departAt,
+      minutesLeft: 0,
       timeUntilDeparture: "",
       totalDurationMin: 0,
       transferCount: 0,
       walkingTimeMin: 0,
-    } as AlarmRoute;
+    };
   }, [selectedItem]);
 
   const confirmDetail = useMemo(() => {
@@ -139,7 +193,10 @@ const HistoryHome = () => {
             </p>
 
             <div className="mt-7">
-              <CurrentAlarmCard alarm={CURRENT_ALARM_MOCK} />
+              <CurrentAlarmCard
+                alarm={currentAlarm}
+                onCreate={() => navigate("/alarm")}
+              />
             </div>
           </section>
 
@@ -160,7 +217,7 @@ const HistoryHome = () => {
             </div>
 
             <div className="mt-9 space-y-10">
-              {MONTH_SECTIONS_MOCK.map((sec) => (
+              {monthSections.map((sec) => (
                 <MonthSection
                   key={sec.monthLabel}
                   monthLabel={sec.monthLabel}
