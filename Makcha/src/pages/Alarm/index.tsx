@@ -65,7 +65,7 @@ const Alarm = () => {
             const lat = pos.coords.latitude;
             const lng = pos.coords.longitude;
 
-            const restKey = import.meta.env.VITE_KAKAO_REST_KEY as string | undefined;
+            const restKey = import.meta.env.VITE_KAKAO_REST_API_KEY as string | undefined;
             let addressText = "현위치";
 
             if (restKey) {
@@ -148,13 +148,16 @@ const Alarm = () => {
                 </section>
 
                 {/* 검색 시트 */}
-                <SearchSheet
-                    open={flow.isSearchOpen}
-                    onClose={() => flow.setIsSearchOpen(false)}
-                    title={flow.searchTarget === "ORIGIN" ? "출발지" : "도착지"}
-                    onSelect={(item) => flow.handleSelect(flow.searchTarget, item)}
-                    onPickCurrent={pickCurrentLocation}
-                />
+                {flow.isSearchOpen && (
+                    <SearchSheet
+                        key={`${flow.searchTarget}-open`}
+                        open={flow.isSearchOpen}
+                        onClose={() => flow.setIsSearchOpen(false)}
+                        title={flow.searchTarget === "ORIGIN" ? "출발지" : "도착지"}
+                        onSelect={(item) => flow.handleSelect(flow.searchTarget, item)}
+                        onPickCurrent={pickCurrentLocation}
+                    />
+                )}
             </div>
         </div>
     );

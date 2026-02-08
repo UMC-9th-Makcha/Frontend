@@ -1,14 +1,14 @@
-import { useEffect, useMemo, useState } from "react";
-import { ORIGIN_SEARCH_MOCK } from "../mocks/originSearchMock";
+import { useState } from "react";
 import SearchSheetPC from "./PC/SearchSheetPC";
 import SearchSheetMobile from "./mobile/SearchSheetMobile";
 import { useIsMdUp } from "../hooks/useIsMdUp";
 import type { OriginSearchItem } from "../types/search";
+import { useKakaoPlaceSearch } from "../hooks/useKakaoPlacesSearch";
 
 type Props = {
     open: boolean;
     onClose: () => void;
-    title: string; // 출발지 | 도착지
+    title: string;
     onSelect: (item: OriginSearchItem) => void;
     onPickCurrent: () => void;
 };
@@ -17,22 +17,8 @@ const SearchSheet = ({ open, onClose, title, onSelect, onPickCurrent }: Props) =
     const isMdUp = useIsMdUp();
     const [query, setQuery] = useState("");
 
-    useEffect(() => {
-        if (!open) return;
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setQuery("");
-    }, [open, title]);
-
-    const results = useMemo(() => {
-        const q = query.trim().toLowerCase();
-        if (!q) return [];
-        return ORIGIN_SEARCH_MOCK.filter(
-            (item) =>
-                item.title.toLowerCase().includes(q) ||
-                item.address.toLowerCase().includes(q)
-        );
-    }, [query]);
-
+    const { data } = useKakaoPlaceSearch(query, open);
+    const results = data ?? [];
     const hasQuery = query.trim().length > 0;
 
     const sharedProps = {
@@ -40,7 +26,7 @@ const SearchSheet = ({ open, onClose, title, onSelect, onPickCurrent }: Props) =
         onClose,
         title,
         onSelect,
-        onPickCurrent, 
+        onPickCurrent,
         query,
         setQuery,
         results,
