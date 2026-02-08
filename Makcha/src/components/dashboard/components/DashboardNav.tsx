@@ -5,7 +5,7 @@ import DashboardItem from './DashboardItem';
 import { UserIcon } from './UserIcon';
 import { useDashboardStore } from '../../../store/useDashboardStore';
 import { useAuth } from '../../../hooks/useAuth';
-import { useMediaQuery } from '../../../store/useMediaQuery';
+import { useMediaQuery } from '../../../hooks/useMediaQuery';
 import type { DashboardNavProps } from '../types/dashboard';
 
 const DashboardNav = memo(({ dividerClass }: DashboardNavProps) => {

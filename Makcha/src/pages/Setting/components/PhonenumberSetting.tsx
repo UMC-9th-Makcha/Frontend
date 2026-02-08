@@ -1,66 +1,48 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { X } from "lucide-react";
 import axios from "axios";
+import { useQueryClient } from "@tanstack/react-query"; 
 import SubPanel from "../../../components/common/Panel/SubPanel";
 import useToastStore from "../../../store/useToastStore";
 import { useAuthStore } from "../../../store/useAuthStore";
-import { usePhoneConfirmStore } from "../../../store/usePhoneConfirmStore";
 import { authService } from "../../../apis/auth";
 import type { ApiError } from "../../../types/api";
-
-interface PhonenumberSettingProps {
-  onBack: () => void;
-  onComplete?: (data: { phone: string }) => void;
-}
+import { usePhoneSetting } from "../hooks/usePhoneSetting";
+import type { PhonenumberSettingProps } from "../types/setting";
 
 export const PhonenumberSetting = ({ onBack, onComplete }: PhonenumberSettingProps) => {
   const { user, updateUserPhone } = useAuthStore();
-  const { phone, isSent, timer, setPhone, startTimer, decrementTimer, resetAuth } = usePhoneConfirmStore();
   const { addToast } = useToastStore();
+  const { phone, isSent, timer, setPhone, startTimer } = usePhoneSetting();
+
+  const queryClient = useQueryClient(); 
   
   const [authCode, setAuthCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const hasPhone = !!user?.phone;
 
-  // 타이머 카운트다운
-  useEffect(() => {
-    if (timer <= 0) return;
-    const interval = setInterval(() => decrementTimer(), 1000);
-    return () => clearInterval(interval);
-  }, [timer, decrementTimer]);
-
-  // 언마운트 시 입력 정보 초기화
-  useEffect(() => {
-    return () => resetAuth();
-  }, [resetAuth]);
-
-  // 인증번호 발송 API 연동
   const handleRequestAuth = async () => {
     const rawPhone = phone.replace(/\D/g, "");
     if (rawPhone.length !== 11) {
-      addToast("전화번호 11자리를 정확히 입력해주세요.", "error");
+      addToast("전화번호 11자리를 입력해주세요.", "error");
       return;
     }
-
     setIsLoading(true);
     try {
       await authService.sendPhoneCode(phone);
       startTimer();
       addToast("인증번호가 발송되었습니다.", "info");
-    } catch (error: unknown) { // any -> unknown으로 변경
+    } catch (error: unknown) {
       let message = "인증번호 발송에 실패했습니다.";
-      
       if (axios.isAxiosError<ApiError>(error)) {
         message = error.response?.data?.message || message;
       }
-      
       addToast(message, "error");
     } finally {
       setIsLoading(false);
     }
   };
 
-  // 인증번호 검증 API 연동
   const handleSubmit = useCallback(async () => {
     if (authCode.length !== 6 || !isSent) return;
 
@@ -68,24 +50,25 @@ export const PhonenumberSetting = ({ onBack, onComplete }: PhonenumberSettingPro
     try {
       await authService.verifyPhoneCode(phone, authCode);
       
-      updateUserPhone(phone);
+      // 낙관적 업데이트
+      updateUserPhone(phone); 
+
+      // 서버 데이터 재요청
+      await queryClient.invalidateQueries({ queryKey: ['me'] }); 
       
       addToast(hasPhone ? "연락처가 변경되었습니다." : "연락처가 등록되었습니다.", "success");
       onComplete?.({ phone });
-    } catch (error: unknown) { // any -> unknown으로 변경
+    } catch (error: unknown) {
       let message = "인증번호가 일치하지 않거나 만료되었습니다.";
-      
       if (axios.isAxiosError<ApiError>(error)) {
         message = error.response?.data?.message || message;
       }
-
       addToast(message, "error");
     } finally {
       setIsLoading(false);
     }
-  }, [authCode, phone, isSent, hasPhone, updateUserPhone, onComplete, addToast]);
+  }, [authCode, phone, isSent, hasPhone, updateUserPhone, onComplete, addToast, queryClient]); // queryClient 의존성 추가
 
-  // 인증번호 6자리 입력 시 자동 제출
   useEffect(() => {
     if (authCode.length === 6) {
       handleSubmit();
@@ -120,7 +103,6 @@ export const PhonenumberSetting = ({ onBack, onComplete }: PhonenumberSettingPro
       }
     >
       <div className="flex h-full flex-col space-y-8">
-        {/* 상단 폰번호 입력 섹션 */}
         <section>
           <label className="mb-3 block text-xs font-bold uppercase text-gray-500 dark:text-makcha-navy-300">
             {hasPhone ? "새로운 전화번호" : "휴대폰 번호"}
@@ -150,7 +132,6 @@ export const PhonenumberSetting = ({ onBack, onComplete }: PhonenumberSettingPro
           )}
         </section>
 
-        {/* 하단 인증번호 입력 섹션 */}
         <section className="space-y-3">
           <div className="relative">
             <input

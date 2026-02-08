@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { useMediaQuery } from '../../../store/useMediaQuery';
+import { useMediaQuery } from '../../../hooks/useMediaQuery';
 
 export default function FAB() {
   const isMobile = useMediaQuery('(max-width: 768px)');
