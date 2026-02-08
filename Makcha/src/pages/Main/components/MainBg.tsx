@@ -1,16 +1,16 @@
 export default function MainBg() {
   return (
-    <main className="hidden lg:flex flex-1 flex-col items-center justify-center transition-colors duration-200 bg-[#F8F9FA] dark:bg-gray-900 px-12">
+    <main className="hidden lg:flex flex-1 flex-col items-center justify-center transition-colors px-12">
       <div className="flex flex-col items-center max-w-xl">
         <div className="text-left w-full mb-16">
-          <h1 className="text-5xl font-black leading-tight mb-6 text-gray-900 dark:text-white tracking-tight">
+          <h1 className="text-5xl font-black leading-tight mb-6 tracking-tight">
             앱 설치 필요 없는<br />
-            귀가 비서, <span className="text-blue-600 dark:text-blue-400">막차</span> 알림
+            귀가 비서, <span className="text-blue-600 dark:text-makcha-yellow-500 ">막차</span> 알림
           </h1>
-          <p className="text-xl text-gray-500 dark:text-gray-400 font-medium">
+          <h2 className="text-gray-500 dark:text-gray-400 font-medium">
             목적지만 입력하세요. <br />
             출발 시간을 카톡으로 알려드립니다.
-          </p>
+          </h2>
         </div>
         
         {/* QR & 말풍선 */}
@@ -19,7 +19,7 @@ export default function MainBg() {
           {/* 말풍선 */}
           <div className="mb-6 relative filter drop-shadow-md dark:drop-shadow-none">
             {/* 몸통 */}
-            <div className="relative z-10 px-6 py-3 bg-white dark:bg-gray-800 rounded-full text-sm font-bold text-gray-500 dark:text-gray-300 italic dark:border dark:border-gray-700">
+            <div className="relative z-10 px-6 py-3 bg-white dark:bg-gray-800 rounded-full text-small font-bold text-gray-500 dark:text-gray-300 italic dark:border dark:border-gray-700">
               모바일에서 이용하기 더 편리해요!
             </div>
             {/* 꼬리 */}
