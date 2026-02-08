@@ -1,8 +1,8 @@
 export const waitingCategories = [
-    { key: "all", label: "전체" },
-    { key: "night-cafe", label: "심야카페" },
-    { key: "pc-cafe", label: "PC방" },
-    { key: "sauna", label: "찜질방" },
+    { key: "ALL", label: "전체" },
+    { key: "CAFE", label: "카페" },
+    { key: "PC_ROOM", label: "PC방" },
+    { key: "RESTAURANT", label: "식당" },
   ] as const;
 
   export const toggleLabel = {

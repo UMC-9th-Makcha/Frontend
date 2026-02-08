@@ -1,4 +1,6 @@
-export type WaitingCategoryKey = "all" | "night-cafe" | "pc-cafe" | "sauna";
+export type WaitingCategoryKey = "ALL" | "CAFE" | "PC_ROOM" | "RESTAURANT";
+
+export type Origin = { id: string; name: string; lat: number; lng: number } | null;
 
 export type CategoryTabItem<T extends string> = {
   key: T;
@@ -27,21 +29,24 @@ export type WaitingSpotHeaderProps = {
 }
 
 export type Place = {
-  id: number;
+  id: string;
   name: string;
-  category: string;
-  address: string;
-  distanceMeter: number;
-  durationSeconds: number;
-  badge: string;
   lat: number;
   lng: number;
+  address?: string;
+  category?: string;
+  distance?: number;
+  phoneNumber?: string | null;
+  thumbnailUrl?: string;
+  isOpen24Hours?: boolean;
+  operatingHours?: string;
+  source?: string;
 };
 
 export type PlaceListProps = {
   places: Place[];
-  selectedPlaceId: number | null;
-  onSelectPlaceId: (id: number) => void;
+  selectedPlaceId: string | null;
+  onSelectPlaceId: (id: string) => void;
 };
 
 export type PlaceCardProps = {
@@ -58,14 +63,46 @@ export type SortToggleProps = {
 };
 
 export type PlaceDetailProps = {
-  place : Place | null;
+  place: PlaceDetail | null;
+  loading: boolean;
+  error: boolean;
+  refetch: () => void;
 }
 
+export type PlaceLocation = {
+  lat: number;
+  lng: number;
+};
+
+export type DetailsAvailable = {
+  reviews: boolean;
+  thumbnail: boolean;
+  message: string;
+};
+
 export type PlaceDetail = {
-  id: number;
-  subcategory: string;
-  imageUrl: string;
-  accessInfo: string;
-  phone: string | null;
-  badge: string[];
+  id: string;
+  name: string;
+  category: WaitingCategoryKey;
+  address: string;
+  phoneNumber: string | null;
+  distance: number;
+  location: PlaceLocation;
+  operatingHours: string | null;
+  isCurrentlyOpen: boolean;
+  isOpen24Hours: boolean;
+  source: string;
+  recommendReason: string | null;
+  thumbnailUrl: string | null;
+  kakaoMapUrl: string;
+  detailsAvailable: DetailsAvailable;
+};
+
+export type StartLocationSearchProps = {
+  value: string;
+  onChangeValue: (v: string) => void;
+  items: Place[];
+  loading: boolean;
+  error: boolean;
+  onSelect: (facility: Place) => void;
 };

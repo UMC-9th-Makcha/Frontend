@@ -7,8 +7,8 @@ type WaitingSpotMapProps = {
   center: LatLng;
   level?: number;
   places: Place[];
-  selectedPlaceId: number | null;
-  onClickMarker: (id: number) => void;
+  selectedPlaceId: string | null;
+  onClickMarker: (id: string) => void;
 };
 
 export const WaitingSpotMap = ({center, level = 3, places, selectedPlaceId, onClickMarker}: WaitingSpotMapProps) => {
