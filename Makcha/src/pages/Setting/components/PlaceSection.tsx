@@ -1,8 +1,9 @@
-import { memo, useEffect } from "react";
+import { memo } from "react";
 import { Home, Star, Plus, ChevronRight } from "lucide-react";
-import { useSettingStore } from "../../../store/useSettingStore";
+
 import type { Place } from "../types/setting";
 import { DEFAULT_HOME, type ViewType } from "../constants";
+import { usePlaceSetting } from "../hooks/usePlaceSetting";
 
 const PlaceListItem = memo(({ icon, place, onClick }: { icon: React.ReactNode; place: Place; onClick: () => void }) => {
   const isHome = place.id === 'home';
@@ -43,13 +44,17 @@ const PlaceListItem = memo(({ icon, place, onClick }: { icon: React.ReactNode; p
 });
 
 export function PlacesSection({ onNavigate }: { onNavigate: (v: ViewType, p?: Place) => void }) {
-  const { home, favorites, fetchPlaces } = useSettingStore();
-
-  useEffect(() => {
-    fetchPlaces();
-  }, [fetchPlaces]);
+  // ✅ 스토어 대신 훅 사용
+  // useEffect 없이도 컴포넌트 마운트 시 자동으로 데이터를 불러옵니다.
+  // 500 에러가 나도 앱이 죽지 않고 빈 데이터([])를 반환합니다.
+  const { home, favorites, isLoading } = usePlaceSetting();
 
   const safeHome = home ?? DEFAULT_HOME;
+
+  // 로딩 중일 때 표시할 UI (선택 사항)
+  if (isLoading) {
+    return <div className="p-4 text-center text-gray-400 text-sm">정보를 불러오는 중...</div>;
+  }
 
   return (
     <div className="mb-10">

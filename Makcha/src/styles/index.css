@@ -1,18 +1,77 @@
 @import "tailwindcss";
+
+/* 다크모드 설정 */
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-makcha-navy-950: #000c24;
-  --color-makcha-navy-900: #00163d;
-  --color-makcha-navy-800: #183c7b;
-  --color-makcha-navy-600: #4674c6;
-  --color-makcha-navy-400: #86aff7;
-  --color-makcha-navy-200: #d0e1ff;
+  /* 컬러 팔레트 */
+  --color-makcha-navy-900: #00163d;   /* 메인 배경 */
+  --color-makcha-navy-800: #183c7b;   /* 서브 배경 */
+  --color-makcha-navy-600: #4674c6;   /* 강조/아이콘 */
+  --color-makcha-navy-400: #86aff7;   /* 버튼 */
+  --color-makcha-navy-200: #d0e1ff;   /* 다크모드 텍스트 */
 
   --color-makcha-yellow-500: #ffc300;
   --color-makcha-yellow-400: #ffce2f;
-  --color-makcha-yellow-300: #ffdc69;
   --color-makcha-yellow-200: #ffe99f;
+
+  --color-gray-50: #f9fafb;           /* 기본 배경 */
+  --color-gray-100: #F3F4F6;          /* 연한 배경, 보더용 */
+  --color-gray-200: #E2E2E2;          /* 보더용 */
+  --color-gray-500: #888888;          /* 그림자 */
+  --color-gray-600: #5F5F5F;          /* 서브 텍스트 */
+  --color-gray-900: #262626;          /* 화이트모드 텍스트 */
+  
+  /* 글씨체 설정 */
+  --font-makcha: "Pretendard Variable", "Pretendard", system-ui, sans-serif;
+}
+
+@utility text-h1 {
+  font-size: 26px;
+  line-height: 1.35;
+  font-weight: 700;
+  color: var(--color-gray-900);
+  &:where(.dark, .dark *) { color: var(--color-gray-50); }
+}
+
+@utility text-h2 {
+  font-size: 22px;
+  line-height: 1.4;
+  font-weight: 600;
+  color: var(--color-gray-900);
+  &:where(.dark, .dark *) { color: var(--color-gray-50); }
+}
+
+@utility text-title {
+  font-size: 20px;
+  line-height: 1.45;
+  font-weight: 600;
+  color: var(--color-gray-900);
+  &:where(.dark, .dark *) { color: var(--color-gray-50); }
+}
+
+@utility text-body {
+  font-size: 16px;
+  line-height: 1.5;
+  font-weight: 400;
+  color: var(--color-gray-900);
+  &:where(.dark, .dark *) { color: var(--color-gray-50); }
+}
+
+@utility text-small {
+  font-size: 14px;
+  line-height: 1.5;
+  font-weight: 400;
+  color: var(--color-gray-600);
+  &:where(.dark, .dark *) { color: #9ca3af; }
+}
+
+@utility text-caption {
+  font-size: 12px;
+  line-height: 1.2;
+  font-weight: 400;
+  color: var(--color-gray-500);
+  &:where(.dark, .dark *) { color: #6b7280; }
 }
 
 @layer base {
@@ -26,20 +85,35 @@
     --map-anti-invert: invert(100%) hue-rotate(180deg) brightness(1.2);
   }
 
+  /* 색상 변화 부드럽게 */
   *, ::before, ::after {
     @apply transition-colors duration-300;
   }
 
   html, body {
-    @apply bg-white text-black h-full m-0 overflow-x-hidden;
+    background-color: var(--color-gray-50);
+    color: var(--color-gray-900);
+    font-family: var(--font-makcha);
+    @apply h-full m-0 overflow-x-hidden;
     overscroll-behavior-y: none;
   }
 
   .dark body {
     background-color: var(--color-makcha-navy-900);
-    color: white;
+    color: var(--color-gray-50);
   }
 
+  /* 제목 태그 기본 스타일 */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-makcha);
+    color: var(--color-gray-900);
+  }
+  
+  .dark h1, .dark h2, .dark h3 {
+    color: var(--color-gray-50);
+  }
+
+  /* 카카오맵 다크모드 필터 */
   .kakao-map-wrapper {
     filter: var(--map-filter);
     transition: filter 0.3s ease;
@@ -51,5 +125,11 @@
   }
 }
 
-.no-scrollbar::-webkit-scrollbar { display: none; }
-.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+/* 스크롤바 숨김 유틸리티 */
+@utility no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}

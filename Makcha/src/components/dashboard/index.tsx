@@ -7,7 +7,7 @@ import DarkModeToggle from './components/DarkModeToggle';
 import { useAuth } from '../../hooks/useAuth';
 import { sidebarSpring } from './constants';
 import { useDashboardStore } from '../../store/useDashboardStore';
-import { useMediaQuery } from '../../store/useMediaQuery';
+import { useMediaQuery } from '../../hooks/useMediaQuery';
 
 const MotionLink = motion.create(Link);
 

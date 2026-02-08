@@ -9,6 +9,12 @@ export const authService = {
     return data.result;
   },
 
+  // AccessToken 재발급
+  refreshAccessToken: async (): Promise<string> => {
+    const { data } = await api.post<BaseResponse<{ accessToken: string }>>('/auth/refresh');
+    return data.result.accessToken;
+  },
+
   // 정보 조회
   getMe: async (): Promise<User> => {
     const { data } = await api.get<BaseResponse<User>>('/api/me');

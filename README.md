@@ -287,9 +287,9 @@ src/
 * develop 및 main으로의 브랜치 Merge는 전체 상의 후 적용합니다.
 ---
 
-## 🎨 Design Tokens (Color Palette)
+## 🎨 Design Tokens
 
-본 프로젝트는 아래 정의된 컬러 시스템을 준수합니다. 모든 색상은 Tailwind CSS v4 설정(`@theme`)을 통해 `makcha-` 접두사로 사용 가능합니다.
+Makcha 프로젝트는 Tailwind CSS v4 기반의 통합 디자인 시스템을 사용합니다. text-[26px]와 같은 하드코딩을 지양하고, 아래 정의된 Semantic Class를 사용해 주세요.
 
 ### 🌑 Navy Palette
 | Name | Hex Code |
@@ -308,6 +308,15 @@ src/
 | `makcha-yellow-300` | `#FFDC69` |
 | `makcha-yellow-200` | `#FFE99F` |
 
+### ✏️ Typography
+| Name | Style | Use |
+| :--- | :--- | :--- |
+| `text-h1` | `26px / Bold` | `페이지 제목` |
+| `text-h2` | `22px / SemiBold` | `카드 제목` |
+| `text-title` | `20px / SemiBold` | `섹션 제목` |
+| `text-body` | `16px / Regular` | `본문` |
+| `text-small` | `14px / Regular` | `설명/날짜` |
+| `text-caption` | `12px / Regular` | `캡션` |
 ---
 
 ## 👥 Team & Roles

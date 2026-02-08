@@ -51,8 +51,9 @@ const BaseMap = ({ markers = [], activeId, paths = [], selectedPathId, onMarkerC
       <style>{`
         .map-dark-mode .kakao-map-wrapper [style*="background-color: white"],
         .map-dark-mode .kakao-map-wrapper canvas,
-        .map-dark-mode .kakao-map-wrapper img[src*="t1.daumcdn.net/mapjsapi"] {
+        .map-dark-mode .kakao-map-wrapper img[src*="t1.kakaocdn.net/mapjsapi"] {
           filter: invert(95%) hue-rotate(180deg) brightness(0.9) contrast(1.1) !important;
+          pointer-events: none !important;
         }
         .map-dark-mode .anti-invert {
           filter: invert(100%) hue-rotate(-180deg) !important;
