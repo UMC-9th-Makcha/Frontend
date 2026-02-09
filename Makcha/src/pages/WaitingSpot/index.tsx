@@ -9,7 +9,6 @@ import { CategoryTab } from "./common/CategoryTab";
 import { PlaceDetailPanel } from "./panels/PlaceDetailPanel";
 import { waitingCategories } from "./common/constants";
 import WalkingDirections from "./WalkingDirections";
-import { useGeoLocation } from "../../hooks/useGeoLocation";
 import { FooterButton } from "./common/FooterButton";
 import { StartLocationSearch } from "./components/StartLocationSearch";
 import { PlaceList } from "./components/PlaceList";
@@ -21,7 +20,7 @@ import { useDebounce } from "./hooks/useDebounce";
 import { useFacilitiesCategory } from "./hooks/useFacilitiesCategory";
 import { useWaitingSpotDetail } from "./hooks/useWaitingSpotDetail";
 import { EmptyState } from "./common/EmptyState";
-import useToastStore from "../../store/useToastStore";
+import { useCurrentLocation } from "../../hooks/useCurrentLocation";
 
 export default function WaitingSpot() {
 
@@ -39,18 +38,14 @@ export default function WaitingSpot() {
   const isHydrated = useAuthStore((s) => s.isHydrated);
 
   //지도 현위치 좌표
-  const { location, error } = useGeoLocation({
-    enableHighAccuracy: true,
-    timeout: 10000,
-    maximumAge: 0,
-  });
+  const { location, loading: mapLoading, refetch: mapRefetch } = useCurrentLocation();
 
   //출발지 검색
   const [origin, setOrigin] = useState<Origin>(null);
 
   //대기 장소 API
-  const baseLat = origin?.lat ?? location?.latitude;
-  const baseLng = origin?.lng ?? location?.longitude;
+  const baseLat = origin?.lat ?? location?.lat;
+  const baseLng = origin?.lng ?? location?.lng;
 
   const { places, isError, isLoading, refetchAll } = useWaitingSpot({
     lat: baseLat,
@@ -101,10 +96,6 @@ export default function WaitingSpot() {
 
   //선택된 장소 id (카드 클릭 시 저장)
   const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null);
-
-  const selectedPlace = useMemo<Place | null>(() => {
-    return placeData.find((p) => p.id === selectedPlaceId) ?? null;
-  }, [placeData, selectedPlaceId]);
 
   //대기 장소 상세 API
   const { placeDetail, DetailLoading, DetailError, refetchDetail } = useWaitingSpotDetail({
@@ -164,13 +155,8 @@ export default function WaitingSpot() {
   //도보 안내 페이지 렌더링 유무
   const [showDirections, setShowDirections] = useState(false);
 
-  //지도 error
-  const addToast = useToastStore((s) => s.addToast);
-  useEffect(() => {
-    if (error) {
-      addToast("현재 위치를 불러오지 못했어요.");
-    }
-  }, [error, addToast]);
+  //좌표 사용 가능 여부 기준으로 분기
+  const hasMapPoint = typeof baseLat === "number" && typeof baseLng === "number";
 
   if (showDirections) {
     return <WalkingDirections onBack={() => setShowDirections(false)} />;
@@ -192,24 +178,38 @@ export default function WaitingSpot() {
         />
         }
         controls={<CategoryTab selected={category} onChange={setCategory} categories={waitingCategories} />}
-        list={placeLoading ? (
-          <div className="flex h-full items-center justify-center">
-            <LoadingSpinner />
-          </div>
-        ) : placeError ? (
-          <EmptyState
-            className="pointer-events-none"
-            message="장소를 불러오지 못했어요."
-            actionLabel="다시 불러오기"
-            onRetry={() => refetchPlaces()}
-          />
-        ) : (
-          <PlaceList
-            places={placeData}
-            selectedPlaceId={selectedPlaceId}
-            onSelectPlaceId={handleSelectList}
-          />
-        )
+        list={!hasMapPoint ? (
+          mapLoading ? (
+            <div className="flex flex-col h-full items-center justify-center">
+              <LoadingSpinner />
+              <p className="mt-2 text-sm text-gray-500">현재 위치를 찾는 중이에요…</p>
+            </div>
+          ) : (
+            <EmptyState
+              message="현재 위치를 불러오지 못했어요."
+              actionLabel="다시 시도"
+              onRetry={mapRefetch}
+            />
+          )
+        ) :
+          placeLoading ? (
+            <div className="flex h-full items-center justify-center">
+              <LoadingSpinner />
+            </div>
+          ) : placeError ? (
+            <EmptyState
+              className="pointer-events-none"
+              message="장소를 불러오지 못했어요."
+              actionLabel="다시 불러오기"
+              onRetry={refetchPlaces}
+            />
+          ) : (
+            <PlaceList
+              places={placeData}
+              selectedPlaceId={selectedPlaceId}
+              onSelectPlaceId={handleSelectList}
+            />
+          )
         }
         footer={
           <FooterButton
@@ -230,7 +230,7 @@ export default function WaitingSpot() {
             place={placeDetail ?? null}
             loading={DetailLoading}
             error={DetailError}
-            refetch={() => refetchDetail()}
+            refetch={refetchDetail}
           /> : null
         }
         onDetailBack={() => setIsDetailOpen(false)}
