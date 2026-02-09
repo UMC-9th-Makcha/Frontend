@@ -6,7 +6,8 @@ import { EmptyState } from "../common/EmptyState";
 
 export const PlaceDetailPanel = ({ place, loading, error, refetch }: PlaceDetailProps) => {
   const isCurrentlyOpen = true ? "운영 중" : "운영 마감"
-  const badge = [place?.operatingHours, isCurrentlyOpen]
+  const isOpen24Hours = place?.isOpen24Hours ? "24시간" : "영업시간 정보 없음";
+  const badge = [isOpen24Hours, isCurrentlyOpen]
 
   if (loading) {
     return (

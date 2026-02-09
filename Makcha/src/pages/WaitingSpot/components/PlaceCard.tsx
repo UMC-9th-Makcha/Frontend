@@ -2,6 +2,8 @@ import type { PlaceCardProps } from "../../../types/waitingspot";
 import owl from "../../../assets/owl.png"
 
 export const PlaceCard = ({ place, onSelect }: PlaceCardProps) => {
+  const badge = place.isOpen24Hours ? "24시간 영업" : "영업시간 정보 없음";
+
   return (
     <button
       className="flex gap-4 rounded-xl bg-white
@@ -31,10 +33,10 @@ export const PlaceCard = ({ place, onSelect }: PlaceCardProps) => {
           {Math.round(place.distance ?? 0)}m {place.address}
         </p>
 
-        {place.operatingHours && (
+        {badge && (
           <span className="inline-block w-fit rounded-full bg-[#4F73C3] px-4 py-1 text-sm text-white whitespace-nowrap
           dark:text-makcha-navy-200 dark:bg-makcha-navy-800 dark:border-makcha-navy-600">
-            {place.operatingHours}
+            {badge}
           </span>
         )}
       </div>

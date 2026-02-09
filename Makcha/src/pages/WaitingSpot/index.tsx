@@ -36,6 +36,9 @@ export default function WaitingSpot() {
   const accessToken = useAuthStore((s) => s.accessToken);
   const isHydrated = useAuthStore((s) => s.isHydrated);
 
+  //상세 패널 open
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+
   //지도 현위치 좌표
   const { location, loading: mapLoading, refetch: mapRefetch } = useCurrentLocation();
 
@@ -145,8 +148,6 @@ export default function WaitingSpot() {
     setIsDetailOpen(false);
     setShowDirections(true);
   }
-
-  const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   //도보 안내 페이지 렌더링 유무
   const [showDirections, setShowDirections] = useState(false);
