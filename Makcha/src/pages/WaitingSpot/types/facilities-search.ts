@@ -54,6 +54,8 @@ export interface GetPlacesParams {
 
 export interface GetPlaceDetailParams {
   placeId: string;
+  lat: number;
+  lng: number;
 }
 
 export interface GetSearchParams {
@@ -72,6 +74,8 @@ export interface GetCategoryParams {
 
 export interface useWaitingSpotDetailParams {
   placeId?: string | null;
+  lat?: number;
+  lng?: number;
   isHydrated: boolean;
   accessToken?: string | null;
 };

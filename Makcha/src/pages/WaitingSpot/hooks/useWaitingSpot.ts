@@ -17,7 +17,7 @@ export function useWaitingSpot({ lat, lng, isHydrated, accessToken, category}: u
         radius: 1000,
         category: category === "all" ? "CAFE" : category,
       }),
-    enabled: lat != null && lng != null && isHydrated && !!accessToken,
+    enabled: !!lat && !!lng && isHydrated && !!accessToken,
     staleTime: 30_000,
     select: (res) =>
       res.places.map((p) => ({

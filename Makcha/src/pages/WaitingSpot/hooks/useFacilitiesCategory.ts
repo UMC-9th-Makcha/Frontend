@@ -13,7 +13,7 @@ export function useFacilitiesCategory({ category, latitude, longitude, isHydrate
         longitude: longitude!,
         radius: 1000,
       }),
-    enabled: category !== "ALL"&&!!latitude && !!longitude && isHydrated && !!accessToken,
+    enabled: category !== "ALL" && !!latitude && !!longitude && isHydrated && !!accessToken,
     staleTime: 30_000,
   });
 

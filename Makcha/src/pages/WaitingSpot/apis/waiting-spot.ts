@@ -14,7 +14,8 @@ export const waitingSpotService = {
 
   getPlaceDetail: async (params: GetPlaceDetailParams): Promise<PlaceDetail> => {
     const { data } = await api.get<BaseResponse<PlaceDetail>>(
-      `/api/waiting-places/${params.placeId}`
+      '/api/waiting-places',
+      { params }
     );
     return data.result;
   },

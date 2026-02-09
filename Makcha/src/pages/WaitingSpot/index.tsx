@@ -108,6 +108,8 @@ export default function WaitingSpot() {
 
   //대기 장소 상세 API
   const { placeDetail, DetailLoading, DetailError, refetchDetail } = useWaitingSpotDetail({
+    lat: baseLat,
+    lng: baseLng,
     placeId: selectedPlaceId,
     isHydrated,
     accessToken,
