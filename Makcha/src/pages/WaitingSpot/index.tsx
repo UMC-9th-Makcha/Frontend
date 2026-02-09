@@ -1,5 +1,5 @@
 import BaseMap from "../../components/common/Map";
-import type { Origin, Place, WaitingCategoryKey } from "../../types/waitingspot";
+import type { Origin, Place, SortValue, WaitingCategoryKey } from "../../types/waitingspot";
 import type { MapMarker } from "../../types/map";
 import { useParams } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
@@ -43,6 +43,9 @@ export default function WaitingSpot() {
   //출발지 검색
   const [origin, setOrigin] = useState<Origin>(null);
 
+  //가까운순, 24시간 정렬
+  const [sort, setSort] = useState<SortValue>("distance");
+
   //대기 장소 API
   const baseLat = origin?.lat ?? location?.lat;
   const baseLng = origin?.lng ?? location?.lng;
@@ -50,9 +53,14 @@ export default function WaitingSpot() {
   const { places, isError, isLoading, refetchAll } = useWaitingSpot({
     lat: baseLat,
     lng: baseLng,
+    sort: sort,
     isHydrated,
     accessToken,
   });
+
+  useEffect(() => {
+    console.log("useWaitingSpot : ", places);
+  },[places])
 
   //검색 API
   const [keyword, setKeyword] = useState("");
@@ -105,6 +113,11 @@ export default function WaitingSpot() {
     isHydrated,
     accessToken,
   });
+
+  useEffect(() => {
+    console.log("useDetail : ", placeDetail);
+  },[placeDetail])
+
 
   // 마커 데이터 변환 
   const mapMarkers = useMemo<MapMarker[]>(() => {
@@ -208,6 +221,8 @@ export default function WaitingSpot() {
               places={placeData}
               selectedPlaceId={selectedPlaceId}
               onSelectPlaceId={handleSelectList}
+              sort={sort}
+              onChangeSort={setSort}
             />
           )
         }

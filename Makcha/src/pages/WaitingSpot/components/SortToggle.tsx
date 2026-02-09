@@ -29,7 +29,7 @@ export const SortToggle = ({ value, onChange }: SortToggleProps) => {
           <button
             className="w-full px-4 py-2 text-left hover:bg-gray-100"
             onClick={() => {
-              onChange("open24h");
+              onChange("24hour");
               setOpen(false);
             }}>
             24시간 우선

@@ -61,9 +61,9 @@ export const PlaceDetailPanel = ({ place, loading, error, refetch }: PlaceDetail
         </div>
 
         <div className="mt-4 flex rounded-lg gap-2 overflow-x-auto">
-          {badge.map((badge) => (
+          {badge.map((badge, idx) => (
             <span
-              key={badge}
+              key={idx}
               className="flex items-center h-10 px-4 text-[14px] rounded-[20px] shadow-[0_0_5px_0_#88888840]
               text-makcha-navy-600 bg-[#F3F7FF] border border-makcha-navy-400 border-[0.5px]
               dark:text-makcha-navy-200 dark:bg-makcha-navy-800 dark:border-makcha-navy-600"

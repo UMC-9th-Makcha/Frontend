@@ -4,18 +4,18 @@ import { waitingSpotService } from "../apis/waiting-spot";
 import { useEffect } from "react";
 import type { useWaitingSpotParams } from "../types/facilities-search";
 
-export function useWaitingSpot({ lat, lng, isHydrated, accessToken, category}: useWaitingSpotParams) {
+export function useWaitingSpot({ lat, lng, isHydrated, accessToken, sort}: useWaitingSpotParams) {
   
   const addToast = useToastStore((s) => s.addToast);
 
   const { data: places, isLoading, isError, refetch: refetchAll } = useQuery({
-    queryKey: ["waiting-places", lat, lng, category],
+    queryKey: ["waiting-places", lat, lng, sort],
     queryFn: () =>
       waitingSpotService.getPlaces({
         lat: lat!,
         lng: lng!,
         radius: 1000,
-        category: category === "all" ? "CAFE" : category,
+        sort: sort,
       }),
     enabled: !!lat && !!lng && isHydrated && !!accessToken,
     staleTime: 30_000,
