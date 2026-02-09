@@ -17,7 +17,6 @@ import LoadingSpinner from "../../components/common/loadingSpinner";
 import { useWaitingSpot } from "./hooks/useWaitingSpot";
 import { useFacilitiesSearch } from "./hooks/useFacilitiesSearch";
 import { useDebounce } from "./hooks/useDebounce";
-import { useFacilitiesCategory } from "./hooks/useFacilitiesCategory";
 import { useWaitingSpotDetail } from "./hooks/useWaitingSpotDetail";
 import { EmptyState } from "./common/EmptyState";
 import { useCurrentLocation } from "../../hooks/useCurrentLocation";
@@ -43,6 +42,9 @@ export default function WaitingSpot() {
   //출발지 검색
   const [origin, setOrigin] = useState<Origin>(null);
 
+  //카테고리
+  const [category, setCategory] = useState<WaitingCategoryKey>("ALL");
+
   //가까운순, 24시간 정렬
   const [sort, setSort] = useState<SortValue>("distance");
 
@@ -50,10 +52,11 @@ export default function WaitingSpot() {
   const baseLat = origin?.lat ?? location?.lat;
   const baseLng = origin?.lng ?? location?.lng;
 
-  const { places, isError, isLoading, refetchAll } = useWaitingSpot({
+  const { places, isError, isLoading, refetch } = useWaitingSpot({
     lat: baseLat,
     lng: baseLng,
     sort: sort,
+    category: category,
     isHydrated,
     accessToken,
   });
@@ -75,32 +78,12 @@ export default function WaitingSpot() {
   });
   const items = facilities?.facilities ?? [];
 
-  //카테고리 API
-  const [category, setCategory] = useState<WaitingCategoryKey>("ALL");
-
-  const { categoryData, categoryLoading, categoryError, refetchCategory } = useFacilitiesCategory({
-    category: category,
-    latitude: baseLat,
-    longitude: baseLng,
-    isHydrated,
-    accessToken,
-  })
-
-  const isAll = category === "ALL";
-
   //출발지 포함 대기 장소 리스트 -> 출발지 제외 리스트로 필터링
-  const unfilteredData: Place[] = isAll
-    ? (places ?? [])
-    : (categoryData?.facilities ?? []);
-
   const placeData: Place[] = useMemo(() => {
-    if (!origin) return unfilteredData;
-    return unfilteredData.filter((p) => p.id !== origin.id);
-    }, [unfilteredData, origin])
-
-  const placeLoading = isAll ? isLoading : categoryLoading;
-  const placeError = isAll ? isError : categoryError;
-  const refetchPlaces = isAll ? refetchAll : refetchCategory;
+    const list = places ?? [];
+    if (!origin) return list;
+    return list.filter((p) => p.id !== origin.id);
+  }, [places, origin]);
 
   //선택된 장소 id (카드 클릭 시 저장)
   const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null);
@@ -205,16 +188,16 @@ export default function WaitingSpot() {
             />
           )
         ) :
-          placeLoading ? (
+          isLoading ? (
             <div className="flex h-full items-center justify-center">
               <LoadingSpinner />
             </div>
-          ) : placeError ? (
+          ) : isError ? (
             <EmptyState
               className="pointer-events-none"
               message="장소를 불러오지 못했어요."
               actionLabel="다시 불러오기"
-              onRetry={refetchPlaces}
+              onRetry={refetch}
             />
           ) : (
             <PlaceList

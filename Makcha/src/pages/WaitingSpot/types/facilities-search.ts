@@ -38,13 +38,6 @@ export interface useFacilitiesSearchParams {
   accessToken?: string | null;
 };
 
-export interface useFacilityCategoryParams {
-  category: FacilityCategoryKey;
-  latitude?: number;
-  longitude?: number;
-  isHydrated: boolean;
-  accessToken?: string | null;
-}
 export interface GetPlacesParams {
   lat: number;
   lng: number;
@@ -66,13 +59,6 @@ export interface GetSearchParams {
   radius?: number;
   keyword?: string;
 }
-
-export interface GetCategoryParams {
-  category: FacilityCategoryKey;
-  latitude: number;
-  longitude: number;
-  radius: number;
-};
 
 export interface useWaitingSpotDetailParams {
   placeId?: string | null;
