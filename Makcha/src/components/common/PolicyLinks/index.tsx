@@ -6,7 +6,7 @@ export default function PolicyLinks() {
       className={`
         flex flex-wrap justify-center items-center 
         gap-x-2 gap-y-2 
-        text-[11px] text-slate-400 dark:text-slate-500 
+        text-caption text-slate-400 dark:text-slate-500 
         opacity-70 py-2 w-full
       `}
     >
@@ -22,7 +22,7 @@ export default function PolicyLinks() {
           </a>
 
           {index < POLICIES.length - 1 && (
-            <span className="mx-2 cursor-default text-slate-200 dark:text-slate-800 font-light text-[9px]">
+            <span className="mx-2 cursor-default text-slate-200 dark:text-slate-800 font-light text-[8px]">
               |
             </span>
           )}

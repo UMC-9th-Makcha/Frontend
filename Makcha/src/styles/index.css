@@ -123,6 +123,15 @@
     filter: var(--map-anti-invert);
     transition: filter 0.3s ease;
   }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-makcha);
+  }
+
+  h1 { @apply text-h1; }
+  h2 { @apply text-h2; }
+  h3 { @apply text-body; }
+  p  { @apply text-small; } 
 }
 
 /* 스크롤바 숨김 유틸리티 */
