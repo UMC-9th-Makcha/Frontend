@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { X } from "lucide-react";
 import axios from "axios";
 import { useQueryClient } from "@tanstack/react-query"; 
@@ -20,6 +20,10 @@ export const PhonenumberSetting = ({ onBack, onComplete }: PhonenumberSettingPro
   const [authCode, setAuthCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const hasPhone = !!user?.phone;
+
+  const min = Math.floor(timer / 60).toString().padStart(2, "0");
+  const sec = (timer % 60).toString().padStart(2, "0");
+  const timeString = `${min}:${sec}`;
 
   const handleRequestAuth = async () => {
     const rawPhone = phone.replace(/\D/g, "");
@@ -50,10 +54,7 @@ export const PhonenumberSetting = ({ onBack, onComplete }: PhonenumberSettingPro
     try {
       await authService.verifyPhoneCode(phone, authCode);
       
-      // 낙관적 업데이트
       updateUserPhone(phone); 
-
-      // 서버 데이터 재요청
       await queryClient.invalidateQueries({ queryKey: ['me'] }); 
       
       addToast(hasPhone ? "연락처가 변경되었습니다." : "연락처가 등록되었습니다.", "success");
@@ -67,19 +68,7 @@ export const PhonenumberSetting = ({ onBack, onComplete }: PhonenumberSettingPro
     } finally {
       setIsLoading(false);
     }
-  }, [authCode, phone, isSent, hasPhone, updateUserPhone, onComplete, addToast, queryClient]); // queryClient 의존성 추가
-
-  useEffect(() => {
-    if (authCode.length === 6) {
-      handleSubmit();
-    }
-  }, [authCode, handleSubmit]);
-
-  const timeString = useMemo(() => {
-    const min = Math.floor(timer / 60).toString().padStart(2, "0");
-    const sec = (timer % 60).toString().padStart(2, "0");
-    return `${min}:${sec}`;
-  }, [timer]);
+  }, [authCode, phone, isSent, hasPhone, updateUserPhone, onComplete, addToast, queryClient]);
 
   return (
     <SubPanel
@@ -87,7 +76,11 @@ export const PhonenumberSetting = ({ onBack, onComplete }: PhonenumberSettingPro
       onBack={onBack}
       title={hasPhone ? "연락처 변경" : "연락처 등록"}
       rightAction={
-        <button type="button" onClick={onBack} className="p-1 text-gray-400 hover:text-makcha-navy-900 dark:hover:text-white transition-colors">
+        <button 
+          type="button" 
+          onClick={onBack} 
+          className="p-1 -mr-2 text-gray-900 dark:text-gray-50 hover:opacity-70 transition-opacity"
+        >
           <X size={24} />
         </button>
       }
@@ -96,17 +89,26 @@ export const PhonenumberSetting = ({ onBack, onComplete }: PhonenumberSettingPro
           type="button"
           onClick={handleSubmit}
           disabled={authCode.length !== 6 || !isSent || isLoading}
-          className="w-full rounded-xl border border-gray-400 py-4 font-bold text-gray-600 transition-all hover:bg-gray-50 disabled:opacity-30 dark:border-white dark:text-white dark:hover:bg-white/10 md:border-2"
+          className={`
+            w-full h-14 rounded-xl font-bold text-base transition-all
+            ${authCode.length === 6 && isSent && !isLoading
+              ? "bg-makcha-navy-900 text-white dark:bg-white dark:text-makcha-navy-900 hover:opacity-90 shadow-md"
+              : "bg-gray-100 text-gray-400 dark:bg-makcha-navy-800 dark:text-white/30 cursor-not-allowed"
+            }
+          `}
         >
           {isLoading ? "처리 중..." : "확인"}
         </button>
       }
     >
-      <div className="flex h-full flex-col space-y-8">
+      <div className="flex h-full flex-col space-y-6 px-1">
+        
+        {/* 전화번호 입력 */}
         <section>
-          <label className="mb-3 block text-xs font-bold uppercase text-gray-500 dark:text-makcha-navy-300">
+          <label className="mb-2 block text-sm font-bold text-gray-900 dark:text-gray-50">
             {hasPhone ? "새로운 전화번호" : "휴대폰 번호"}
           </label>
+          
           <div className="relative flex items-center">
             <input
               type="tel"
@@ -114,41 +116,63 @@ export const PhonenumberSetting = ({ onBack, onComplete }: PhonenumberSettingPro
               onChange={(e) => setPhone(e.target.value)}
               maxLength={13}
               placeholder="010-0000-0000"
-              className="w-full rounded-xl border border-gray-200 bg-transparent p-4 pr-[110px] text-gray-900 outline-none focus:border-blue-500 dark:border-white/10 dark:text-white"
+              className="w-full h-14 rounded-xl border border-gray-200 bg-gray-50 px-4 pr-24 text-base text-gray-900 outline-none focus:border-blue-500 focus:bg-white dark:border-makcha-navy-700 dark:bg-makcha-navy-800 dark:text-white dark:focus:border-blue-400 transition-colors"
             />
+            
             <button
               type="button"
               onClick={handleRequestAuth}
               disabled={phone.length < 12 || isLoading}
-              className={`absolute right-2 rounded-lg border px-3 py-2 text-[12px] font-bold transition-all
-                ${isSent ? "border-blue-500 text-blue-500" : "border-gray-400 text-gray-600 dark:border-white/40 dark:text-white"}
-                disabled:opacity-30`}
+              /* [수정] absolute 위치 및 크기 표준화 */
+              className={`
+                absolute right-3 top-1/2 -translate-y-1/2 
+                px-3 py-1.5 rounded-lg text-xs font-bold transition-all
+                ${isSent 
+                  ? "bg-blue-50 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400" 
+                  : "bg-gray-200 text-gray-500 dark:bg-white/10 dark:text-white/50"
+                }
+                disabled:opacity-50 disabled:cursor-not-allowed
+              `}
             >
               {isSent ? "재발송" : "인증 요청"}
             </button>
           </div>
+          
           {hasPhone && (
-            <p className="mt-2 px-1 text-xs text-gray-400">현재 번호: {user?.phone}</p>
+            <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+              현재 번호: <span className="font-medium text-gray-700 dark:text-gray-300">{user?.phone}</span>
+            </p>
           )}
         </section>
 
-        <section className="space-y-3">
+        {/* 인증번호 입력 */}
+        <section className={`transition-opacity duration-300 ${isSent ? "opacity-100" : "opacity-50 pointer-events-none"}`}>
+           <label className="mb-2 block text-sm font-bold text-gray-900 dark:text-gray-50">
+            인증번호
+          </label>
           <div className="relative">
             <input
               type="text"
+              inputMode="numeric"
               value={authCode}
               onChange={(e) => setAuthCode(e.target.value.replace(/\D/g, ""))}
               maxLength={6}
               disabled={!isSent}
               placeholder="인증번호 6자리"
-              className="w-full rounded-xl bg-gray-100 p-4 text-gray-900 outline-none ring-blue-500/50 focus:ring-1 dark:bg-makcha-navy-800 dark:text-white"
+              className="w-full h-14 rounded-xl border border-gray-200 bg-gray-50 px-4 text-base tracking-widest text-gray-900 outline-none focus:border-blue-500 focus:bg-white dark:border-makcha-navy-700 dark:bg-makcha-navy-800 dark:text-white dark:focus:border-blue-400 transition-colors disabled:bg-gray-100 dark:disabled:bg-makcha-navy-900/50"
             />
+            
             {isSent && (
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 font-mono font-bold text-blue-500">
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 font-mono text-sm font-medium text-red-500 dark:text-red-400">
                 {timeString}
               </span>
             )}
           </div>
+          {isSent && (
+             <p className="mt-2 text-xs text-blue-600 dark:text-blue-400">
+                * 문자가 오지 않으면 스팸함을 확인해주세요.
+             </p>
+          )}
         </section>
       </div>
     </SubPanel>
