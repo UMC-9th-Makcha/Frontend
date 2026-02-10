@@ -35,7 +35,7 @@ export const PlaceCard = React.memo(({ place, onSelect }: PlaceCardProps) => {
         </p>
 
         {badge && (
-          <span className="inline-block w-fit rounded-full bg-[#4F73C3] px-4 py-1 text-sm text-white whitespace-nowrap
+          <span className="inline-block w-fit rounded-full bg-makcha-navy-600 px-4 py-1 text-small text-white whitespace-nowrap
           dark:text-makcha-navy-200 dark:bg-makcha-navy-800 dark:border-makcha-navy-600">
             {badge}
           </span>

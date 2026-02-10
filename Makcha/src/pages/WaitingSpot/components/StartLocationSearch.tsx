@@ -1,4 +1,4 @@
-import { Search, Circle } from "lucide-react";
+import { Search } from "lucide-react";
 import { useEffect, useMemo, useState, useRef } from "react";
 import { InputDropdown } from "../common/InputDropdown";
 import type { StartLocationSearchProps } from "../types/waitingspot";
@@ -40,18 +40,18 @@ export const StartLocationSearch = ({value,onChangeValue,items,loading,error,onS
     <div 
     role="search"
     ref={wrapperRef}
-    className="flex flex-col w-full py-1 px-2 gap-2">
+    className="flex flex-col w-full gap-2">
       <label
         htmlFor="start-location"
-        className="text-[#262626] text-[14px] mt-4 hidden md:flex
+        className="text-gray-900 text-small mt-4 hidden md:flex
         dark:text-white">
         출발지
       </label>
       <div className='relative flex-1'>
-        <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center justify-center w-4 h-4">
-          <div className="absolute inset-0 bg-blue-400 rounded-full blur-[2px] opacity-60" />
-          <Circle className="relative w-2 h-2 fill-blue-600 text-blue-600" />
-        </div>
+        <span className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4">
+          <span className="absolute inset-0 rounded-full bg-makcha-navy-400 opacity-60 blur-[4px]" />
+          <span className="absolute inset-1 rounded-full bg-makcha-navy-600" />
+        </span>
 
         <input
           id="start-location"
@@ -68,9 +68,10 @@ export const StartLocationSearch = ({value,onChangeValue,items,loading,error,onS
               }
             }
           }
-          className="w-full h-[42px] px-2 pl-10 bg-white shadow-[0_0_5px_0_#88888840] rounded-[20px] text-[#5F5F5F] font-light text-sm outline-none
-          placeholder:text-[#5F5F5F] placeholder:font-light placeholder:text-sm placeholder:opacity-100
-          dark:placeholder-makcha-navy-200"
+          className="w-full h-[42px] pr-4 pl-10 bg-white border border-gray-200 shadow-sm rounded-[30px] 
+          text-gray-600 font-light text-sm outline-none
+          placeholder:text-gray-600 placeholder:font-light placeholder:text-small
+          dark:border-makcha-navy-700 dark:bg-makcha-navy-900 dark:placeholder-makcha-navy-200"
         />
 
         <button
@@ -87,8 +88,11 @@ export const StartLocationSearch = ({value,onChangeValue,items,loading,error,onS
             }
           }}
         >
-          <Search className='w-5 h-5 text-[#5F5F5F]
-          dark:text-makcha-navy-400'/>
+          <Search
+            className='w-5 h-5 text-gray-500 -translate-x-1/4
+          dark:text-makcha-navy-400'
+            strokeWidth={2}
+          />
         </button>
 
         <InputDropdown

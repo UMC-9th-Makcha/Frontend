@@ -157,7 +157,7 @@ export default function WaitingSpot() {
   return (
     <div className="min-h-dvh w-full">
       <WaitingSpotLayout
-        header={<WaitingSpotHeader title={pageTitle} content={"막차를 놓쳐서 첫차까지 대기하시는 분들을 위한 추천 장소를 안내드립니다."} />}
+        header={<WaitingSpotHeader title={pageTitle} content={"막차를 놓쳐서 첫차까지 대기하시는 분들을\n위한 추천 장소를 안내드립니다."} />}
         search={<StartLocationSearch
           value={keyword}
           onChangeValue={setKeyword}

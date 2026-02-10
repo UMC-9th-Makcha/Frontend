@@ -51,11 +51,10 @@ export const PlaceDetailPanel = ({ place, loading, error, refetch }: PlaceDetail
       {/* 본문 */}
       <div className="px-2 pt-6">
         <div className="flex items-end gap-2">
-          <h2 className="text-[26px] font-extrabold text-gray-900 
-          dark:text-white">
+          <h2 className="text-h1 font-extrabold">
             {place.name}
           </h2>
-          <span className="pb-1 text-[20px] text-gray-500 
+          <span className="pb-1 text-title text-gray-500 
           dark:text-makcha-navy-400">
             {place.category}
           </span>
@@ -65,8 +64,8 @@ export const PlaceDetailPanel = ({ place, loading, error, refetch }: PlaceDetail
           {badge.map((badge, idx) => (
             <span
               key={idx}
-              className="flex items-center h-10 px-4 text-[14px] rounded-[20px] shadow-[0_0_5px_0_#88888840]
-              text-makcha-navy-600 bg-[#F3F7FF] border border-makcha-navy-400 border-[0.5px]
+              className="flex items-center h-10 px-4 text-small rounded-[20px] shadow-sm
+              text-makcha-navy-600 bg-[#F3F7FF] border border-[0.5px] border-makcha-navy-400
               dark:text-makcha-navy-200 dark:bg-makcha-navy-800 dark:border-makcha-navy-600"
             >
               {badge}
@@ -74,7 +73,7 @@ export const PlaceDetailPanel = ({ place, loading, error, refetch }: PlaceDetail
           ))}
         </div>
         {/* 정보 텍스트 */}
-        <div className="mt-6 mb-20 space-y-3 text-[16px] text-gray-900 
+        <div className="mt-6 mb-20 space-y-3 text-body text-gray-900 
         dark:text-makcha-navy-200">
           <div className="flex items-center font-semibold">
             <span>{place.distance}m</span>
@@ -83,10 +82,15 @@ export const PlaceDetailPanel = ({ place, loading, error, refetch }: PlaceDetail
             <MapPin className="w-5 h-5 text-gray-500" />
             <div>{place.address}</div>
           </div>
-          {place.phoneNumber && (
+          {place.phoneNumber ? (
             <div className="flex items-center gap-2">
               <Phone className="w-5 h-5 text-gray-500" />
               <div>{place.phoneNumber}</div>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Phone className="w-5 h-5 text-gray-500" />
+              <div className="text-gray-400">전화번호 정보 없음</div>
             </div>
           )}
         </div>
