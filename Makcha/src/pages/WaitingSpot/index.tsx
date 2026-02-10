@@ -2,7 +2,7 @@ import BaseMap from "../../components/common/Map";
 import type { Origin, Place, SortValue, WaitingCategoryKey } from "../../types/waitingspot";
 import type { MapMarker } from "../../types/map";
 import { useParams } from "react-router-dom";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { WaitingSpotLayout } from "./layouts/WaitingSpotLayout";
 import { WaitingSpotHeader } from "./common/WaitingSpotHeader";
 import { CategoryTab } from "./common/CategoryTab";
@@ -125,16 +125,11 @@ export default function WaitingSpot() {
     return placeMarkers;
   }, [placeData, origin]);
 
-  const handleSelectList = (id: string) => {
-    setSelectedPlaceId(id);
-    setIsDetailOpen(true);
-  };
-
-  //마커 클릭 -> 선택, 상세 열기
-  const handleSelectMarker = (id: string) => {
-    setSelectedPlaceId(id);
-    setIsDetailOpen(true);
-  };
+  //장소 리스트 선택
+  const handleSelectPlace = useCallback((id: string) => {
+  setSelectedPlaceId(id);
+  setIsDetailOpen(true);
+}, []);
 
   //카테고리 변경 시 패널 및 마커 초기화
   useEffect(() => {
@@ -204,7 +199,7 @@ export default function WaitingSpot() {
             <PlaceList
               places={placeData}
               selectedPlaceId={selectedPlaceId}
-              onSelectPlaceId={handleSelectList}
+              onSelectPlaceId={handleSelectPlace}
               sort={sort}
               onChangeSort={setSort}
             />
@@ -222,7 +217,7 @@ export default function WaitingSpot() {
             onMarkerClick={
               (marker) => {
                 if (marker.variant === "current") return;
-                handleSelectMarker(String(marker.id)); }}
+                handleSelectPlace(String(marker.id)); }}
               />}
         detail={isDetailOpen && selectedPlaceId ?
           <PlaceDetailPanel

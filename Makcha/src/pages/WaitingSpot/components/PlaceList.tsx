@@ -17,7 +17,7 @@ export const PlaceList = ({ places, selectedPlaceId, onSelectPlaceId, sort, onCh
               key={place.id}
               place={place}
               isSelected={place.id === selectedPlaceId}
-              onSelect={() => onSelectPlaceId(place.id)} />
+              onSelect={onSelectPlaceId} />
           ))}
         </div>
       )}

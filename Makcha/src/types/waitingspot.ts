@@ -54,7 +54,7 @@ export type PlaceListProps = {
 export type PlaceCardProps = {
   place: Place;
   isSelected?: boolean;
-  onSelect: () => void;
+  onSelect: (id:string) => void;
 };
 
 export type SortValue = "distance" | "24hour";
