@@ -79,12 +79,17 @@ const Dashboard = () => {
           className="flex items-center justify-center rounded-2xl"
         >
           <motion.div
-            layout
+            initial={false} 
             animate={{ width: logoSize, height: logoSize }}
             transition={sidebarSpring}
             className="relative flex items-center justify-center"
           >
-            <img src="/makcha.png" className="h-full w-full object-contain" alt="Makcha Logo" />
+            <img 
+              src="/makcha.png" 
+              className="h-full w-full object-contain" 
+              alt="Makcha Logo" 
+              loading="eager" 
+            />
           </motion.div>
         </MotionLink>
       </div>

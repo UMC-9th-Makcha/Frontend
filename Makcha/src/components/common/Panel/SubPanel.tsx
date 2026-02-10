@@ -25,7 +25,7 @@ const SubPanel = ({
   className = "",
 }: SubPanelProps) => {
   
-  // [스크롤 잠금 및 단축키 로직]
+  // 스크롤 잠금 및 단축키 로직
   useEffect(() => {
     if (!isOpen) return;
 
@@ -72,7 +72,7 @@ const SubPanel = ({
         md:shadow-[15px_0_40px_rgba(136,136,136,0.15),5px_0_15px_rgba(136,136,136,0.1)]
         md:dark:shadow-none
 
-        transition-all duration-300 ease-in-out
+        transition-all duration-200 ease-in-out
         overflow-hidden
 
         ${width}

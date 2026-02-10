@@ -34,7 +34,7 @@ const DarkModeToggle = ({ isCollapsed }: { isCollapsed: boolean }) => {
           layout
           transition={sidebarSpring}
           className={`
-            relative rounded-full transition-shadow duration-300
+            relative rounded-full transition-shadow duration-200
             ${isCollapsed ? 'w-7 h-7' : 'w-[18px] h-[18px]'}
             ${isDarkMode 
               ? 'bg-transparent shadow-[inset_-9px_-3px_0_0_#fde047] -rotate-15' 

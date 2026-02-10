@@ -5,9 +5,9 @@ export default function PolicyLinks() {
     <div 
       className={`
         flex flex-wrap justify-center items-center 
-        gap-x-2 gap-y-2 
-        text-caption text-slate-400 dark:text-slate-500 
-        opacity-70 py-2 w-full
+        gap-x-2 gap-y-2 py-2 w-full
+        text-caption text-gray-500 dark:text-gray-500
+        transition-all duration-200 ease-in-out
       `}
     >
       {POLICIES.map((policy, index) => (
@@ -16,13 +16,16 @@ export default function PolicyLinks() {
             href={policy.href}
             target="_blank"
             rel="noreferrer"
-            className="hover:underline hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+            className={`
+              hover:underline hover:text-gray-700 dark:hover:text-gray-200 
+              transition-all duration-200 ease-in-out
+            `}
           >
             {policy.label}
           </a>
 
           {index < POLICIES.length - 1 && (
-            <span className="mx-2 cursor-default text-slate-200 dark:text-slate-800 font-light text-[8px]">
+            <span className="mx-2 cursor-default font-light text-[8px] transition-all duration-200 ease-in-out">
               |
             </span>
           )}

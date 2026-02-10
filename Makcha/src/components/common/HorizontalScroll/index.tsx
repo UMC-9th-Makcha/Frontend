@@ -40,7 +40,7 @@ function HorizontalScrollBase<T>({
       <div className="relative h-[2px] w-full bg-gray-100 dark:bg-white/5 overflow-hidden">
         <div
           {...indicatorProps}
-          className="absolute h-[2px] bg-blue-500 dark:bg-blue-300"
+          className="absolute h-[2px] bg-makcha-navy-600 dark:bg-makcha-navy-200"
         />
       </div>
     </div>

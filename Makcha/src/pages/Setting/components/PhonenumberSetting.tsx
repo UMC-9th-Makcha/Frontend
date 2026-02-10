@@ -136,7 +136,7 @@ export const PhonenumberSetting = memo(({ onBack, onComplete }: PhonenumberSetti
         </section>
 
         {/* 인증번호 입력 */}
-        <section className={`transition-all duration-300 ${isSent ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2 pointer-events-none"}`}>
+        <section className={`transition-all duration-200 ${isSent ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2 pointer-events-none"}`}>
           <label className="mb-3 block text-caption font-bold uppercase text-gray-500 dark:text-makcha-navy-300">
             인증번호
           </label>

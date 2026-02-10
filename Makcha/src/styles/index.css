@@ -87,7 +87,7 @@
 
   /* 색상 변화 부드럽게 */
   *, ::before, ::after {
-    @apply transition-colors duration-300;
+    @apply transition-colors duration-200;
   }
 
   html, body {

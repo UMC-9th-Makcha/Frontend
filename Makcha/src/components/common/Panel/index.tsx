@@ -35,7 +35,7 @@ const Panel = ({
         md:shadow-[15px_0_40px_rgba(136,136,136,0.12),5px_0_15px_rgba(136,136,136,0.05)]
         md:dark:shadow-[20px_0_60px_rgba(0,0,0,0.6)]
 
-        transition-all duration-300 ease-in-out
+        transition-all duration-200 ease-in-out
         ${width}
         ${className}
       `}
