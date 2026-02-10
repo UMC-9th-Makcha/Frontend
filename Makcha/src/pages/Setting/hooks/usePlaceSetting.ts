@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMemo } from 'react';
 import * as placeApi from '../../../apis/place';
 import { useAuthStore } from '../../../store/useAuthStore';
 import type { Place } from '../types/setting';
@@ -44,11 +45,9 @@ export const usePlaceSetting = () => {
         return await placeApi.upsertHome(payload);
       } else {
         const isNew = updated.id.length >= 10; 
-        if (isNew) {
-          return await placeApi.createFavorite(payload);
-        } else {
-          return await placeApi.updateFavorite(updated.id, payload);
-        }
+        return isNew 
+          ? await placeApi.createFavorite(payload)
+          : await placeApi.updateFavorite(updated.id, payload);
       }
     },
     onSuccess: () => {
@@ -70,13 +69,21 @@ export const usePlaceSetting = () => {
     },
   });
 
-  return {
+  return useMemo(() => ({
     home: data?.home ?? null,
     favorites: data?.favorites ?? [],
     isLoading,
-    savePlace: saveMutation.mutate,
-    deletePlace: deleteMutation.mutate,
+    savePlace: saveMutation.mutateAsync,
+    deletePlace: deleteMutation.mutateAsync,
     isSaving: saveMutation.isPending,
     isDeleting: deleteMutation.isPending,
-  };
+  }), [
+    data?.home, 
+    data?.favorites, 
+    isLoading, 
+    saveMutation.mutateAsync, 
+    deleteMutation.mutateAsync, 
+    saveMutation.isPending, 
+    deleteMutation.isPending
+  ]);
 };
