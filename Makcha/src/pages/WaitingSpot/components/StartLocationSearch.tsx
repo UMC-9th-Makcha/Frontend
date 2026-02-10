@@ -1,10 +1,28 @@
 import { Search, Circle } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { InputDropdown } from "../common/InputDropdown";
 import type { StartLocationSearchProps } from "../../../types/waitingspot";
 
 export const StartLocationSearch = ({value,onChangeValue,items,loading,error,onSelect}: StartLocationSearchProps) => {
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
   const [dropdown, setDropdown] = useState(false);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(e.target as Node)
+      ) {
+        setDropdown(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const names = useMemo(() => items.map((x) => x.name), [items]);
 
@@ -21,6 +39,7 @@ export const StartLocationSearch = ({value,onChangeValue,items,loading,error,onS
   return (
     <div 
     role="search"
+    ref={wrapperRef}
     className="flex flex-col w-full py-1 px-2 gap-2">
       <label
         htmlFor="start-location"
@@ -43,7 +62,6 @@ export const StartLocationSearch = ({value,onChangeValue,items,loading,error,onS
           }}
           onFocus={() => setDropdown(true)}
           placeholder="현위치"
-          onBlur={() => setTimeout(() => setDropdown(false), 100)}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               setDropdown(true);
