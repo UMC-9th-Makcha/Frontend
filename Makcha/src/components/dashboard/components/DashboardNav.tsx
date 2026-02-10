@@ -1,5 +1,5 @@
-import React, { memo, useCallback } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { memo, useCallback, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { NAV_MENUS, PUBLIC_MENU_IDS } from '../constants';
 import DashboardItem from './DashboardItem';
 import { UserIcon } from './UserIcon';
@@ -10,17 +10,17 @@ import type { DashboardNavProps } from '../types/dashboard';
 
 const DashboardNav = memo(({ dividerClass }: DashboardNavProps) => {
   const { user, isLoggedIn } = useAuth();
-  const location = useLocation();
   const navigate = useNavigate();
   const isMobile = useMediaQuery('(max-width: 768px)');
-  const setSidebarOpen = useDashboardStore((state) => state.setSidebarOpen);
+  const setSidebarOpen = useDashboardStore(state => state.setSidebarOpen);
 
-  const filteredMenus = isMobile ? NAV_MENUS.slice(4) : NAV_MENUS;
+  const filteredMenus = useMemo(() => 
+    isMobile ? NAV_MENUS.slice(4) : NAV_MENUS, 
+  [isMobile]);
 
   const checkAccess = useCallback((menuId?: string) => {
     if (isLoggedIn) return true;
-    if (menuId && (PUBLIC_MENU_IDS as readonly string[]).includes(menuId)) return true;
-    return false;
+    return !!menuId && (PUBLIC_MENU_IDS as readonly string[]).includes(menuId);
   }, [isLoggedIn]);
 
   const handleNavClick = useCallback((e: React.MouseEvent, menuId: string) => {
@@ -28,24 +28,25 @@ const DashboardNav = memo(({ dividerClass }: DashboardNavProps) => {
 
     if (!hasAccess) {
       e.preventDefault();
-      if (location.pathname !== "/") navigate("/");
+      if (window.location.pathname !== "/") navigate("/");
       return;
     }
 
     setSidebarOpen(false);
-  }, [checkAccess, location.pathname, navigate, setSidebarOpen]);
+  }, [checkAccess, navigate, setSidebarOpen]);
+
+  const renderUserIcon = useCallback(({ className }: { className?: string }) => (
+    <UserIcon user={user} className={className} />
+  ), [user]);
 
   return (
     <nav className="flex-1 overflow-y-auto no-scrollbar mt-2 flex flex-col gap-y-1">
-      {/* 유저 정보 연동 부분 */}
       {isLoggedIn && user && (
         <React.Fragment>
           <DashboardItem
             label={`${user.name}님`}
             path="/setting"
-            icon={({ className }: { className?: string }) => (
-              <UserIcon user={user} className={className} />
-            )}
+            icon={renderUserIcon}
             onClick={(e) => handleNavClick(e, 'setting')}
             isStatic
           />
@@ -53,7 +54,6 @@ const DashboardNav = memo(({ dividerClass }: DashboardNavProps) => {
         </React.Fragment>
       )}
 
-      {/* 메뉴 렌더링 */}
       {filteredMenus.map((menu) => (
         <React.Fragment key={menu.id}>
           {menu.divider && <div className={dividerClass} />}
