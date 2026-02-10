@@ -27,6 +27,10 @@ export type AlarmFlowUI = {
     confirmRoute: () => void | Promise<void>;
     goAlarmList: () => void;
     goToSettingForSms: () => void;
+
+    isFromHistory?: boolean;
+    deleteCurrentAlert?: () => void | Promise<void>;
+    deletingAlert?: boolean;
 };
 
 type Props = { flow: AlarmFlowUI };
@@ -46,16 +50,27 @@ export default function AlarmPanelSwitch({ flow }: Props) {
     }
 
     if (flow.step === "CONFIRM" && flow.selectedRoute) {
+        const isHistory = Boolean(flow.isFromHistory);
+
         return (
             <RouteConfirmPanel
                 route={flow.selectedRoute}
                 detail={flow.getConfirmDetail(flow.selectedRoute.id)}
                 onBack={flow.backFromConfirm}
-                onConfirm={flow.confirmRoute}
+
+                // history면 "확인"은 그냥 history로 돌아가도록
+                onConfirm={isHistory ? flow.goAlarmList : flow.confirmRoute}
+
+                mode={isHistory ? "history" : "alarm"}
                 onClickSms={flow.goToSettingForSms}
+
+                // history 삭제 버튼
+                onDeleteAlert={isHistory ? flow.deleteCurrentAlert : undefined}
+                deleting={isHistory ? Boolean(flow.deletingAlert) : false}
             />
         );
     }
+
 
     if (flow.step === "SUCCESS" && flow.origin && flow.destination && flow.selectedRoute) {
         return (

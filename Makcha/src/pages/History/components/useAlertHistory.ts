@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";import { fetchAlertsHistory } from "../apis/alertsHistory";
-;
+import { useQuery } from "@tanstack/react-query";
+import { fetchAlertsHistory } from "../apis/alertsHistory";
 
 export function useAlertsHistory() {
     return useQuery({

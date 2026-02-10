@@ -11,6 +11,7 @@ import type { AlarmRoute } from "../Alarm/types/alarm";
 import { useSaveReports } from "./hooks/useSaveReports";
 import { useAlertsHistory } from "./hooks/useAlertsHistory";
 import { useNavigate } from "react-router-dom";
+import { CURRENT_ALARM_MOCK, PAST_SUMMARY_MOCK, MONTH_SECTIONS_MOCK } from "./mocks/historyMock"; // mock 
 
 const toKoreanDate = (iso: string) => {
   const d = new Date(iso);
@@ -27,10 +28,30 @@ const toHHMM = (iso: string) => {
   return `${hh}:${mi}`;
 };
 
+const toUntilText = (min: number) => {
+  if (min <= 0) return "곧 출발";
+
+  const hours = Math.floor(min / 60);
+  const minutes = min % 60;
+
+  if (hours === 0) {
+    return `출발까지 ${minutes}분`;
+  }
+  if (minutes === 0) {
+    return `출발까지 ${hours}시간`;
+  }
+  return `출발까지 ${hours}시간 ${minutes}분`;
+};
+
+
 const toMonthLabel = (yyyyMm: string) => `${Number(yyyyMm.split("-")[1])}월`;
 
 const HistoryHome = () => {
   const navigate = useNavigate();
+
+  const USE_MOCK =
+    import.meta.env.DEV && import.meta.env.VITE_USE_HISTORY_MOCK === "true";
+
   const [isSaveReportOpen, setIsSaveReportOpen] = useState(false);
   const [reportMonth, setReportMonth] = useState<string | undefined>(undefined);
 
@@ -66,7 +87,8 @@ const HistoryHome = () => {
   }, [totalSavedAmount, reportItems.length]);
 
   const yearLabel = useMemo(() => {
-    if (!saveReport || saveReport.chart.length === 0) return `${new Date().getFullYear()}년`;
+    if (!saveReport || saveReport.chart.length === 0)
+      return `${new Date().getFullYear()}년`;
     return `${saveReport.chart[0].month.split("-")[0]}년`;
   }, [saveReport]);
 
@@ -85,18 +107,22 @@ const HistoryHome = () => {
     const ca = alertsHistory?.current_alert;
     if (!ca) return null;
 
+    const minutesLeft = ca.minutes_left ?? 0;
+
     return {
       notificationId: Number(ca.id),
-      routeId: String(ca.id),
-      isOptimal: true,
-      lines: [],
+      routeId: String(ca.route_id ?? ""),
+      isOptimal: Boolean(ca.is_optimal),
+      lines: ca.lines ?? [],
       departureTime: toHHMM(ca.scheduled_time),
-      timeUntilDepartureText: "",
-      totalDurationMin: 0,
-      transferCount: 0,
-      walkingTimeMin: 0,
+      minutesLeft,
+      timeUntilDepartureText: toUntilText(minutesLeft),
+      totalDurationMin: ca.total_duration_min ?? 0,
+      transferCount: ca.transfer_count ?? 0,
+      walkingTimeMin: ca.walking_time_min ?? 0,
     };
   }, [alertsHistory]);
+
 
   const monthSections = useMemo(() => {
     const list = alertsHistory?.history ?? [];
@@ -127,11 +153,31 @@ const HistoryHome = () => {
     }));
   }, [alertsHistory]);
 
+  const finalCurrentAlarm: CurrentAlarm | null = USE_MOCK
+    ? CURRENT_ALARM_MOCK
+    : currentAlarm;
+
+  const finalPastSummary: PastSummary = USE_MOCK
+    ? PAST_SUMMARY_MOCK
+    : pastSummary;
+
+  const finalMonthSections = USE_MOCK ? MONTH_SECTIONS_MOCK : monthSections;
+
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<HistoryItem | null>(null);
 
+  const confirmDetail = useMemo(() => {
+    if (!selectedItem) return undefined;
+    return ROUTE_CONFIRM_DETAIL_MOCK[selectedItem.routeId];
+  }, [selectedItem]);
+
   const confirmRoute: AlarmRoute | null = useMemo(() => {
-    if (!selectedItem) return null;
+    if (!selectedItem || !confirmDetail) return null;
+
+    const totalDurationMin = confirmDetail.segments.reduce(
+      (sum, s) => sum + s.durationMin,
+      0
+    );
 
     return {
       id: selectedItem.routeId,
@@ -143,18 +189,13 @@ const HistoryHome = () => {
       departureTime: selectedItem.departAt,
       minutesLeft: 0,
       timeUntilDeparture: "",
-      totalDurationMin: 0,
+      totalDurationMin,
       transferCount: 0,
       walkingTimeMin: 0,
     };
-  }, [selectedItem]);
+  }, [selectedItem, confirmDetail]);
 
-  const confirmDetail = useMemo(() => {
-    if (!selectedItem) return undefined;
-    return ROUTE_CONFIRM_DETAIL_MOCK[selectedItem.routeId];
-  }, [selectedItem]);
-
-  {/* 상세보기 클릭 → Panel 열기 */ }
+  // 상세보기 클릭 → Panel 열기
   const openConfirm = (item: HistoryItem) => {
     setSelectedItem(item);
     setIsConfirmOpen(true);
@@ -177,7 +218,7 @@ const HistoryHome = () => {
         chartData={chartData}
       />
 
-      <main className="h-full w-full overflow-y-auto p-5 pt-13 md:p-10 md:pt-24">
+      <main className="h-full w-full overflow-y-auto px-5 pb-5 pt-3 md:p-10 md:pt-24">
         <div className="relative grid grid-cols-1 gap-10 md:grid-cols-2">
           {/* 구분선: PC에서만 */}
           <div className="pointer-events-none absolute top-0 bottom-0 left-1/2 translate-x-[20px] hidden w-px bg-[#E2E2E2] dark:bg-makcha-navy-800 md:block" />
@@ -194,7 +235,7 @@ const HistoryHome = () => {
 
             <div className="mt-7">
               <CurrentAlarmCard
-                alarm={currentAlarm}
+                alarm={finalCurrentAlarm}
                 onCreate={() => navigate("/alarm")}
               />
             </div>
@@ -208,7 +249,7 @@ const HistoryHome = () => {
 
             <div className="mt-7">
               <PastSummaryCard
-                summary={pastSummary}
+                summary={finalPastSummary}
                 onDetail={() => {
                   setIsSaveReportOpen(true);
                   setReportMonth(undefined);
@@ -217,7 +258,7 @@ const HistoryHome = () => {
             </div>
 
             <div className="mt-9 space-y-10">
-              {monthSections.map((sec) => (
+              {finalMonthSections.map((sec) => (
                 <MonthSection
                   key={sec.monthLabel}
                   monthLabel={sec.monthLabel}
@@ -244,7 +285,7 @@ const HistoryHome = () => {
               detail={confirmDetail}
               onBack={closeConfirm}
               onConfirm={closeConfirm}
-              onClickSms={() => console.log("SMS 클릭")}
+              mode="history"
             />
           </Panel>
         </div>

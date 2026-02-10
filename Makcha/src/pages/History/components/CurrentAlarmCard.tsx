@@ -2,6 +2,7 @@ import { ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import type { CurrentAlarm } from "../types/history";
 import { useCancelAlert } from "../hooks/useCancelAlert";
+import { getDisplayLineName } from "../utils/lineFormatter";
 
 type Props = {
     alarm: CurrentAlarm | null;
@@ -84,7 +85,7 @@ const CurrentAlarmCard = ({ alarm, onCreate, onCancel }: Props) => {
                                         dark:border-makcha-navy-700 dark:text-white/90
                                     "
                                 >
-                                    {line}
+                                    {getDisplayLineName(line)}
                                 </span>
                             ))}
                         </div>
@@ -97,6 +98,7 @@ const CurrentAlarmCard = ({ alarm, onCreate, onCancel }: Props) => {
                                 state: {
                                     from: "history",
                                     openConfirm: true,
+                                    notificationId: alarm.notificationId,
                                     routeId: alarm.routeId,
                                 },
                             });
@@ -144,7 +146,7 @@ const CurrentAlarmCard = ({ alarm, onCreate, onCancel }: Props) => {
                     onClick={() => {
                         cancelMutate(alarm.notificationId, {
                             onSuccess: () => {
-                                onCancel?.(); 
+                                onCancel?.();
                             },
                             onError: () => {
                                 alert("알림 취소 실패");
