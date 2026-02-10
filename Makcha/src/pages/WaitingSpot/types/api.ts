@@ -1,6 +1,4 @@
-import type { Place } from "../../../types/waitingspot";
-
-export type FacilityCategoryKey = "ALL" | "CAFE" | "PC_ROOM" | "RESTAURANT";
+import type { Place, WaitingCategoryKey } from "./waitingspot";
 
 export interface WaitingSpotResponse {
     places: PlaceApi[];
@@ -80,6 +78,6 @@ export interface FacilitySearchResponse {
 };
 
 export interface FacilityCategoryResponse {
-  category: FacilityCategoryKey;
+  category: WaitingCategoryKey;
   facilities: Place[];
 }

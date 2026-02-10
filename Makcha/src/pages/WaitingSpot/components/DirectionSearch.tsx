@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Circle } from 'lucide-react'; 
-import type { DirectionSummaryProps } from '../../../types/walking-direction'
+import type { DirectionSummaryProps } from '../types/walking-direction'
 import { mockOrigins } from '../common/mock';
 import { InputDropdown } from '../common/InputDropdown';
 

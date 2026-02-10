@@ -1,5 +1,5 @@
 import type { MapMarker, MapPathSegment } from "../../../types/map";
-import type { Direction, DirectionDetail, RouteCategoryKey } from "../../../types/walking-direction";
+import type { Direction, DirectionDetail, RouteCategoryKey } from "../types/walking-direction";
 
 //도보 안내 data (카테고리 별)
 export const mockShortest = {

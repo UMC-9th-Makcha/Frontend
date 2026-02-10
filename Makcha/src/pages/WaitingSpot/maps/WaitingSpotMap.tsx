@@ -1,5 +1,5 @@
 import { Map, MapMarker, useKakaoLoader } from "react-kakao-maps-sdk";
-import type { Place } from "../../../types/waitingspot";
+import type { Place } from "../types/waitingspot";
 
 type LatLng = { lat: number; lng: number };
 

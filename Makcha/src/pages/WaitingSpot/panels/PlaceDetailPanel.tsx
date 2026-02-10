@@ -1,5 +1,5 @@
 import { MapPin, Phone } from "lucide-react";
-import type { PlaceDetailProps } from "../../../types/waitingspot";
+import type { PlaceDetailProps } from "../types/waitingspot";
 import owl from "../../../assets/owl.png"
 import LoadingSpinner from "../../../components/common/loadingSpinner";
 import { EmptyState } from "../common/EmptyState";

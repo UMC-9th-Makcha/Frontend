@@ -1,4 +1,4 @@
-import type { WaitingSpotHeaderProps } from "../../../types/waitingspot"
+import type { WaitingSpotHeaderProps } from "../types/waitingspot"
 
 export const WaitingSpotHeader = ({ title, content }: WaitingSpotHeaderProps) => {
   return (

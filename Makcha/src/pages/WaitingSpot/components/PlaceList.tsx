@@ -1,6 +1,6 @@
 import { PlaceCard } from "./PlaceCard";
 import { SortToggle } from "./SortToggle";
-import type { PlaceListProps } from "../../../types/waitingspot";
+import type { PlaceListProps } from "../types/waitingspot";
 import { EmptyState } from "../common/EmptyState";
 import React from "react";
 

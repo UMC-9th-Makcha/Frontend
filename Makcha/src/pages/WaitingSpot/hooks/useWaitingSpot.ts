@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import useToastStore from "../../../store/useToastStore";
 import { waitingSpotService } from "../apis/waiting-spot";
 import { useEffect } from "react";
-import type { useWaitingSpotParams } from "../types/facilities-search";
+import type { useWaitingSpotParams } from "../types/api";
 
 export function useWaitingSpot({ lat, lng, isHydrated, accessToken, sort, category}: useWaitingSpotParams) {
   

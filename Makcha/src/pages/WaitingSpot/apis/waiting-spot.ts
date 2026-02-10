@@ -1,7 +1,7 @@
 import { api } from '../../../apis/api';
 import type { BaseResponse } from '../../../types/api';
-import type { PlaceDetail } from '../../../types/waitingspot';
-import type { FacilitySearchResponse, GetPlaceDetailParams, GetPlacesParams, GetSearchParams, WaitingSpotResponse } from '../types/facilities-search';
+import type { PlaceDetail } from '../types/waitingspot';
+import type { FacilitySearchResponse, GetPlaceDetailParams, GetPlacesParams, GetSearchParams, WaitingSpotResponse } from '../types/api';
 
 export const waitingSpotService = {
   getPlaces: async (params: GetPlacesParams): Promise<WaitingSpotResponse> => {

@@ -1,4 +1,4 @@
-import type { CategoryTabProps } from "../../../types/waitingspot";
+import type { CategoryTabProps } from "../types/waitingspot";
 
 export const CategoryTab = <T extends string>({ selected, onChange, categories }: CategoryTabProps<T>) => {
   return (

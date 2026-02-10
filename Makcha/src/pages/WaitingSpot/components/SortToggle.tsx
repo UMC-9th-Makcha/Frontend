@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { SortToggleProps } from "../../../types/waitingspot";
+import type { SortToggleProps } from "../types/waitingspot";
 import { toggleLabel } from "../common/constants";
 
 export const SortToggle = ({ value, onChange }: SortToggleProps) => {

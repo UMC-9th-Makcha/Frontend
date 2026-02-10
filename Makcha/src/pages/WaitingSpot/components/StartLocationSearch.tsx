@@ -1,7 +1,7 @@
 import { Search, Circle } from "lucide-react";
 import { useEffect, useMemo, useState, useRef } from "react";
 import { InputDropdown } from "../common/InputDropdown";
-import type { StartLocationSearchProps } from "../../../types/waitingspot";
+import type { StartLocationSearchProps } from "../types/waitingspot";
 
 export const StartLocationSearch = ({value,onChangeValue,items,loading,error,onSelect}: StartLocationSearchProps) => {
   const wrapperRef = useRef<HTMLDivElement>(null);

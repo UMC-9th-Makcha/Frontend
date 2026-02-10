@@ -1,4 +1,4 @@
-import type { PlaceCardProps } from "../../../types/waitingspot";
+import type { PlaceCardProps } from "../types/waitingspot";
 import owl from "../../../assets/owl.png"
 import React from "react";
 

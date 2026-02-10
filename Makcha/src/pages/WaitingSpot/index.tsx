@@ -1,5 +1,5 @@
 import BaseMap from "../../components/common/Map";
-import type { Origin, Place, SortValue, WaitingCategoryKey } from "../../types/waitingspot";
+import type { Origin, Place, SortValue, WaitingCategoryKey } from "./types/waitingspot";
 import type { MapMarker } from "../../types/map";
 import { useParams } from "react-router-dom";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -24,7 +24,7 @@ import { useCurrentLocation } from "../../hooks/useCurrentLocation";
 export default function WaitingSpot() {
 
   // 1. 타입을 string으로 받거나, 명시적으로 단언하여 에러를 방지합니다.
-  const { type } = useParams() as { type: string };
+  const { type } = useParams<{ type: string }>();
 
   // 2. 잘못된 경로(예: /spot/abc)로 들어왔을 때를 대비한 방어 로직
   const isFirst = type === 'first';
