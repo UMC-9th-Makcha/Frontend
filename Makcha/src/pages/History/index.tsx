@@ -22,45 +22,80 @@ const HistoryHome = () => {
   } = useHistoryHomeViewModel();
 
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<HistoryItem | null>(null);
 
-  const confirmDetail = useMemo(() => {
-    if (!selectedItem) return undefined;
-    return ROUTE_CONFIRM_DETAIL_MOCK[selectedItem.routeId];
-  }, [selectedItem]);
-
-  const confirmRoute: AlarmRoute | null = useMemo(() => {
-    if (!selectedItem || !confirmDetail) return null;
-
-    const totalDurationMin = confirmDetail.segments.reduce(
-      (sum, s) => sum + s.durationMin,
-      0
-    );
-
-    return {
-      id: selectedItem.routeId,
-      cacheKey: "",
-      routeToken: "",
-      isOptimal: true,
-      routeType: "SUBWAY",
-      lines: [],
-      departureTime: selectedItem.departAt,
-      minutesLeft: 0,
-      timeUntilDeparture: "",
-      totalDurationMin,
-      transferCount: 0,
-      walkingTimeMin: 0,
-    };
-  }, [selectedItem, confirmDetail]);
+  const [confirmDetail, setConfirmDetail] = useState<RouteConfirmDetail | null>(null);
+  const [confirmRoute, setConfirmRoute] = useState<AlarmRoute | null>(null);
 
   const openConfirm = (item: HistoryItem) => {
     setSelectedItem(item);
     setIsConfirmOpen(true);
+
+    if (USE_MOCK) {
+      const d = ROUTE_CONFIRM_DETAIL_MOCK[item.routeId];
+      if (!d) {
+        alert("상세 데이터 없음");
+        setIsConfirmOpen(false);
+        return;
+      }
+
+      const totalDurationMin = d.segments.reduce((sum, s) => sum + s.durationMin, 0);
+
+      setConfirmDetail(d);
+      setConfirmRoute({
+        id: item.routeId,
+        cacheKey: "",
+        routeToken: "",
+        isOptimal: true,
+        routeType: "SUBWAY",
+        lines: [],
+        departureTime: item.departAt,
+        minutesLeft: 0,
+        timeUntilDeparture: "",
+        totalDurationMin,
+        transferCount: 0,
+        walkingTimeMin: 0,
+        segments: d.segments,
+      });
+      return;
+    }
+
+    try {
+      const data = await fetchHistoryAlertDetail(Number(item.id));
+      const segments = stepsToSegments(data.steps ?? []);
+
+      setConfirmDetail({
+        etaText: data.arrival_at ? `${toHHMM(data.arrival_at)} 도착` : "도착 정보 없음",
+        segments,
+      });
+
+      setConfirmRoute({
+        id: `history-past-${item.id}`,
+        cacheKey: data.route_token ?? "",
+        routeToken: data.route_token ?? "",
+        isOptimal: Boolean(data.is_optimal),
+        routeType: "BUS",
+        lines: data.lines ?? [],
+        departureTime: data.departure_at ? toHHMM(data.departure_at) : item.departAt,
+        minutesLeft: data.minutes_left ?? 0,
+        timeUntilDeparture: toUntilText(data.minutes_left ?? 0),
+        totalDurationMin: data.total_duration_min ?? 0,
+        transferCount: data.transfer_count ?? 0,
+        walkingTimeMin: data.walking_time_min ?? 0,
+        segments,
+      });
+    } catch (e) {
+      console.error("[history:detail] failed", e);
+      alert("상세 조회 실패");
+      setIsConfirmOpen(false);
+      setConfirmDetail(null);
+      setConfirmRoute(null);
+    }
   };
 
   const closeConfirm = () => {
     setIsConfirmOpen(false);
-    setSelectedItem(null);
+    setConfirmDetail(null);
+    setConfirmRoute(null);
   };
 
   return (
@@ -125,15 +160,22 @@ const HistoryHome = () => {
             onClick={closeConfirm}
           />
 
-          <Panel width="md:w-100" disablePadding className="shadow-2xl">
+          <Panel width="md:w-100" disablePadding className="shadow-2xl relative z-10">
             <RouteConfirmPanel
               route={confirmRoute}
               detail={confirmDetail}
               onBack={closeConfirm}
               onConfirm={closeConfirm}
-              mode="history"
+              mode="historyPast"
             />
           </Panel>
+
+          <section className="hidden md:block min-w-0 flex-1 h-dvh relative z-10">
+            <KakaoMapView
+              routes={confirmRoute ? [confirmRoute] : []}
+              selectedRouteId={confirmRoute?.id ?? null}
+            />
+          </section>
         </div>
       )}
     </div>

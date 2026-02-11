@@ -9,7 +9,7 @@ type Props = {
     detail: RouteConfirmDetail;
     onBack: () => void;
     onConfirm: () => void;
-    mode?: "alarm" | "history";
+    mode?: "alarm" | "history" | "historyPast";
     onClickSms?: () => void;
     onDeleteAlert?: () => void;
     deleting?: boolean;
@@ -71,10 +71,10 @@ export default function RouteConfirmPanel({
 }: Props) {
     const chips: string[] = (route.lines ?? []).map(normalizeLineForChip);
     const isHistory = mode === "history";
+    const isHistoryPast = mode === "historyPast";
 
     return (
         <div className="flex min-h-full flex-col">
-            {/* 상단 영역 */}
             <div className="px-4 pt-10">
                 <div className="flex items-start gap-3">
                     <button
@@ -125,11 +125,9 @@ export default function RouteConfirmPanel({
                 </div>
             </div>
 
-            {/* 하단 버튼 영역 */}
             <div className="mt-auto px-[16px] pt-4 space-y-3 pb-[max(80px,env(safe-area-inset-bottom))] md:pb-[20px]">
                 {isHistory ? (
                     <>
-                        {/* 확인 버튼 */}
                         <button
                             type="button"
                             onClick={onConfirm}
@@ -147,8 +145,7 @@ export default function RouteConfirmPanel({
                         >
                             확인
                         </button>
-
-                        {/* 알림 삭제하기 */}
+                        
                         <button
                             type="button"
                             onClick={onDeleteAlert}
@@ -165,6 +162,24 @@ export default function RouteConfirmPanel({
                             {deleting ? "삭제 중..." : "알림 삭제하기"}
                         </button>
                     </>
+                ) : isHistoryPast ? (
+                    <button
+                        type="button"
+                        onClick={onConfirm}
+                        className="h-12 w-full rounded-[14px]
+                            bg-white text-black
+                            border border-[#909090]
+                            transition-all duration-200
+                            flex items-center justify-center
+                            text-[18px] font-semibold
+                            shadow-sm
+                            hover:bg-[#f5f5f5]
+                            hover:border-[#6f6f6f]
+                            hover:shadow-md
+                            active:scale-[0.98]"
+                    >
+                        확인
+                    </button>
                 ) : (
                     <button
                         type="button"

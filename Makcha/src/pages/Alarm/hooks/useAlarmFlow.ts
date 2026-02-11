@@ -43,7 +43,7 @@ export function useAlarmFlow() {
         detail: RouteConfirmDetail;
     } | null>(null);
 
-    const [deletingAlert, setDeletingAlert] = useState(false);
+    const { mutateAsync: cancelMutateAsync, isPending: deletingAlert } = useCancelAlert();
 
     const startRouteSearch = async (o: OriginSearchItem, d: OriginSearchItem) => {
         setStep("LOADING");
@@ -166,7 +166,6 @@ export function useAlarmFlow() {
 
     const goAlarmList = () => navigate("/history");
 
-    // history confirm: 알림 삭제
     const deleteCurrentAlert = async () => {
         const notificationId = historyConfirm?.notificationId;
         if (!notificationId) return;
@@ -176,10 +175,8 @@ export function useAlarmFlow() {
             await deleteAlert(notificationId);
             navigate("/history", { replace: true });
         } catch (e) {
-            console.error("[alerts:delete] failed", e);
-            alert("알림 삭제 실패");
-        } finally {
-            setDeletingAlert(false);
+            console.error("[alerts:cancel] failed", e);
+            alert("알림 취소 실패");
         }
     };
 

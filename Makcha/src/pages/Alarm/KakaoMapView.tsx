@@ -4,17 +4,19 @@ import BaseMap from "../../components/common/Map";
 import type { AlarmRoute } from "./types/alarm";
 import type { MapMarker, MapPathSegment, PathType, MapPoint } from "../../types/map";
 import { fetchRoutePolylines } from "./apis/routes";
+import type { CandidateStep } from "./hooks/useAlarmFlow";
 
 type Props = {
     routes: AlarmRoute[];
     selectedRouteId: string | null;
+    historySteps?: CandidateStep[];
 };
 
 type LatLng = MapPoint;
 
 type Segment = {
     id: string;
-    routeId: string; 
+    routeId: string;
     type: PathType;
     points: LatLng[];
 };
@@ -22,8 +24,8 @@ type Segment = {
 type PolylinePathLocal = {
     class: number;
     type: number;
-    map_type?: string; 
-    order?: number; 
+    map_type?: string;
+    order?: number;
     points: LatLng[];
 };
 
@@ -45,7 +47,7 @@ function reorderPathsForMap(paths: PolylinePathLocal[]): PolylinePathLocal[] {
                 Number.isFinite(p.order)
         )
         .slice()
-        .sort((a, b) => (a.order! - b.order!));
+        .sort((a, b) => a.order! - b.order!);
 
     const transit = paths.filter(
         (p) => p.map_type !== "WALK" && (p.points?.length ?? 0) >= 2
@@ -82,13 +84,13 @@ function reorderPathsForMap(paths: PolylinePathLocal[]): PolylinePathLocal[] {
 
             if (cost < bestCost) {
                 bestCost = cost;
-                bestIdx = i + 1; 
+                bestIdx = i + 1;
             }
         }
 
         inserts.push({ idx: bestIdx, w });
     }
-    inserts.sort((a, b) => a.idx - b.idx || (a.w.order! - b.w.order!));
+    inserts.sort((a, b) => a.idx - b.idx || a.w.order! - b.w.order!);
 
     const merged = transit.slice();
     let shift = 0;
@@ -106,8 +108,8 @@ function reorderPathsForMap(paths: PolylinePathLocal[]): PolylinePathLocal[] {
 
 const SUPPORTED_SUBWAY_TYPES = new Set<number>([
     1, 2, 3, 4, 5, 6, 7, 8, 9,
-    91, // GTX-A
-    101, 102, 104, 107, 108, 109, 110, 112, 113, 114, 115, 116, 117, // 수도권(서해~신림)
+    91,
+    101, 102, 104, 107, 108, 109, 110, 112, 113, 114, 115, 116, 117,
 ]);
 
 function normalizeMapType(raw?: string): PathType {
@@ -115,7 +117,6 @@ function normalizeMapType(raw?: string): PathType {
 
     if (raw === "WALK") return "WALK";
 
-    // 버스
     if (
         raw === "BUS_RED" ||
         raw === "BUS_BLUE" ||
@@ -130,18 +131,18 @@ function normalizeMapType(raw?: string): PathType {
     }
     if (raw === "SUBWAY_SUIN") return "SUBWAY_SUIN";
 
-    // 지하철
     if (raw.startsWith("SUBWAY_")) {
         const n = Number(raw.slice("SUBWAY_".length));
         if (Number.isFinite(n) && SUPPORTED_SUBWAY_TYPES.has(n)) {
             return raw as PathType;
         }
-        return "WALK"; 
+        return "WALK";
     }
-    return "WALK"; 
+
+    return "WALK";
 }
 
-export default function KakaoMapView({ routes, selectedRouteId }: Props) {
+export default function KakaoMapView({ routes, selectedRouteId, historySteps }: Props) {
     const cacheRef = useRef(new Map<string, Segment[]>()); // key = routeToken
     const [routeSegMap, setRouteSegMap] = useState<Record<string, Segment[]>>({});
     const genRef = useRef(0);
@@ -215,6 +216,23 @@ export default function KakaoMapView({ routes, selectedRouteId }: Props) {
     }, [routes]);
 
     const paths: MapPathSegment[] = useMemo(() => {
+        if (historySteps && historySteps.length > 0) {
+            const out: MapPathSegment[] = [];
+
+            historySteps.forEach((s, idx) => {
+                const pts = (s.points ?? []) as LatLng[];
+                if (pts.length < 2) return;
+
+                out.push({
+                    id: `history-seg-${idx}`,
+                    type: normalizeMapType(s.type),
+                    points: pts,
+                });
+            });
+
+            return out;
+        }
+
         const out: MapPathSegment[] = [];
 
         for (const r of routes) {
@@ -229,10 +247,23 @@ export default function KakaoMapView({ routes, selectedRouteId }: Props) {
         }
 
         return out;
-    }, [routes, routeSegMap]);
+    }, [routes, routeSegMap, historySteps]);
 
     const markers: MapMarker[] = useMemo(() => {
         const out: MapMarker[] = [];
+
+        if (historySteps && historySteps.length > 0) {
+            const pts = historySteps.flatMap((s) => s.points ?? []) as LatLng[];
+            const first = pts[0];
+            const last = pts[pts.length - 1];
+
+            if (!first || !last) return out;
+
+            out.push({ id: "start", name: "출발", variant: "start", position: first });
+            out.push({ id: "end", name: "도착", variant: "end", position: last });
+
+            return out;
+        }
 
         const baseRoute =
             (selectedRouteId && routes.find((r) => r.id === selectedRouteId)) ||
@@ -253,7 +284,7 @@ export default function KakaoMapView({ routes, selectedRouteId }: Props) {
         out.push({ id: "end", name: "도착", variant: "end", position: last });
 
         return out;
-    }, [routes, routeSegMap, selectedRouteId]);
+    }, [routes, routeSegMap, selectedRouteId, historySteps]);
 
     return <BaseMap markers={markers} paths={paths} selectedPathId={selectedRouteId} />;
 }
