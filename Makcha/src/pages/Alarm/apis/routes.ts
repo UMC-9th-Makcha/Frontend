@@ -1,20 +1,6 @@
 import { api } from "../../../apis/api";
-import type { AlarmRoute } from "../types/alarm";
-
-type RouteCandidatesResponse = {
-    candidate_key: string;
-    route_token: string;
-    is_optimal: boolean;
-    tags: Array<"SUBWAY" | "BUS" | "NIGHT_BUS" | string>;
-
-    card: {
-        traveled_time: number;
-        transfer_count: number;
-        walk_time: number;
-        deadline_at: string;
-        minutes_left: number;
-    };
-};
+import type { OriginSearchItem } from "../types/search";
+import type { Candidate } from "../types/candidate"
 
 type BaseResponse<T> = {
     successCode: string;
@@ -28,45 +14,34 @@ export type RouteCandidatesPointBody = {
     lng: number;
     title: string;
     roadAddress: string;
-    detailAddress?: string;
+    detailAddress: string;
 };
 
-function toAlarmRoute(r: RouteCandidatesResponse): AlarmRoute {
-    const minutesLeft = r.card.minutes_left;
 
-    return {
-        id: r.candidate_key,
-        routeToken: r.route_token,
-        isOptimal: r.is_optimal,
+export const toCandidatesPointBody = (p: OriginSearchItem): RouteCandidatesPointBody => {
+    if (typeof p.lat !== "number" || typeof p.lng !== "number") {
+        throw new Error("출발/도착 좌표(lat/lng)가 없습니다.");
+    }
 
-        routeType: r.tags.includes("SUBWAY")
-            ? "SUBWAY"
-            : r.tags.includes("NIGHT_BUS")
-                ? "NIGHT_BUS"
-                : "BUS",
+    const title = (p.title ?? "").trim();
+    const roadAddress = ((p.roadAddress ?? p.address) ?? "").trim();
+    const detailAddress = (p.detailAddress ?? "").trim();
 
-        lines: r.tags.filter((t) => t !== "SUBWAY" && t !== "BUS" && t !== "NIGHT_BUS"),
-        minutesLeft,
-        timeUntilDeparture: minutesLeft <= 0 ? "지금 출발" : `출발까지 ${minutesLeft}분`,
-        totalDurationMin: r.card.traveled_time,
-        transferCount: r.card.transfer_count,
-        walkingTimeMin: r.card.walk_time,
-        departureTime: undefined,
-        cacheKey: r.route_token,
-    };
-}
+    if (!title) throw new Error("출발/도착 title(장소명)이 없습니다.");
+    if (!roadAddress) throw new Error("출발/도착 roadAddress(주소)가 없습니다.");
 
-export async function postRouteCandidates(body: {
+    return { lat: p.lat, lng: p.lng, title, roadAddress, detailAddress };
+};
+
+export async function fetchCandidates(body: {
     origin: RouteCandidatesPointBody;
     destination: RouteCandidatesPointBody;
-}): Promise<AlarmRoute[]> {
-    const { data } = await api.post<BaseResponse<{ candidates: RouteCandidatesResponse[] }>>(
+}) {
+    const res = await api.post<BaseResponse<{ candidates: Candidate[] }>>(
         "/api/routes/candidates",
         body
     );
-
-    const list = data.result?.candidates ?? [];
-    return list.map(toAlarmRoute);
+    return res.data.result.candidates;
 }
 
 export type PolylinePoint = { lat: number; lng: number };

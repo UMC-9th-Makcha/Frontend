@@ -34,7 +34,9 @@ export async function searchKakaoPlaces(query: string): Promise<OriginSearchItem
     return (data.documents ?? []).map((d) => ({
         id: d.id,
         title: d.place_name,
-        address: d.road_address_name || d.address_name,
+        roadAddress: d.road_address_name || "",     
+        address: d.address_name || "",               
+        detailAddress: "",                          
         lat: Number(d.y),
         lng: Number(d.x),
     }));

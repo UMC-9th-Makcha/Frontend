@@ -39,9 +39,9 @@ type AlertDetailResult = {
   steps: CandidateStep[];
 };
 
-const fetchHistoryAlertDetail = async (historyId: number) => {
+const fetchHistoryAlertDetail = async (notificationId: number) => {
   const res = await api.get<BaseResponse<AlertDetailResult>>(
-    `/api/alerts/history/${historyId}/detail`
+    `/api/alerts/${notificationId}/detail`
   );
   return res.data.result;
 };
@@ -166,6 +166,7 @@ const HistoryHome = () => {
       const item: HistoryItem = {
         id: it.id,
         routeId: it.id,
+        notificationId: it.notification_id,
         date: toKoreanDate(it.departure_time),
         from: it.origin,
         to: it.destination,
@@ -232,8 +233,14 @@ const HistoryHome = () => {
       return;
     }
 
+    if (!item.notificationId) {
+      alert("이전 과거 알림은 상세 경로 데이터가 없어 조회할 수 없어요. 새로 생성한 알림을 강제 완료한 뒤 조회해 주세요.");
+      setIsConfirmOpen(false);
+      return;
+    }
+
     try {
-      const data = await fetchHistoryAlertDetail(Number(item.id));
+      const data = await fetchHistoryAlertDetail(Number(item.notificationId));
       const segments = stepsToSegments(data.steps ?? []);
 
       setConfirmDetail({

@@ -2,6 +2,7 @@ import { ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import type { CurrentAlarm } from "../types/history";
 import { getDisplayLineName } from "../utils/lineFormatter";
+import { useForceCompleteAlert } from "../hooks/useForceCompleteAlert";
 
 type Props = {
     alarm: CurrentAlarm | null;
@@ -11,6 +12,7 @@ type Props = {
 
 const CurrentAlarmCard = ({ alarm, onCreate }: Props) => {
     const navigate = useNavigate();
+    const { mutateAsync: forceComplete, isPending: forcing } = useForceCompleteAlert();
 
     // 1) 알림 없음
     if (!alarm) {
@@ -88,6 +90,30 @@ const CurrentAlarmCard = ({ alarm, onCreate }: Props) => {
                             ))}
                         </div>
                     </div>
+
+                    {import.meta.env.MODE === "development" && (
+                        <button
+                            type="button"
+                            disabled={forcing}
+                            onClick={async () => {
+                                try {
+                                    await forceComplete(alarm.notificationId);
+                                } catch (e) {
+                                    console.error("[alerts:force-complete] failed", e);
+                                    alert("강제 완료 실패");
+                                }
+                            }}
+                            className="
+                                shrink-0 whitespace-nowrap
+                                ml-2 rounded-full border px-3 py-1 text-[16px]
+                                border-[#EBEBEB] text-gray-600 hover:text-makcha-navy-900
+                                disabled:cursor-not-allowed disabled:opacity-50
+                                dark:border-makcha-navy-700 dark:text-white/60 dark:hover:text-white
+                            "
+                        >
+                            (테스트) 강제완료
+                        </button>
+                    )}
 
                     <button
                         type="button"
