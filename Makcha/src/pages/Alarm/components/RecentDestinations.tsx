@@ -82,12 +82,19 @@ const RecentDestinations = ({ onSelectDestination }: Props) => {
                     onItemClick={(item, moved) => {
                         if (moved) return;
 
+                        const road = (item.roadAddress ?? "").trim();
+                        const detail = (item.detailAddress ?? "").trim();
+
+                        const addressText = (road || detail) ? `${road} ${detail}`.trim() : "주소 정보 없음";
+
                         onSelectDestination({
-                            id: item.placeId,
-                            title: item.title,
-                            address: `${item.roadAddress} ${item.detailAddress ?? ""}`.trim(),
-                            lat: item.latitude,
-                            lng: item.longitude,
+                            id: item.placeId || item.recentId,          
+                            title: (item.title ?? "").trim(),
+                            roadAddress: road || "주소 정보 없음",      
+                            address: addressText,                    
+                            detailAddress: detail,
+                            lat: Number(item.latitude),
+                            lng: Number(item.longitude),
                         });
                     }}
                 />

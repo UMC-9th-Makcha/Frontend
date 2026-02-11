@@ -37,7 +37,7 @@ export function useAlarmFlow() {
     const [selectedRoute, setSelectedRoute] = useState<AlarmRoute | null>(null);
 
     const [candidatesRaw, setCandidatesRaw] = useState<Candidate[]>([]);
-    
+
     const [isFromHistory, setIsFromHistory] = useState(false);
     const cameFromHistoryRef = useRef(false);
 
@@ -81,7 +81,7 @@ export function useAlarmFlow() {
         setSearchTarget("DESTINATION");
         setIsSearchOpen(true);
     };
-
+    
     const handleSelect = (target: SearchTarget, item: OriginSearchItem) => {
         if (target === "ORIGIN") {
             setOrigin(item);
