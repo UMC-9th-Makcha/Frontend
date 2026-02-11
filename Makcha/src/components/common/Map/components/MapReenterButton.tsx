@@ -13,7 +13,7 @@ const MapReenterButton = memo(({ onClick, isDarkMode }: MapReenterButtonProps) =
       onClick={onClick}
       aria-label="현위치로 이동"
       className={`
-        absolute top-24 md:top-4 right-4 z-49
+        absolute top-24 md:top-4 right-6 md:right-4 z-49
         flex items-center justify-center 
         rounded-lg p-2 shadow-md transition-all 
         anti-invert
