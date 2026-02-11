@@ -47,6 +47,8 @@ export type PlaceListProps = {
   places: Place[];
   selectedPlaceId: string | null;
   onSelectPlaceId: (id: string) => void;
+  sort: SortValue;
+  onChangeSort: (sort: SortValue) => void;
 };
 
 export type PlaceCardProps = {
@@ -55,11 +57,11 @@ export type PlaceCardProps = {
   onSelect: () => void;
 };
 
-export type SortValue = "distance" | "open24h";
+export type SortValue = "distance" | "24hour";
 
 export type SortToggleProps = {
   value: SortValue;
-  onChange: (value: "distance" | "open24h") => void;
+  onChange: (value: SortValue) => void;
 };
 
 export type PlaceDetailProps = {

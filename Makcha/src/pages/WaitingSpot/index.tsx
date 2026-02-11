@@ -1,5 +1,5 @@
 import BaseMap from "../../components/common/Map";
-import type { Origin, Place, WaitingCategoryKey } from "../../types/waitingspot";
+import type { Origin, Place, SortValue, WaitingCategoryKey } from "../../types/waitingspot";
 import type { MapMarker } from "../../types/map";
 import { useParams } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
@@ -9,7 +9,6 @@ import { CategoryTab } from "./common/CategoryTab";
 import { PlaceDetailPanel } from "./panels/PlaceDetailPanel";
 import { waitingCategories } from "./common/constants";
 import WalkingDirections from "./WalkingDirections";
-import { useGeoLocation } from "../../hooks/useGeoLocation";
 import { FooterButton } from "./common/FooterButton";
 import { StartLocationSearch } from "./components/StartLocationSearch";
 import { PlaceList } from "./components/PlaceList";
@@ -18,10 +17,9 @@ import LoadingSpinner from "../../components/common/loadingSpinner";
 import { useWaitingSpot } from "./hooks/useWaitingSpot";
 import { useFacilitiesSearch } from "./hooks/useFacilitiesSearch";
 import { useDebounce } from "./hooks/useDebounce";
-import { useFacilitiesCategory } from "./hooks/useFacilitiesCategory";
 import { useWaitingSpotDetail } from "./hooks/useWaitingSpotDetail";
 import { EmptyState } from "./common/EmptyState";
-import useToastStore from "../../store/useToastStore";
+import { useCurrentLocation } from "../../hooks/useCurrentLocation";
 
 export default function WaitingSpot() {
 
@@ -38,26 +36,37 @@ export default function WaitingSpot() {
   const accessToken = useAuthStore((s) => s.accessToken);
   const isHydrated = useAuthStore((s) => s.isHydrated);
 
+  //상세 패널 open
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+
   //지도 현위치 좌표
-  const { location, error } = useGeoLocation({
-    enableHighAccuracy: true,
-    timeout: 10000,
-    maximumAge: 0,
-  });
+  const { location, loading: mapLoading, refetch: mapRefetch } = useCurrentLocation();
 
   //출발지 검색
   const [origin, setOrigin] = useState<Origin>(null);
 
-  //대기 장소 API
-  const baseLat = origin?.lat ?? location?.latitude;
-  const baseLng = origin?.lng ?? location?.longitude;
+  //카테고리
+  const [category, setCategory] = useState<WaitingCategoryKey>("ALL");
 
-  const { places, isError, isLoading, refetchAll } = useWaitingSpot({
+  //가까운순, 24시간 정렬
+  const [sort, setSort] = useState<SortValue>("distance");
+
+  //대기 장소 API
+  const baseLat = origin?.lat ?? location?.lat;
+  const baseLng = origin?.lng ?? location?.lng;
+
+  const { places, isError, isLoading, refetch } = useWaitingSpot({
     lat: baseLat,
     lng: baseLng,
+    sort: sort,
+    category: category,
     isHydrated,
     accessToken,
   });
+
+  useEffect(() => {
+    console.log("useWaitingSpot : ", places);
+  },[places])
 
   //검색 API
   const [keyword, setKeyword] = useState("");
@@ -72,46 +81,29 @@ export default function WaitingSpot() {
   });
   const items = facilities?.facilities ?? [];
 
-  //카테고리 API
-  const [category, setCategory] = useState<WaitingCategoryKey>("ALL");
-
-  const { categoryData, categoryLoading, categoryError, refetchCategory } = useFacilitiesCategory({
-    category: category,
-    latitude: baseLat,
-    longitude: baseLng,
-    isHydrated,
-    accessToken,
-  })
-
-  const isAll = category === "ALL";
-
   //출발지 포함 대기 장소 리스트 -> 출발지 제외 리스트로 필터링
-  const unfilteredData: Place[] = isAll
-    ? (places ?? [])
-    : (categoryData?.facilities ?? []);
-
   const placeData: Place[] = useMemo(() => {
-    if (!origin) return unfilteredData;
-    return unfilteredData.filter((p) => p.id !== origin.id);
-    }, [unfilteredData, origin])
-
-  const placeLoading = isAll ? isLoading : categoryLoading;
-  const placeError = isAll ? isError : categoryError;
-  const refetchPlaces = isAll ? refetchAll : refetchCategory;
+    const list = places ?? [];
+    if (!origin) return list;
+    return list.filter((p) => p.id !== origin.id);
+  }, [places, origin]);
 
   //선택된 장소 id (카드 클릭 시 저장)
   const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null);
 
-  const selectedPlace = useMemo<Place | null>(() => {
-    return placeData.find((p) => p.id === selectedPlaceId) ?? null;
-  }, [placeData, selectedPlaceId]);
-
   //대기 장소 상세 API
   const { placeDetail, DetailLoading, DetailError, refetchDetail } = useWaitingSpotDetail({
+    lat: baseLat,
+    lng: baseLng,
     placeId: selectedPlaceId,
     isHydrated,
     accessToken,
   });
+
+  useEffect(() => {
+    console.log("useDetail : ", placeDetail);
+  },[placeDetail])
+
 
   // 마커 데이터 변환 
   const mapMarkers = useMemo<MapMarker[]>(() => {
@@ -157,18 +149,11 @@ export default function WaitingSpot() {
     setShowDirections(true);
   }
 
-  const [isDetailOpen, setIsDetailOpen] = useState(false);
-
   //도보 안내 페이지 렌더링 유무
   const [showDirections, setShowDirections] = useState(false);
 
-  //지도 error
-  const addToast = useToastStore((s) => s.addToast);
-  useEffect(() => {
-    if (error) {
-      addToast("현재 위치를 불러오지 못했어요.");
-    }
-  }, [error, addToast]);
+  //좌표 사용 가능 여부 기준으로 분기
+  const hasMapPoint = typeof baseLat === "number" && typeof baseLng === "number";
 
   if (showDirections) {
     return <WalkingDirections onBack={() => setShowDirections(false)} />;
@@ -190,24 +175,40 @@ export default function WaitingSpot() {
         />
         }
         controls={<CategoryTab selected={category} onChange={setCategory} categories={waitingCategories} />}
-        list={placeLoading ? (
-          <div className="flex h-full items-center justify-center">
-            <LoadingSpinner />
-          </div>
-        ) : placeError ? (
-          <EmptyState
-            className="pointer-events-none"
-            message="장소를 불러오지 못했어요."
-            actionLabel="다시 불러오기"
-            onRetry={() => refetchPlaces()}
-          />
-        ) : (
-          <PlaceList
-            places={placeData}
-            selectedPlaceId={selectedPlaceId}
-            onSelectPlaceId={handleSelectList}
-          />
-        )
+        list={!hasMapPoint ? (
+          mapLoading ? (
+            <div className="flex flex-col h-full items-center justify-center">
+              <LoadingSpinner />
+              <p className="mt-2 text-sm text-gray-500">현재 위치를 찾는 중이에요…</p>
+            </div>
+          ) : (
+            <EmptyState
+              message="현재 위치를 불러오지 못했어요."
+              actionLabel="다시 시도"
+              onRetry={mapRefetch}
+            />
+          )
+        ) :
+          isLoading ? (
+            <div className="flex h-full items-center justify-center">
+              <LoadingSpinner />
+            </div>
+          ) : isError ? (
+            <EmptyState
+              className="pointer-events-none"
+              message="장소를 불러오지 못했어요."
+              actionLabel="다시 불러오기"
+              onRetry={refetch}
+            />
+          ) : (
+            <PlaceList
+              places={placeData}
+              selectedPlaceId={selectedPlaceId}
+              onSelectPlaceId={handleSelectList}
+              sort={sort}
+              onChangeSort={setSort}
+            />
+          )
         }
         footer={
           <FooterButton
@@ -228,7 +229,7 @@ export default function WaitingSpot() {
             place={placeDetail ?? null}
             loading={DetailLoading}
             error={DetailError}
-            refetch={() => refetchDetail()}
+            refetch={refetchDetail}
           /> : null
         }
         onDetailBack={() => setIsDetailOpen(false)}
