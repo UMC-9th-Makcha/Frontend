@@ -5,7 +5,9 @@ export const useBack = (view: ViewType, onBack: () => void) => {
   useEffect(() => {
     if (view === 'MAIN') return;
 
-    window.history.pushState(null, '', '');
+    if (window.history.state?.view !== view) {
+      window.history.pushState({ view }, '', '');
+    }
 
     const handlePopState = () => {
       onBack();
@@ -15,6 +17,10 @@ export const useBack = (view: ViewType, onBack: () => void) => {
 
     return () => {
       window.removeEventListener('popstate', handlePopState);
+
+      if (window.history.state?.view === view) {
+        window.history.back();
+      }
     };
   }, [view, onBack]);
 };
