@@ -14,7 +14,7 @@ type AlarmPanelProps = {
 const AlarmPanel = ({ onOpenOrigin, onOpenDestination, onSelectDestination, origin, destination }: AlarmPanelProps) => {
     return (
         <>
-            <div className="pt-8 md:pt-0">
+            <div className="md:pt-0">
                 <h1 className="text-[32px] font-medium text-makcha-navy-900 dark:text-white max-md:text-[30px] max-md:font-bold">
                     오늘은 어디로 가시나요?
                 </h1>

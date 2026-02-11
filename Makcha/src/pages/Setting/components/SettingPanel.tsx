@@ -9,7 +9,7 @@ import PolicyLinks from "../../../components/common/PolicyLinks";
 export const SettingPanel = memo(function SettingPanel({ view, onNavigate }: SettingPanelProps) {
   return (
     <Panel isMobileFull={view === 'MAIN'}>
-      <h1 className="mb-8 text-[26px] font-bold text-gray-900 dark:text-white px-1">
+      <h1 className="mb-8 text-h1 px-1">
         환경설정
       </h1>
 

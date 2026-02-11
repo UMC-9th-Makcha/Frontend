@@ -1,7 +1,7 @@
 import type { CurrentAlarm, MonthSectionData, PastSummary } from "../types/history";
 
-//export const CURRENT_ALARM_MOCK: CurrentAlarm | null = null;
-export const CURRENT_ALARM_MOCK: CurrentAlarm = {
+export const CURRENT_ALARM_MOCK: CurrentAlarm | null = null;
+/*export const CURRENT_ALARM_MOCK: CurrentAlarm = {
     notificationId: 4,
     routeId: "r1",
     isOptimal: true,
@@ -11,7 +11,7 @@ export const CURRENT_ALARM_MOCK: CurrentAlarm = {
     totalDurationMin: 45,
     transferCount: 1,
     walkingTimeMin: 9,
-};
+};*/
 
 export const PAST_SUMMARY_MOCK: PastSummary = {
     //thisMonthTaxiCost: 0,

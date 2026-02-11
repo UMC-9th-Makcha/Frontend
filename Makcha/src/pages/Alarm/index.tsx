@@ -66,6 +66,7 @@ const Alarm = () => {
             const lng = pos.coords.longitude;
 
             const restKey = import.meta.env.VITE_KAKAO_REST_API_KEY as string | undefined;
+
             let addressText = "현위치";
 
             if (restKey) {
@@ -135,6 +136,10 @@ const Alarm = () => {
                             goAlarmList: flow.goAlarmList,
 
                             goToSettingForSms,
+
+                            isFromHistory: flow.isFromHistory,
+                            deleteCurrentAlert: flow.deleteCurrentAlert,
+                            deletingAlert: flow.deletingAlert,
                         }}
                     />
                 </Panel>

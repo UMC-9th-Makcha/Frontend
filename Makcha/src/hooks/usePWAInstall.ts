@@ -1,24 +1,53 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';import useToastStore from '../store/useToastStore';
+;
+
+interface BeforeInstallPromptEvent extends Event {
+  readonly platforms: string[];
+  readonly userChoice: Promise<{
+    outcome: 'accepted' | 'dismissed';
+    platform: string;
+  }>;
+  prompt(): Promise<void>;
+}
+
+interface PWAWindow extends Window {
+  deferredPrompt?: BeforeInstallPromptEvent | null;
+}
+
+const isBrowser = typeof window !== 'undefined';
+const getPWAWindow = () => (isBrowser ? (window as unknown as PWAWindow) : null);
+
+// Standalone 모드 확인 함수
+const getIsStandalone = (): boolean => 
+  isBrowser && window.matchMedia('(display-mode: standalone)').matches;
 
 export const usePWAInstall = () => {
-  // 설치 권한을 상태로 관리
-  const [installEvent, setInstallEvent] = useState<BeforeInstallPromptEvent | null>(
-    () => window.deferredPrompt || null
-  );
+  const addToast = useToastStore((state) => state.addToast);
+
+  const [isStandalone, setIsStandalone] = useState<boolean>(getIsStandalone);
+
+  const [installEvent, setInstallEvent] = useState<BeforeInstallPromptEvent | null>(() => {
+    return getPWAWindow()?.deferredPrompt || null;
+  });
 
   useEffect(() => {
-    // 브라우저로부터 "이 앱 설치 가능하다"는 신호를 받았을 때
+    const pwaWin = getPWAWindow();
+    if (!pwaWin) return;
+
     const onReadyToInstall = (e: Event) => {
+      // 브라우저 기본 팝업 방지
       e.preventDefault();
       const promptEvent = e as BeforeInstallPromptEvent;
+      
       setInstallEvent(promptEvent);
-      window.deferredPrompt = promptEvent;
+      pwaWin.deferredPrompt = promptEvent;
     };
 
-    // 사용자가 실제로 설치를 완료했을 때
     const onInstallFinished = () => {
       setInstallEvent(null);
-      window.deferredPrompt = null;
+      pwaWin.deferredPrompt = null;
+      setIsStandalone(true);
+      addToast("앱 설치가 완료되었습니다!", "success");
     };
 
     window.addEventListener('beforeinstallprompt', onReadyToInstall);
@@ -28,23 +57,35 @@ export const usePWAInstall = () => {
       window.removeEventListener('beforeinstallprompt', onReadyToInstall);
       window.removeEventListener('appinstalled', onInstallFinished);
     };
-  }, []);
+  }, [addToast]);
 
-  // 실제 설치 팝업
   const install = useCallback(async () => {
-    const prompt = installEvent || window.deferredPrompt;
-    if (!prompt) return;
-
-    await prompt.prompt();
-    await prompt.userChoice;
+    const pwaWin = getPWAWindow();
+    const prompt = installEvent || pwaWin?.deferredPrompt;
     
-    // 설치 시도 후 상태 초기화
-    setInstallEvent(null);
-    window.deferredPrompt = null;
-  }, [installEvent]);
+    if (!prompt) {
+      addToast("설치 가능한 환경이 아니거나 이미 설치되었습니다.", "error");
+      return;
+    }
+
+    try {
+      await prompt.prompt();
+      const { outcome } = await prompt.userChoice;
+      
+      if (outcome !== 'accepted') {
+        addToast("설치가 취소되었습니다.", "info");
+      }
+
+      setInstallEvent(null);
+      if (pwaWin) pwaWin.deferredPrompt = null;
+    } catch {
+      addToast("설치 중 오류가 발생했습니다.", "error");
+    }
+  }, [installEvent, addToast]);
 
   return {
-    canInstall: !!(installEvent || window.deferredPrompt), // 설치 가능 상태인가?
-    install // 설치 시작하기
+    canInstall: !!(installEvent || getPWAWindow()?.deferredPrompt) && !isStandalone,
+    install,
+    isStandalone
   };
 };

@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useCallback, useMemo } from 'react'; // 추가
 import useToastStore from '../../../store/useToastStore';
 import { useAuthStore } from '../../../store/useAuthStore';
 import { alertService } from '../../../apis/alarm';
@@ -11,10 +12,11 @@ interface MutationContext {
 export const useAlarmSetting = () => {
   const queryClient = useQueryClient();
   const addToast = useToastStore((state) => state.addToast);
+
   const accessToken = useAuthStore((state) => state.accessToken);
 
   const { data: selectedTimes = [], isLoading } = useQuery({
-    queryKey: ['alarmSettings'],
+    queryKey: SETTING_KEYS.alarm, 
     queryFn: async () => {
       const timeList = await alertService.getAlertSettings();
       if (!Array.isArray(timeList)) return []; 
@@ -28,17 +30,20 @@ export const useAlarmSetting = () => {
     staleTime: 1000 * 60 * 5, 
   });
 
-  const { mutate } = useMutation<void, unknown, string[], MutationContext>({
+  const { mutateAsync } = useMutation<void, unknown, string[], MutationContext>({
     mutationFn: async (newTimes: string[]) => {
       const timeListForApi = newTimes
         .map((label) => TIME_MAPPING[label])
         .filter((val): val is number => val !== undefined);
       await alertService.updateAlertSettings(timeListForApi);
     },
+    // 낙관적 업데이트
     onMutate: async (newTimes) => {
       await queryClient.cancelQueries({ queryKey: SETTING_KEYS.alarm });
       const previousSettings = queryClient.getQueryData<string[]>(SETTING_KEYS.alarm);
+
       queryClient.setQueryData(SETTING_KEYS.alarm, newTimes);
+      
       return { previousSettings };
     },
     onError: (_err, _newTimes, context) => {
@@ -52,16 +57,17 @@ export const useAlarmSetting = () => {
     },
   });
 
-  const toggleTime = (timeLabel: string) => {
-    const currentTimes = selectedTimes;
-    let newTimes: string[];
-    if (currentTimes.includes(timeLabel)) {
-      newTimes = currentTimes.filter((t) => t !== timeLabel);
-    } else {
-      newTimes = [...currentTimes, timeLabel];
-    }
-    mutate(newTimes);
-  };
+  const toggleTime = useCallback((timeLabel: string) => {
+    const newTimes = selectedTimes.includes(timeLabel)
+      ? selectedTimes.filter((t) => t !== timeLabel)
+      : [...selectedTimes, timeLabel];
 
-  return { selectedTimes, isLoading, toggleTime };
+    mutateAsync(newTimes);
+  }, [selectedTimes, mutateAsync]);
+
+  return useMemo(() => ({ 
+    selectedTimes, 
+    isLoading, 
+    toggleTime 
+  }), [selectedTimes, isLoading, toggleTime]);
 };
