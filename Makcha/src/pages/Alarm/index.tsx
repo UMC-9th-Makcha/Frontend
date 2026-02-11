@@ -1,9 +1,8 @@
-// Alarm/index.tsx
 import { useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import Panel from "../../components/common/Panel";
 import KakaoMapView from "./KakaoMapView";
-import SearchSheet from "./sheets/SearchSheet";
+import SearchSheet from "./panels/SearchSheet";
 import AlarmPanelSwitch from "./panels/AlarmPanelSwitch";
 import { useAlarmFlow } from "./hooks/useAlarmFlow";
 import { useAuth } from "../../hooks/useAuth";
@@ -23,7 +22,38 @@ const Alarm = () => {
     const flow = useAlarmFlow();
     const navigate = useNavigate();
     const location = useLocation();
+    const [searchParams] = useSearchParams();
     const { user } = useAuth();
+
+    useEffect(() => {
+        const openConfirmRaw = searchParams.get("openConfirm");
+        const from = searchParams.get("from");
+        const notificationIdRaw = searchParams.get("notificationId");
+        const routeIdRaw = searchParams.get("routeId");
+
+        const openConfirm = openConfirmRaw === "1" || openConfirmRaw === "true";
+        const notificationId = notificationIdRaw ? Number(notificationIdRaw) : undefined;
+        const routeId = routeIdRaw ? String(routeIdRaw) : undefined;
+
+        const hasDeepLink =
+            openConfirm &&
+            from === "history" &&
+            Number.isFinite(notificationId) &&
+            typeof routeId === "string" &&
+            routeId.length > 0;
+
+        if (!hasDeepLink) return;
+
+        navigate("/alarm", {
+            replace: true,
+            state: {
+                from: "history",
+                openConfirm: true,
+                notificationId,
+                routeId,
+            },
+        });
+    }, [navigate, searchParams]);
 
     useEffect(() => {
         const st: unknown = location.state;

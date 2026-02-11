@@ -14,14 +14,13 @@ const CurrentAlarmCard = ({ alarm, onCreate }: Props) => {
     const navigate = useNavigate();
     const { mutateAsync: forceComplete, isPending: forcing } = useForceCompleteAlert();
 
-    // 1) 알림 없음
     if (!alarm) {
         return (
             <div
                 className="
-                    w-full rounded-[20px]
-                    border border-gray-200 bg-white shadow-sm
-                    dark:border-makcha-navy-700 dark:bg-makcha-navy-900
+                w-full rounded-[20px]
+                border border-gray-200 bg-white shadow-sm
+                dark:border-makcha-navy-700 dark:bg-makcha-navy-900
                 "
             >
                 <h2 className="px-6 py-4 text-[26px] font-medium text-makcha-navy-900 dark:text-white">
@@ -39,9 +38,9 @@ const CurrentAlarmCard = ({ alarm, onCreate }: Props) => {
                         type="button"
                         onClick={onCreate}
                         className="
-                            h-[50px] w-[267px] rounded-[30px]
-                            bg-makcha-navy-400 text-[20px] font-medium text-white
-                        "
+                        h-[50px] w-[267px] rounded-[30px]
+                        bg-makcha-navy-400 text-[20px] font-medium text-white
+                    "
                     >
                         막차 알림 생성하기
                     </button>
@@ -50,16 +49,14 @@ const CurrentAlarmCard = ({ alarm, onCreate }: Props) => {
         );
     }
 
-    // 2) 알림 있음
     return (
         <div className="w-full">
-            {/* 카드 */}
             <div
                 className="
-                    w-full rounded-[26px]
-                    border border-gray-200 bg-white p-5 shadow-sm
-                    dark:border-makcha-navy-700 dark:bg-makcha-navy-900
-                "
+                w-full rounded-[26px]
+                border border-gray-200 bg-white p-5 shadow-sm
+                dark:border-makcha-navy-700 dark:bg-makcha-navy-900
+            "
             >
                 <div className="flex items-center gap-3">
                     <div className="-my-1 flex-1 overflow-x-auto">
@@ -118,14 +115,14 @@ const CurrentAlarmCard = ({ alarm, onCreate }: Props) => {
                     <button
                         type="button"
                         onClick={() => {
-                            navigate("/alarm", {
-                                state: {
-                                    from: "history",
-                                    openConfirm: true,
-                                    notificationId: alarm.notificationId,
-                                    routeId: alarm.routeId,
-                                },
+                            const qs = new URLSearchParams({
+                                from: "history",
+                                openConfirm: "1",
+                                notificationId: String(alarm.notificationId),
+                                routeId: String(alarm.routeId ?? ""),
                             });
+
+                            navigate(`/alarm?${qs.toString()}`);
                         }}
                         className="
                             shrink-0 whitespace-nowrap
@@ -157,8 +154,8 @@ const CurrentAlarmCard = ({ alarm, onCreate }: Props) => {
                         dark:border-white/60 dark:text-white/60
                     "
                 >
-                    총 {alarm.totalDurationMin}분 소요 &nbsp;·&nbsp; 환승 {alarm.transferCount}회
-                    &nbsp;·&nbsp; 도보 {alarm.walkingTimeMin}분
+                    총 {alarm.totalDurationMin}분 소요 &nbsp;·&nbsp; 환승 {alarm.transferCount}회 &nbsp;·&nbsp;
+                    도보 {alarm.walkingTimeMin}분
                 </div>
             </div>
         </div>
