@@ -5,6 +5,7 @@ import { useCurrentLocation } from "../../../hooks/useCurrentLocation";
 import { useUIStore } from "../../../store/useUIStore";
 import { DEFAULT_MAP_CENTER, PATH_COLORS, MARKER_COLORS } from "./constant";
 import type { BaseMapProps, MapPathSegment, PathType, MapMarker } from "../../../types/map";
+import MapReenterButton from "./components/MapReenterButton";
 
 interface ExtendedPathSegment extends MapPathSegment {
   routeId?: string;
@@ -131,11 +132,25 @@ const BaseMap = ({
     onMarkerClick?.(m);
   }, [onMarkerClick]);
 
+  // 현위치 이동 로직
+  const handleReenterLocation = useCallback(() => {
+    if (!map) return;
+    
+    if (userLoc) {
+      map.panTo(new kakao.maps.LatLng(userLoc.lat, userLoc.lng));
+    }
+  }, [map, userLoc]);
+
   if (loading || sdkError) return <div className="h-full w-full bg-gray-100 animate-pulse" />;
 
   return (
     <div className={`h-full w-full relative kakao-map-wrapper ${isDarkMode ? "map-dark-mode" : ""}`}>
       <MapStyles isDarkMode={isDarkMode} />
+
+      <MapReenterButton
+        onClick={handleReenterLocation} 
+        isDarkMode={isDarkMode} 
+      />
 
       <Map
         center={DEFAULT_MAP_CENTER}
