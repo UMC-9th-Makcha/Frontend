@@ -24,7 +24,7 @@ const Panel = ({
 
         bg-white dark:bg-makcha-navy-900
         
-        relative h-full shrink-0 z-39
+        relative h-full md:h-screen shrink-0 z-39
         w-full flex-col overflow-hidden
 
         md:after:absolute md:after:top-0 md:after:bottom-0 md:after:right-0 
