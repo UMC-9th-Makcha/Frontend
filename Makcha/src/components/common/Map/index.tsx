@@ -1,10 +1,11 @@
-import React, { useEffect, useMemo, useState, useCallback, memo } from "react";
+import React, { useEffect, useMemo, useState, useCallback, memo, useRef } from "react";
 import { Map, CustomOverlayMap, Polyline, useKakaoLoader } from "react-kakao-maps-sdk";
 import { MapPin } from "lucide-react";
 import { useCurrentLocation } from "../../../hooks/useCurrentLocation";
 import { useUIStore } from "../../../store/useUIStore";
 import { DEFAULT_MAP_CENTER, PATH_COLORS, MARKER_COLORS } from "./constant";
 import type { BaseMapProps, MapPathSegment, PathType, MapMarker } from "../../../types/map";
+
 import UserLocationMarker from "./components/UserLocationMarker";
 import MapReenterButton from "./components/MapReenterButton";
 
@@ -91,6 +92,8 @@ const BaseMap = ({
     level: 3,
   });
 
+  const isInitialized = useRef(false);
+
   const bounds = useMemo(() => {
     if (markers.length === 0 && paths.length === 0) return null;
     const b = new kakao.maps.LatLngBounds();
@@ -99,27 +102,28 @@ const BaseMap = ({
     return b;
   }, [markers, paths]);
 
+  // 초기 범위 설정
   useEffect(() => {
-    if (map && bounds) {
-      // 지도 이동
+    if (map && bounds && !isInitialized.current) {
       map.setBounds(bounds, 30);
+      isInitialized.current = true;
       
       const timer = setTimeout(() => {
-        const center = map.getCenter();
-        const level = map.getLevel();
-        setViewState({
-          center: { lat: center.getLat(), lng: center.getLng() },
-          level: level,
+        const c = map.getCenter();
+        setViewState({ 
+          center: { lat: c.getLat(), lng: c.getLng() }, 
+          level: map.getLevel() 
         });
-      }, 0);
-
+      }, 200);
       return () => clearTimeout(timer);
     }
   }, [map, bounds]);
 
-  const updateViewState = useCallback((target: kakao.maps.Map) => {
+  // 움직일 때 업데이트
+  const handleUpdateView = useCallback((target: kakao.maps.Map) => {
+    const c = target.getCenter();
     setViewState({
-      center: { lat: target.getCenter().getLat(), lng: target.getCenter().getLng() },
+      center: { lat: c.getLat(), lng: c.getLng() },
       level: target.getLevel(),
     });
   }, []);
@@ -139,8 +143,7 @@ const BaseMap = ({
     }
     
     if (map && userLoc) {
-      const moveLatLon = new kakao.maps.LatLng(userLoc.lat, userLoc.lng);
-      map.panTo(moveLatLon);
+      map.panTo(new kakao.maps.LatLng(userLoc.lat, userLoc.lng));
     }
   }, [map, userLoc]);
 
@@ -149,8 +152,11 @@ const BaseMap = ({
   return (
     <div className={`h-full w-full relative kakao-map-wrapper ${isDarkMode ? "map-dark-mode" : ""}`}>
       <MapStyles isDarkMode={isDarkMode} />
-      
-      <MapReenterButton onClick={handleReenterLocation} isDarkMode={isDarkMode} />
+
+      <MapReenterButton 
+        onClick={handleReenterLocation} 
+        isDarkMode={isDarkMode} 
+      />
 
       <Map
         center={viewState.center}
@@ -158,9 +164,10 @@ const BaseMap = ({
         style={{ width: "100%", height: "100%" }}
         onCreate={setMap}
         onClick={handleMapClick}
-        onDragEnd={updateViewState}   
-        onZoomChanged={updateViewState} 
+        onDragEnd={handleUpdateView}
+        onZoomChanged={handleUpdateView}
       >
+
         {paths.map((seg, i) => (
           <PathSegment 
             key={`path-${(seg as ExtendedPathSegment).routeId ?? seg.id}-${i}`} 
@@ -179,7 +186,6 @@ const BaseMap = ({
           />
         ))}
 
-        {/* 내 위치 마커 */}
         {userLoc && <UserLocationMarker position={userLoc} />}
       </Map>
     </div>
