@@ -1,7 +1,7 @@
 import type { PathType } from "../../../types/map";
 import type { RouteConfirmSegment } from "../types/routeConfirm";
 import type { AlarmRoute } from "../types/alarm";
-import type { Candidate, CandidateStep } from "../hooks/useAlarmFlow";
+import type { Candidate, CandidateStep } from "../types/candidate";
 import { formatHHMM, formatMinutesLeftText } from "./format";
 
 export const busTypeToMapType = (t?: number | null): PathType => {
