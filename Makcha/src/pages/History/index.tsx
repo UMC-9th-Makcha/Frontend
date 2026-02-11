@@ -16,7 +16,7 @@ import { api } from "../../apis/api";
 import type { RouteConfirmDetail } from "../Alarm/types/routeConfirm";
 import { stepsToSegments } from "../Alarm/utils/mapper";
 import KakaoMapView from "../Alarm/KakaoMapView";
-import type { CandidateStep } from "../Alarm/hooks/useAlarmFlow";
+import type { CandidateStep } from "../Alarm/types/candidate";
 
 type BaseResponse<T> = {
   successCode: string;
