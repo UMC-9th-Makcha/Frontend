@@ -1,7 +1,11 @@
 import { useEffect, useState, useRef, memo } from "react";
 import { CustomOverlayMap } from "react-kakao-maps-sdk";
-import { Navigation } from "lucide-react";
 
+interface DeviceOrientationEventExtended extends DeviceOrientationEvent {
+  webkitCompassHeading?: number;
+}
+
+// GPS 기반 방위각 계산
 const calculateBearing = (startLat: number, startLng: number, destLat: number, destLng: number) => {
   const startLatRad = (startLat * Math.PI) / 180;
   const startLngRad = (startLng * Math.PI) / 180;
@@ -13,64 +17,70 @@ const calculateBearing = (startLat: number, startLng: number, destLat: number, d
     Math.cos(startLatRad) * Math.sin(destLatRad) -
     Math.sin(startLatRad) * Math.cos(destLatRad) * Math.cos(destLngRad - startLngRad);
 
-  const brng = (Math.atan2(y, x) * 180) / Math.PI;
-  return (brng + 360) % 360;
+  return (Math.atan2(y, x) * 180) / Math.PI;
 };
 
-interface IOSDeviceOrientationEvent extends DeviceOrientationEvent {
-  webkitCompassHeading?: number;
-}
-
 const useSmartHeading = (currentPos: { lat: number; lng: number }) => {
-  const [heading, setHeading] = useState<number>(0);
+  const [heading, setHeading] = useState(0);
+  const internalHeading = useRef(0); 
   const lastPos = useRef<{ lat: number; lng: number } | null>(null);
   const isSensorActive = useRef(false);
+  const updateHeading = (newAngle: number) => {
+    const current = internalHeading.current;
+    const currentNormalized = ((current % 360) + 360) % 360;
+    
+    let delta = newAngle - currentNormalized;
+    if (delta > 180) delta -= 360;
+    else if (delta < -180) delta += 360;
+
+    const nextHeading = current + delta;
+    internalHeading.current = nextHeading;
+    setHeading(nextHeading);
+  };
 
   useEffect(() => {
-    let ticking = false;
+    const handleOrientation = (e: Event) => {
+      const event = e as DeviceOrientationEventExtended;
+      let compass = -1;
 
-    const handleOrientation = (event: DeviceOrientationEvent) => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const iosEvent = event as IOSDeviceOrientationEvent;
-          let compass = -1;
+      // 1. iOS
+      if (event.webkitCompassHeading !== undefined) {
+        compass = event.webkitCompassHeading;
+      } 
+      // 2. Android
+      else if (event.alpha !== null) {
+        compass = 360 - event.alpha;
+      }
 
-          // iOS
-          if (typeof iosEvent.webkitCompassHeading === "number") {
-            compass = iosEvent.webkitCompassHeading;
-          } 
-          // Android (크롬)
-          else if (event.alpha !== null) {
-            compass = Math.abs(event.alpha - 360);
-          }
-
-          if (compass !== -1) {
-            isSensorActive.current = true;
-            setHeading(compass);
-          }
-          ticking = false;
-        });
-        ticking = true;
+      if (compass !== -1) {
+        isSensorActive.current = true;
+        updateHeading(compass);
       }
     };
 
-    window.addEventListener("deviceorientation", handleOrientation, true);
-    return () => window.removeEventListener("deviceorientation", handleOrientation, true);
+    const eventType = "ondeviceorientationabsolute" in window 
+      ? "deviceorientationabsolute" 
+      : "deviceorientation";
+
+    window.addEventListener(eventType, handleOrientation as EventListener, true);
+
+    return () => {
+      window.removeEventListener(eventType, handleOrientation as EventListener, true);
+    };
   }, []);
 
-  // PC/GPS 이동 기반 방향 계산
+  // GPS 이동 기반 방향 계산
   useEffect(() => {
     if (lastPos.current && !isSensorActive.current) {
       const { lat: prevLat, lng: prevLng } = lastPos.current;
       const { lat: curLat, lng: curLng } = currentPos;
 
-      // 미세한 GPS 튐 방지
       const distLat = Math.abs(prevLat - curLat);
       const distLng = Math.abs(prevLng - curLng);
-      
+
       if (distLat > 0.00002 || distLng > 0.00002) {
-        const bearing = calculateBearing(prevLat, prevLng, curLat, curLng);
-        setHeading(bearing);
+        const bearing = (calculateBearing(prevLat, prevLng, curLat, curLng) + 360) % 360;
+        updateHeading(bearing);
       }
     }
     lastPos.current = currentPos;
@@ -79,29 +89,39 @@ const useSmartHeading = (currentPos: { lat: number; lng: number }) => {
   return heading;
 };
 
-interface UserLocationMarkerProps {
-  position: { lat: number; lng: number };
-}
-
-const UserLocationMarker = memo(({ position }: UserLocationMarkerProps) => {
+const UserLocationMarker = memo(({ position }: { position: { lat: number; lng: number } }) => {
   const heading = useSmartHeading(position);
 
   return (
-    <CustomOverlayMap position={position} zIndex={15}>
-      <div className="relative flex h-8 w-8 items-center justify-center anti-invert">
-        {/* 핑 효과 */}
-        <div className="absolute h-full w-full animate-ping rounded-full bg-makcha-navy-400 opacity-40" />
-        
-        {/* 회전하는 아이콘 */}
+    <CustomOverlayMap position={position} zIndex={15} xAnchor={0.5} yAnchor={0.5}>
+      <div className="relative flex h-14 w-14 items-center justify-center anti-invert pointer-events-none">
+
+        <div className="absolute h-10 w-10 animate-ping rounded-full bg-makcha-navy-400 opacity-20" />
+        <div className="absolute h-8 w-8 rounded-full bg-makcha-navy-500 opacity-10" />
+
         <div
-          className="flex h-5 w-5 items-center justify-center rounded-full border-2 border-white bg-makcha-navy-600 shadow-lg will-change-transform"
+          className="relative z-20 flex items-center justify-center will-change-transform"
           style={{
             transform: `rotate(${heading}deg)`,
-            transition: "transform 0.3s ease-out",
+            transition: "transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+            filter: "drop-shadow(0px 3px 5px rgba(0,0,0,0.3))"
           }}
         >
-          <Navigation size={10} fill="white" className="text-white" />
+          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71L12 2z"
+              fill="white"
+            />
+            <path
+              d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71L12 2z"
+              className="fill-makcha-navy-600 dark:fill-makcha-yellow-400"
+              stroke="white"
+              strokeWidth="1"
+              strokeLinejoin="round"
+            />
+          </svg>
         </div>
+
       </div>
     </CustomOverlayMap>
   );

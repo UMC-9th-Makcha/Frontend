@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState, useCallback, memo, useRef } from "react";
-import { Map, CustomOverlayMap, Polyline, useKakaoLoader } from "react-kakao-maps-sdk";
+import { Map, CustomOverlayMap, Polyline } from "react-kakao-maps-sdk";
 import { MapPin } from "lucide-react";
 import { useCurrentLocation } from "../../../hooks/useCurrentLocation";
 import { useUIStore } from "../../../store/useUIStore";
@@ -8,14 +8,7 @@ import type { BaseMapProps, MapPathSegment, PathType, MapMarker } from "../../..
 
 import UserLocationMarker from "./components/UserLocationMarker";
 import MapReenterButton from "./components/MapReenterButton";
-
-interface LocalBaseMapProps extends BaseMapProps {
-  buttonClassName?: string;
-}
-
-interface IOSDeviceOrientationEventStatic {
-  requestPermission?: () => Promise<'granted' | 'denied'>;
-}
+import LoadingSpinner from "../loadingSpinner";
 
 interface ExtendedPathSegment extends MapPathSegment {
   routeId?: string;
@@ -25,15 +18,14 @@ interface ExtendedPathSegment extends MapPathSegment {
 const MapStyles = memo(({ isDarkMode }: { isDarkMode: boolean }) => {
   if (!isDarkMode) return null;
   return (
-    <style>{`
+    <style dangerouslySetInnerHTML={{ __html: `
       .map-dark-mode .kakao-map-wrapper [style*="background-color: white"],
       .map-dark-mode .kakao-map-wrapper canvas,
       .map-dark-mode .kakao-map-wrapper img[src*="t1.kakaocdn.net/mapjsapi"] {
         filter: invert(95%) hue-rotate(180deg) brightness(0.9) contrast(1.1) !important;
-        pointer-events: none !important;
       }
       .map-dark-mode .anti-invert { filter: invert(100%) hue-rotate(-180deg) !important; }
-    `}</style>
+    ` }} />
   );
 });
 
@@ -73,27 +65,17 @@ const MapMarkerItem = memo(({ marker, isActive, onClick }: { marker: MapMarker; 
   );
 });
 
-const BaseMap = ({
-  markers = [],
-  activeId,
-  paths = [],
-  selectedPathId,
-  onMarkerClick,
-  onMapClick,
-}: LocalBaseMapProps) => {
-  const [loading, sdkError] = useKakaoLoader({ appkey: import.meta.env.VITE_KAKAO_JS_KEY });
+const BaseMap = ({ markers = [], activeId, paths = [], selectedPathId, onMarkerClick, onMapClick }: BaseMapProps) => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
-
-  const { location: userLoc } = useCurrentLocation();
+  const { location: userLoc, refetch: mapRefetch } = useCurrentLocation();
   const isDarkMode = useUIStore((s) => s.isDarkMode);
 
-  const [viewState, setViewState] = useState({
-    center: DEFAULT_MAP_CENTER,
-    level: 3,
-  });
-
+  const [isReady, setIsReady] = useState(false);
+  const [mapLevel, setMapLevel] = useState(3);
   const isInitialized = useRef(false);
+  const lastViewCenter = useRef(DEFAULT_MAP_CENTER);
 
+  // 데이터 범위 계산
   const bounds = useMemo(() => {
     if (markers.length === 0 && paths.length === 0) return null;
     const b = new kakao.maps.LatLngBounds();
@@ -102,91 +84,75 @@ const BaseMap = ({
     return b;
   }, [markers, paths]);
 
-  // 초기 범위 설정
+  // 초기 중심 계산
+  const initialCenter = useMemo(() => {
+    if (isInitialized.current) return lastViewCenter.current;
+    if (bounds) {
+      const sw = bounds.getSouthWest();
+      const ne = bounds.getNorthEast();
+      return { lat: (sw.getLat() + ne.getLat()) / 2, lng: (sw.getLng() + ne.getLng()) / 2 };
+    }
+    return userLoc || DEFAULT_MAP_CENTER;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userLoc]);
+
+  // 지도 로드 후 초기화
   useEffect(() => {
-    if (map && bounds && !isInitialized.current) {
-      map.setBounds(bounds, 30);
+    if (map && !isInitialized.current) {
+      if (bounds) map.setBounds(bounds, 30);
       isInitialized.current = true;
-      
-      const timer = setTimeout(() => {
+      setTimeout(() => {
         const c = map.getCenter();
-        setViewState({ 
-          center: { lat: c.getLat(), lng: c.getLng() }, 
-          level: map.getLevel() 
-        });
-      }, 200);
-      return () => clearTimeout(timer);
+        lastViewCenter.current = { lat: c.getLat(), lng: c.getLng() };
+        setMapLevel(map.getLevel());
+        setIsReady(true);
+      }, 400);
     }
   }, [map, bounds]);
 
-  // 움직일 때 업데이트
   const handleUpdateView = useCallback((target: kakao.maps.Map) => {
     const c = target.getCenter();
-    setViewState({
-      center: { lat: c.getLat(), lng: c.getLng() },
-      level: target.getLevel(),
-    });
+    lastViewCenter.current = { lat: c.getLat(), lng: c.getLng() };
+    setMapLevel(target.getLevel());
   }, []);
 
-  const handleMapClick = useCallback((_map: kakao.maps.Map, e: kakao.maps.event.MouseEvent) => {
-    onMapClick?.({ lat: e.latLng.getLat(), lng: e.latLng.getLng() });
-  }, [onMapClick]);
-
-  const handleMarkerClick = useCallback((m: MapMarker) => {
-    onMarkerClick?.(m);
-  }, [onMarkerClick]);
-
   const handleReenterLocation = useCallback(() => {
-    const DeviceOrientation = DeviceOrientationEvent as unknown as IOSDeviceOrientationEventStatic;
-    if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientation.requestPermission === "function") {
-      DeviceOrientation.requestPermission().catch(() => {});
-    }
-    
-    if (map && userLoc) {
-      map.panTo(new kakao.maps.LatLng(userLoc.lat, userLoc.lng));
-    }
-  }, [map, userLoc]);
-
-  if (loading || sdkError) return <div className="h-full w-full bg-gray-100 animate-pulse" />;
+    if (!map || !userLoc) { mapRefetch(); return; }
+    map.panTo(new kakao.maps.LatLng(userLoc.lat, userLoc.lng));
+    setMapLevel(3);
+  }, [map, userLoc, mapRefetch]);
 
   return (
     <div className={`h-full w-full relative kakao-map-wrapper ${isDarkMode ? "map-dark-mode" : ""}`}>
-      <MapStyles isDarkMode={isDarkMode} />
+      {!isReady && (
+        <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-white dark:bg-makcha-navy-900">
+          <LoadingSpinner />
+        </div>
+      )}
 
-      <MapReenterButton 
-        onClick={handleReenterLocation} 
-        isDarkMode={isDarkMode} 
-      />
+      <MapStyles isDarkMode={isDarkMode} />
+      <MapReenterButton onClick={handleReenterLocation} isDarkMode={isDarkMode} />
 
       <Map
-        center={viewState.center}
-        level={viewState.level}
+        center={initialCenter}
+        level={mapLevel}
         style={{ width: "100%", height: "100%" }}
         onCreate={setMap}
-        onClick={handleMapClick}
+        onClick={(_map, e) => onMapClick?.({ lat: e.latLng.getLat(), lng: e.latLng.getLng() })}
         onDragEnd={handleUpdateView}
         onZoomChanged={handleUpdateView}
       >
-
-        {paths.map((seg, i) => (
-          <PathSegment 
-            key={`path-${(seg as ExtendedPathSegment).routeId ?? seg.id}-${i}`} 
-            seg={seg as ExtendedPathSegment} 
-            selectedPathId={selectedPathId ?? undefined} 
-            isDarkMode={isDarkMode} 
-          />
-        ))}
-
-        {markers.map((m) => (
-          <MapMarkerItem 
-            key={`${m.variant}-${m.id}`} 
-            marker={m} 
-            isActive={m.id === activeId} 
-            onClick={handleMarkerClick} 
-          />
-        ))}
-
-        {userLoc && <UserLocationMarker position={userLoc} />}
+        {isReady && (
+          <>
+            {paths.map((seg, i) => (
+              <PathSegment key={`path-${(seg as ExtendedPathSegment).routeId ?? seg.id}-${i}`} seg={seg as ExtendedPathSegment} selectedPathId={selectedPathId ?? undefined} isDarkMode={isDarkMode} />
+            ))}
+            {markers.map((m) => (
+              <MapMarkerItem key={`${m.variant}-${m.id}`} marker={m} isActive={m.id === activeId} onClick={onMarkerClick || (() => {})} />
+            ))}
+            {userLoc && <UserLocationMarker position={userLoc} />}
+          </>
+        )}
       </Map>
     </div>
   );
