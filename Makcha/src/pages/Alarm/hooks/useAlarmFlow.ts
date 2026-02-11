@@ -2,9 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import type { OriginSearchItem } from "../types/search";
 import type { AlarmRoute } from "../types/alarm";
-import type { RouteConfirmDetail, RouteConfirmSegment } from "../types/routeConfirm";
+import type { RouteConfirmDetail } from "../types/routeConfirm";
 import { api } from "../../../apis/api";
-import type { PathType } from "../../../types/map";
+import { formatHHMM, formatMinutesLeftText, formatEtaText } from "../utils/format";
+import { stepsToSegments, candidatesToRoutes } from "../utils/mapper";
+import { useCancelAlert } from "./useCancelAlert";
 
 export type Step = "INPUT" | "LOADING" | "RESULT" | "CONFIRM" | "SUCCESS";
 export type SearchTarget = "ORIGIN" | "DESTINATION";
@@ -14,11 +16,11 @@ type CreateAlertBody = {
     alert_time?: number;
 };
 
-
 type NavState = {
     from?: "history";
     openConfirm?: boolean;
     routeId?: string;
+    notificationId?: number;
 };
 
 type BaseResponse<T> = {
@@ -33,16 +35,16 @@ const createAlert = async (body: CreateAlertBody) => {
     return res.data.result;
 };
 
-type CandidatePoint = { lat: number; lng: number };
+export type CandidatePoint = { lat: number; lng: number };
 
-type CandidateStation = {
+export type CandidateStation = {
     name: string;
     lat: number;
     lng: number;
     id: number;
 };
 
-type CandidateStep = {
+export type CandidateStep = {
     type: string;
     points: CandidatePoint[];
     section_time: number;
@@ -61,7 +63,7 @@ type CandidateStep = {
     subway_type: number | null;
 };
 
-type Candidate = {
+export type Candidate = {
     candidate_key: string;
     route_token: string;
     is_optimal: boolean;
@@ -77,6 +79,32 @@ type Candidate = {
     detail: {
         steps: CandidateStep[];
     };
+};
+
+type AlertDetailResult = {
+    notification_id: number;
+
+    is_optimal: boolean;
+    lines: string[];
+    total_duration_min: number;
+    transfer_count: number;
+    walking_time_min: number;
+    minutes_left: number;
+
+    departure_at?: string;
+    arrival_at?: string;
+
+    route_id?: string;
+    route_token: string;
+
+    steps: CandidateStep[];
+};
+
+const fetchAlertDetail = async (notificationId: number) => {
+    const res = await api.get<BaseResponse<AlertDetailResult>>(
+        `/api/alerts/${notificationId}/detail`
+    );
+    return res.data.result;
 };
 
 export function useAlarmFlow() {
@@ -97,163 +125,46 @@ export function useAlarmFlow() {
     const [candidatesRaw, setCandidatesRaw] = useState<Candidate[]>([]);
     const cameFromHistoryRef = useRef(false);
 
-    const formatHHMM = (iso?: string) => {
-        if (!iso) return "";
-        const d = new Date(iso);
-        const hh = String(d.getHours()).padStart(2, "0");
-        const mm = String(d.getMinutes()).padStart(2, "0");
-        return `${hh}:${mm}`;
+    const [historyConfirm, setHistoryConfirm] = useState<{
+        notificationId: number;
+        detail: RouteConfirmDetail;
+    } | null>(null);
+
+    const { mutateAsync: cancelMutateAsync, isPending: deletingAlert } = useCancelAlert();
+
+    type RouteCandidatesPointBody = {
+        lat: number;
+        lng: number;
+        title: string;
+        roadAddress: string;
+        detailAddress: string;
     };
 
-    const formatMinutesLeftText = (minutesLeft: number) => {
-        if (!Number.isFinite(minutesLeft)) return "";
-        if (minutesLeft <= 0) return "지금 출발";
-        const h = Math.floor(minutesLeft / 60);
-        const m = minutesLeft % 60;
-        if (h <= 0) return `출발까지 ${m}분`;
-        if (m === 0) return `출발까지 ${h}시간`;
-        return `출발까지 ${h}시간 ${m}분`;
-    };
-
-    const formatEtaText = (iso?: string) => {
-        const hhmm = formatHHMM(iso);
-        return hhmm ? `${hhmm} 도착` : "";
-    };
-
-    const extractChips = (cand: Candidate): string[] => {
-        const steps = cand.detail?.steps ?? [];
-        const chips: string[] = [];
-
-        for (const s of steps) {
-            if (s.type === "SUBWAY") {
-                const lineName = s.subway_lines?.[0];
-                if (lineName) chips.push(lineName.replace("수도권 ", "").replace(" ", ""));
-            }
-
-            if (typeof s.type === "string" && s.type.startsWith("SUBWAY_")) {
-                const n = s.subway_type ?? Number(s.type.replace("SUBWAY_", ""));
-                if (Number.isFinite(n)) chips.push(`${n}호선`);
-            }
-
-            if (s.type === "BUS" || (typeof s.type === "string" && s.type.startsWith("BUS"))) {
-                const nums: string[] = s.bus_numbers ?? [];
-                nums.forEach((x) => chips.push(x));
-            }
-        }
-
-        return chips.length ? chips : (cand.tags ?? []);
-    };
-
-    const busTypeToMapType = (t?: number | null): PathType => {
-        if (t === 4 || t === 6 || t === 14 || t === 15) return "BUS_RED";
-        if (t === 11) return "BUS_BLUE";
-        if (t === 1 || t === 2 || t === 3 || t === 12) return "BUS_GREEN";
-
-        return "BUS_BLUE";
-    };
-
-    const subwayTypeToMapType = (t?: number | null): PathType => {
-        const n = Number(t);
-        if (Number.isFinite(n)) {
-            if (n >= 1 && n <= 9) return `SUBWAY_${n}` as PathType;
-            if (n === 116) return "SUBWAY_SUIN";
-        }
-        return "SUBWAY_2";
-    };
-
-    function stepsToSegments(steps: CandidateStep[]): RouteConfirmSegment[] {
-        return steps.map((s) => {
-            if (s.type === "WALK") {
-                return {
-                    mode: "WALK",
-                    durationMin: s.section_time ?? 0,
-                    distanceM: s.distance ?? undefined,
-                    mapType: "WALK",
-                };
-            }
-
-            if (s.type === "SUBWAY" || (typeof s.type === "string" && s.type.startsWith("SUBWAY"))) {
-                const lineLabel =
-                    s.subway_lines?.[0]?.replace("수도권 ", "").replace(" ", "") ??
-                    (Number.isFinite(s.subway_type ?? NaN) ? `${s.subway_type}호선` : "지하철");
-
-                return {
-                    mode: "SUBWAY",
-                    lineLabel,
-                    from: s.from?.name ?? "출발",
-                    to: s.to?.name ?? "도착",
-                    durationMin: s.section_time ?? 0,
-                    stops: s.station_count ?? undefined,
-                    mapType: subwayTypeToMapType(s.subway_type),
-                };
-            }
-
-            if (s.type === "BUS" || (typeof s.type === "string" && s.type.startsWith("BUS"))) {
-                const busNo = s.bus_numbers?.[0] ?? "버스";
-                const busType = s.bus_types?.[0] ?? null;
-                return {
-                    mode: "BUS",
-                    lineLabel: busNo,
-                    from: s.from?.name ?? "출발",
-                    to: s.to?.name ?? "도착",
-                    durationMin: s.section_time ?? 0,
-                    stops: s.station_count ?? undefined,
-                    mapType: busTypeToMapType(busType),
-                };
-            }
-
-            return {
-                mode: "WALK",
-                durationMin: s.section_time ?? 0,
-                distanceM: s.distance ?? undefined,
-                mapType: "WALK",
-            };
-        });
-    }
-
-    const candidatesToRoutes = (candidates: Candidate[]): AlarmRoute[] => {
-        return candidates.map((c) => {
-            const minutesLeft = c.card?.minutes_left ?? 0;
-
-            return {
-                id: c.candidate_key,
-                cacheKey: c.route_token,
-                routeToken: c.route_token,
-                isOptimal: c.is_optimal,
-                routeType: c.tags?.includes("SUBWAY")
-                    ? "SUBWAY"
-                    : c.tags?.includes("NIGHT_BUS")
-                        ? "NIGHT_BUS"
-                        : "BUS",
-                lines: extractChips(c),
-
-                minutesLeft,
-                timeUntilDeparture: formatMinutesLeftText(minutesLeft),
-                departureTime: formatHHMM(c.card?.deadline_at),
-                totalDurationMin: c.card?.traveled_time ?? 0,
-                transferCount: c.card?.transfer_count ?? 0,
-                walkingTimeMin: c.card?.walk_time ?? 0,
-                segments: stepsToSegments(c.detail?.steps ?? []),
-            };
-        });
-    };
-
-    const fetchCandidates = async (o: OriginSearchItem, d: OriginSearchItem) => {
-        if (
-            typeof o.lat !== "number" ||
-            typeof o.lng !== "number" ||
-            typeof d.lat !== "number" ||
-            typeof d.lng !== "number"
-        ) {
+    const toCandidatesPointBody = (p: OriginSearchItem): RouteCandidatesPointBody => {
+        if (typeof p.lat !== "number" || typeof p.lng !== "number") {
             throw new Error("출발/도착 좌표(lat/lng)가 없습니다.");
         }
 
+        const title = (p.title ?? "").trim();
+        const roadAddress = ((p.roadAddress ?? p.address) ?? "").trim();
+        const detailAddress = (p.detailAddress ?? "").trim();
+
+        if (!title) throw new Error("출발/도착 title(장소명)이 없습니다.");
+        if (!roadAddress) throw new Error("출발/도착 roadAddress(주소)가 없습니다.");
+
+        return { lat: p.lat, lng: p.lng, title, roadAddress, detailAddress };
+    };
+
+    const fetchCandidates = async (o: OriginSearchItem, d: OriginSearchItem) => {
         const body = {
-            origin: { lat: o.lat, lng: o.lng },
-            destination: { lat: d.lat, lng: d.lng },
+            origin: toCandidatesPointBody(o),
+            destination: toCandidatesPointBody(d),
         };
 
-        const res = await api.post<BaseResponse<{ candidates: Candidate[] }>>("/api/routes/candidates", body);
+        const res = await api.post<BaseResponse<{ candidates: Candidate[] }>>(
+            "/api/routes/candidates",
+            body
+        );
         return res.data.result.candidates;
     };
 
@@ -268,6 +179,8 @@ export function useAlarmFlow() {
             setCandidatesRaw(candidates);
             setRoutes(candidatesToRoutes(candidates));
             setSelectedRoute(null);
+            setHistoryConfirm(null);
+            cameFromHistoryRef.current = false;
 
             setStep("RESULT");
         } catch (e) {
@@ -314,6 +227,8 @@ export function useAlarmFlow() {
     };
 
     const handleSelectRoute = (route: AlarmRoute) => {
+        cameFromHistoryRef.current = false;
+        setHistoryConfirm(null);
         setSelectedRoute(route);
         setStep("CONFIRM");
     };
@@ -324,8 +239,11 @@ export function useAlarmFlow() {
     };
 
     const getConfirmDetail = (routeId: string): RouteConfirmDetail => {
-        const cand = candidatesRaw.find((c) => c.candidate_key === routeId);
+        if (historyConfirm && selectedRoute?.id === routeId) {
+            return historyConfirm.detail;
+        }
 
+        const cand = candidatesRaw.find((c) => c.candidate_key === routeId);
         if (!cand) {
             return { etaText: "도착 정보 없음", segments: [] };
         }
@@ -365,12 +283,76 @@ export function useAlarmFlow() {
 
     const goAlarmList = () => navigate("/history");
 
+    const deleteCurrentAlert = async () => {
+        const notificationId = historyConfirm?.notificationId;
+        if (!notificationId) return;
+
+        try {
+            await cancelMutateAsync(notificationId);
+            navigate("/history", { replace: true });
+        } catch (e) {
+            console.error("[alerts:cancel] failed", e);
+            alert("알림 취소 실패");
+        }
+    };
+
+    // History → Alarm(Confirm) 진입 처리
     useEffect(() => {
-        if (!navState?.openConfirm || !navState.routeId) return;
+        const open = navState?.openConfirm;
+        const notificationId = navState?.notificationId;
+
+        if (!open || !notificationId) return;
+
         cameFromHistoryRef.current = navState.from === "history";
-        navigate(".", { replace: true, state: null });
+
+        (async () => {
+            try {
+                setStep("LOADING");
+
+                const data = await fetchAlertDetail(notificationId);
+                const segments = stepsToSegments(data.steps ?? []);
+
+                const route: AlarmRoute = {
+                    id: `history-${notificationId}`,
+                    cacheKey: data.route_token ?? "",
+                    routeToken: data.route_token ?? "",
+                    isOptimal: Boolean(data.is_optimal),
+
+                    routeType: "BUS",
+                    lines: data.lines ?? [],
+
+                    minutesLeft: data.minutes_left ?? 0,
+                    timeUntilDeparture: formatMinutesLeftText(data.minutes_left ?? 0),
+                    departureTime: formatHHMM(data.departure_at),
+                    totalDurationMin: data.total_duration_min ?? 0,
+                    transferCount: data.transfer_count ?? 0,
+                    walkingTimeMin: data.walking_time_min ?? 0,
+                    segments,
+                };
+
+                setRoutes([route]);
+                setSelectedRoute(route);
+
+                setHistoryConfirm({
+                    notificationId,
+                    detail: {
+                        etaText: formatEtaText(data.arrival_at ?? data.departure_at),
+                        segments,
+                    },
+                });
+
+                setStep("CONFIRM");
+            } catch (e) {
+                console.error("[history confirm] failed", e);
+                setStep("INPUT");
+                alert("알림 상세 조회 실패");
+            } finally {
+                navigate(".", { replace: true, state: null });
+            }
+        })();
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [navState?.openConfirm, navState?.routeId]);
+    }, [navState?.openConfirm, navState?.notificationId]);
 
     return {
         step,
@@ -396,5 +378,8 @@ export function useAlarmFlow() {
         backFromConfirm,
         confirmRoute,
         goAlarmList,
+        isFromHistory: cameFromHistoryRef.current,
+        deleteCurrentAlert,
+        deletingAlert,
     };
 }

@@ -17,11 +17,12 @@ import { ProtectedRoute, PublicRoute } from "./components/kakao/KakaoRoute";
 import KakaoCallback from "./components/kakao/KakaoCallback";
 import FAB from "./components/common/FAB";
 import Toast from "./components/common/toast";
+import LoadingSpinner from "./components/common/loadingSpinner";
 
 function App() {
   const isDarkMode = useUIStore((state) => state.isDarkMode);
 
-  useAutoLogin();
+  const isLoading = useAutoLogin();
 
   useEffect(() => {
     if (isDarkMode) {
@@ -31,11 +32,19 @@ function App() {
     }
   }, [isDarkMode]);
 
+  if (isLoading) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
   return (
     <BrowserRouter>
       <FAB />
       <Toast />
-      <div className="min-h-screen w-full overflow-x-hidden bg-white dark:bg-makcha-navy-900">
+      <div className="min-h-screen w-full overflow-x-hidden">
         <Routes>
           <Route path="/kakao/callback" element={<KakaoCallback />} />
 

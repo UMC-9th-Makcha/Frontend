@@ -21,6 +21,9 @@ import { useWaitingSpotDetail } from "./hooks/useWaitingSpotDetail";
 import { EmptyState } from "./common/EmptyState";
 import { useCurrentLocation } from "../../hooks/useCurrentLocation";
 
+// GPS 좌표의 떨림 방지
+const stabilize = (val?: number) => (val ? parseFloat(val.toFixed(4)) : undefined);
+
 export default function WaitingSpot() {
 
   // 1. 타입을 string으로 받거나, 명시적으로 단언하여 에러를 방지합니다.
@@ -51,9 +54,13 @@ export default function WaitingSpot() {
   //가까운순, 24시간 정렬
   const [sort, setSort] = useState<SortValue>("distance");
 
+  // GPS 노이즈로 인한 무한 API 호출 방지
+  const stabilizedLat = useMemo(() => stabilize(location?.lat), [location?.lat]);
+  const stabilizedLng = useMemo(() => stabilize(location?.lng), [location?.lng]);
+
   //대기 장소 API
-  const baseLat = origin?.lat ?? location?.lat;
-  const baseLng = origin?.lng ?? location?.lng;
+  const baseLat = origin?.lat ?? stabilizedLat;
+  const baseLng = origin?.lng ?? stabilizedLng;
 
   const { places, isError, isLoading, refetch } = useWaitingSpot({
     lat: baseLat,
@@ -131,12 +138,12 @@ export default function WaitingSpot() {
   setIsDetailOpen(true);
 }, []);
 
-  //카테고리 변경 시 패널 및 마커 초기화
-  useEffect(() => {
+  // 카테고리 변경 시 한 번에 처리
+  const handleCategoryChange = useCallback((newCategory: WaitingCategoryKey) => {
+    setCategory(newCategory);
     setSelectedPlaceId(null);
     setIsDetailOpen(false);
-  }, [category]);
-
+  }, []);
 
   //길찾기 시작 -> 도보 안내 
   const onStartDirection = () => {
@@ -169,7 +176,7 @@ export default function WaitingSpot() {
           }}
         />
         }
-        controls={<CategoryTab selected={category} onChange={setCategory} categories={waitingCategories} />}
+        controls={<CategoryTab selected={category} onChange={handleCategoryChange} categories={waitingCategories} />}
         list={!hasMapPoint ? (
           mapLoading ? (
             <div className="flex flex-col h-full items-center justify-center">

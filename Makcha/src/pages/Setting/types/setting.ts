@@ -40,3 +40,8 @@ export interface SettingPanelProps {
   view: ViewType;
   onNavigate: (v: ViewType, p?: Place) => void;
 }
+
+export interface SettingBgProps {
+  view: ViewType;
+  children: ReactNode;
+}
