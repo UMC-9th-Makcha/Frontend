@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, useCallback, memo, useRef } from "react";
+import { useEffect, useMemo, useState, useCallback, memo, useRef } from "react";
 import { Map, CustomOverlayMap, Polyline } from "react-kakao-maps-sdk";
 import { MapPin } from "lucide-react";
 import { useCurrentLocation } from "../../../hooks/useCurrentLocation";
@@ -8,11 +8,10 @@ import type { BaseMapProps, MapPathSegment, PathType, MapMarker } from "../../..
 
 import UserLocationMarker from "./components/UserLocationMarker";
 import MapReenterButton from "./components/MapReenterButton";
-import LoadingSpinner from "../loadingSpinner";
 
 interface ExtendedPathSegment extends MapPathSegment {
   routeId?: string;
-  type: PathType; 
+  type: PathType;
 }
 
 const MapStyles = memo(({ isDarkMode }: { isDarkMode: boolean }) => {
@@ -53,9 +52,11 @@ const PathSegment = memo(({ seg, selectedPathId, isDarkMode }: { seg: ExtendedPa
 
 const MapMarkerItem = memo(({ marker, isActive, onClick }: { marker: MapMarker; isActive: boolean; onClick: (m: MapMarker) => void; }) => {
   const markerColor = isActive ? MARKER_COLORS.select : MARKER_COLORS[marker.variant];
+  const handleInternalClick = useCallback(() => onClick(marker), [onClick, marker]);
+
   return (
     <CustomOverlayMap position={marker.position} yAnchor={1.1} zIndex={isActive ? 30 : 20}>
-      <div className="flex flex-col items-center anti-invert cursor-pointer" onClick={() => onClick(marker)}>
+      <div className="flex flex-col items-center anti-invert cursor-pointer" onClick={handleInternalClick}>
         <div className={`mb-1 rounded-md px-2 py-0.5 text-[10px] font-bold shadow-md transition-colors ${isActive ? "bg-makcha-navy-600 text-white" : "bg-white dark:bg-makcha-navy-800 dark:text-white"}`}>
           {marker.name}
         </div>
@@ -70,12 +71,9 @@ const BaseMap = ({ markers = [], activeId, paths = [], selectedPathId, onMarkerC
   const { location: userLoc, refetch: mapRefetch } = useCurrentLocation();
   const isDarkMode = useUIStore((s) => s.isDarkMode);
 
-  const [isReady, setIsReady] = useState(false);
   const [mapLevel, setMapLevel] = useState(3);
-  const isInitialized = useRef(false);
-  const lastViewCenter = useRef(DEFAULT_MAP_CENTER);
+  const isPositioned = useRef(false);
 
-  // 데이터 범위 계산
   const bounds = useMemo(() => {
     if (markers.length === 0 && paths.length === 0) return null;
     const b = new kakao.maps.LatLngBounds();
@@ -84,78 +82,91 @@ const BaseMap = ({ markers = [], activeId, paths = [], selectedPathId, onMarkerC
     return b;
   }, [markers, paths]);
 
-  // 초기 중심 계산
-  const initialCenter = useMemo(() => {
-    if (isInitialized.current) return lastViewCenter.current;
-    if (bounds) {
-      const sw = bounds.getSouthWest();
-      const ne = bounds.getNorthEast();
-      return { lat: (sw.getLat() + ne.getLat()) / 2, lng: (sw.getLng() + ne.getLng()) / 2 };
-    }
-    return userLoc || DEFAULT_MAP_CENTER;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userLoc]);
-
-  // 지도 로드 후 초기화
   useEffect(() => {
-    if (map && !isInitialized.current) {
-      if (bounds) map.setBounds(bounds, 30);
-      isInitialized.current = true;
-      setTimeout(() => {
-        const c = map.getCenter();
-        lastViewCenter.current = { lat: c.getLat(), lng: c.getLng() };
-        setMapLevel(map.getLevel());
-        setIsReady(true);
-      }, 400);
-    }
-  }, [map, bounds]);
+    if (!map || isPositioned.current) return;
 
-  const handleUpdateView = useCallback((target: kakao.maps.Map) => {
-    const c = target.getCenter();
-    lastViewCenter.current = { lat: c.getLat(), lng: c.getLng() };
-    setMapLevel(target.getLevel());
+    if (bounds) {
+      map.setBounds(bounds, 32);
+      isPositioned.current = true;
+    } else if (userLoc) {
+      map.panTo(new kakao.maps.LatLng(userLoc.lat, userLoc.lng));
+      isPositioned.current = true;
+    }
+  }, [map, bounds, userLoc]);
+
+  // 핸들러 최적화
+  const handleMarkerClick = useCallback((m: MapMarker) => {
+    onMarkerClick?.(m);
+  }, [onMarkerClick]);
+
+  const handleMapClick = useCallback((_t: kakao.maps.Map, e: kakao.maps.event.MouseEvent) => {
+    onMapClick?.({ lat: e.latLng.getLat(), lng: e.latLng.getLng() });
+  }, [onMapClick]);
+
+  const handleViewChange = useCallback((target: kakao.maps.Map) => {
+    const nextLevel = target.getLevel();
+    setMapLevel((prev) => (prev === nextLevel ? prev : nextLevel));
   }, []);
 
-  const handleReenterLocation = useCallback(() => {
-    if (!map || !userLoc) { mapRefetch(); return; }
+  const handleReenter = useCallback(() => {
+    if (!map || !userLoc) {
+      mapRefetch();
+      return;
+    }
     map.panTo(new kakao.maps.LatLng(userLoc.lat, userLoc.lng));
     setMapLevel(3);
   }, [map, userLoc, mapRefetch]);
 
   return (
     <div className={`h-full w-full relative kakao-map-wrapper ${isDarkMode ? "map-dark-mode" : ""}`}>
-      {!isReady && (
-        <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-white dark:bg-makcha-navy-900">
-          <LoadingSpinner />
-        </div>
-      )}
-
       <MapStyles isDarkMode={isDarkMode} />
-      <MapReenterButton onClick={handleReenterLocation} isDarkMode={isDarkMode} />
+      
+      <div className="absolute bottom-6 right-6 z-40">
+        <MapReenterButton onClick={handleReenter} isDarkMode={isDarkMode} />
+      </div>
 
       <Map
-        center={initialCenter}
+        center={DEFAULT_MAP_CENTER}
         level={mapLevel}
         style={{ width: "100%", height: "100%" }}
         onCreate={setMap}
-        onClick={(_map, e) => onMapClick?.({ lat: e.latLng.getLat(), lng: e.latLng.getLng() })}
-        onDragEnd={handleUpdateView}
-        onZoomChanged={handleUpdateView}
+        onClick={handleMapClick}
+        onDragEnd={handleViewChange}
+        onZoomChanged={handleViewChange}
       >
-        {isReady && (
+        {map && (
           <>
             {paths.map((seg, i) => (
-              <PathSegment key={`path-${(seg as ExtendedPathSegment).routeId ?? seg.id}-${i}`} seg={seg as ExtendedPathSegment} selectedPathId={selectedPathId ?? undefined} isDarkMode={isDarkMode} />
+              <PathSegment 
+                key={`path-${(seg as ExtendedPathSegment).routeId ?? seg.id}-${i}`} 
+                seg={seg as ExtendedPathSegment} 
+                selectedPathId={selectedPathId ?? undefined} 
+                isDarkMode={isDarkMode} 
+              />
             ))}
             {markers.map((m) => (
-              <MapMarkerItem key={`${m.variant}-${m.id}`} marker={m} isActive={m.id === activeId} onClick={onMarkerClick || (() => {})} />
+              <MapMarkerItem 
+                key={`marker-${m.id}`} 
+                marker={m} 
+                isActive={m.id === activeId} 
+                onClick={handleMarkerClick} 
+              />
             ))}
             {userLoc && <UserLocationMarker position={userLoc} />}
           </>
         )}
       </Map>
+
+      {/* 로딩 인디케이터*/}
+      {(!userLoc && markers.length === 0 && paths.length === 0) && (
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-50 bg-white/90 dark:bg-makcha-navy-800/90 px-4 py-1.5 rounded-full shadow-md backdrop-blur-sm">
+          <p className="text-[12px] font-bold text-makcha-navy-600 dark:text-makcha-yellow-400 animate-pulse">
+            주변 정보를 불러오는 중...
+          </p>
+        </div>
+      )}
     </div>
   );
 };
 
-export default React.memo(BaseMap);
+export default memo(BaseMap);

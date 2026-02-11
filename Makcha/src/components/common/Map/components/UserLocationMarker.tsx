@@ -1,11 +1,10 @@
-import { useEffect, useState, useRef, memo } from "react";
+import { useEffect, useState, useRef, memo, useCallback } from "react";
 import { CustomOverlayMap } from "react-kakao-maps-sdk";
 
 interface DeviceOrientationEventExtended extends DeviceOrientationEvent {
   webkitCompassHeading?: number;
 }
 
-// GPS 기반 방위각 계산
 const calculateBearing = (startLat: number, startLng: number, destLat: number, destLng: number) => {
   const startLatRad = (startLat * Math.PI) / 180;
   const startLngRad = (startLng * Math.PI) / 180;
@@ -22,34 +21,42 @@ const calculateBearing = (startLat: number, startLng: number, destLat: number, d
 
 const useSmartHeading = (currentPos: { lat: number; lng: number }) => {
   const [heading, setHeading] = useState(0);
-  const internalHeading = useRef(0); 
+  const internalHeading = useRef(0);
   const lastPos = useRef<{ lat: number; lng: number } | null>(null);
   const isSensorActive = useRef(false);
-  const updateHeading = (newAngle: number) => {
+  const lastUpdateTime = useRef(0);
+
+  const updateHeading = useCallback((targetAngle: number) => {
+    const now = Date.now();
+    if (now - lastUpdateTime.current < 40) return;
+
     const current = internalHeading.current;
     const currentNormalized = ((current % 360) + 360) % 360;
-    
-    let delta = newAngle - currentNormalized;
+
+    let delta = targetAngle - currentNormalized;
     if (delta > 180) delta -= 360;
     else if (delta < -180) delta += 360;
 
-    const nextHeading = current + delta;
+    if (Math.abs(delta) < 0.5) return;
+
+    const lerpFactor = 0.3; 
+    const smoothedDelta = delta * lerpFactor;
+    
+    const nextHeading = current + smoothedDelta;
     internalHeading.current = nextHeading;
     setHeading(nextHeading);
-  };
+    lastUpdateTime.current = now;
+  }, []);
 
   useEffect(() => {
     const handleOrientation = (e: Event) => {
       const event = e as DeviceOrientationEventExtended;
       let compass = -1;
 
-      // 1. iOS
       if (event.webkitCompassHeading !== undefined) {
-        compass = event.webkitCompassHeading;
-      } 
-      // 2. Android
-      else if (event.alpha !== null) {
-        compass = 360 - event.alpha;
+        compass = event.webkitCompassHeading; // iOS
+      } else if (event.alpha !== null) {
+        compass = 360 - event.alpha; // Android
       }
 
       if (compass !== -1) {
@@ -62,29 +69,23 @@ const useSmartHeading = (currentPos: { lat: number; lng: number }) => {
       ? "deviceorientationabsolute" 
       : "deviceorientation";
 
-    window.addEventListener(eventType, handleOrientation as EventListener, true);
+    window.addEventListener(eventType, handleOrientation, true);
+    return () => window.removeEventListener(eventType, handleOrientation, true);
+  }, [updateHeading]);
 
-    return () => {
-      window.removeEventListener(eventType, handleOrientation as EventListener, true);
-    };
-  }, []);
-
-  // GPS 이동 기반 방향 계산
+  // GPS 기반 로직
   useEffect(() => {
     if (lastPos.current && !isSensorActive.current) {
-      const { lat: prevLat, lng: prevLng } = lastPos.current;
-      const { lat: curLat, lng: curLng } = currentPos;
+      const { lat: pLat, lng: pLng } = lastPos.current;
+      const { lat: cLat, lng: cLng } = currentPos;
 
-      const distLat = Math.abs(prevLat - curLat);
-      const distLng = Math.abs(prevLng - curLng);
-
-      if (distLat > 0.00002 || distLng > 0.00002) {
-        const bearing = (calculateBearing(prevLat, prevLng, curLat, curLng) + 360) % 360;
+      if (Math.abs(pLat - cLat) > 0.00002 || Math.abs(pLng - cLng) > 0.00002) {
+        const bearing = (calculateBearing(pLat, pLng, cLat, cLng) + 360) % 360;
         updateHeading(bearing);
       }
     }
     lastPos.current = currentPos;
-  }, [currentPos]);
+  }, [currentPos, updateHeading]);
 
   return heading;
 };
@@ -94,34 +95,37 @@ const UserLocationMarker = memo(({ position }: { position: { lat: number; lng: n
 
   return (
     <CustomOverlayMap position={position} zIndex={15} xAnchor={0.5} yAnchor={0.5}>
-      <div className="relative flex h-14 w-14 items-center justify-center anti-invert pointer-events-none">
+      <div className="relative flex h-16 w-16 items-center justify-center pointer-events-none">
+        
+        {/* 파동 애니메이션 */}
+        <div className="absolute h-10 w-10 animate-ping rounded-full bg-blue-400 opacity-20" />
+        <div className="absolute h-8 w-8 rounded-full bg-blue-500/20" />
 
-        <div className="absolute h-10 w-10 animate-ping rounded-full bg-makcha-navy-400 opacity-20" />
-        <div className="absolute h-8 w-8 rounded-full bg-makcha-navy-500 opacity-10" />
-
+        {/* 실제 방향 마커 */}
         <div
           className="relative z-20 flex items-center justify-center will-change-transform"
           style={{
             transform: `rotate(${heading}deg)`,
-            transition: "transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
-            filter: "drop-shadow(0px 3px 5px rgba(0,0,0,0.3))"
+            transition: "transform 0.12s linear", 
           }}
         >
-          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
+            {/* 그림자 대용 경로 */}
             <path
               d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71L12 2z"
-              fill="white"
+              fill="rgba(0,0,0,0.15)"
+              transform="translate(0, 1)"
             />
+            {/* 메인 화살표 */}
             <path
               d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71L12 2z"
-              className="fill-makcha-navy-600 dark:fill-makcha-yellow-400"
+              fill="#3B82F6" 
               stroke="white"
-              strokeWidth="1"
+              strokeWidth="1.5"
               strokeLinejoin="round"
             />
           </svg>
         </div>
-
       </div>
     </CustomOverlayMap>
   );
