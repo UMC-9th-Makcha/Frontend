@@ -4,7 +4,7 @@ import BaseMap from "../../components/common/Map";
 import type { AlarmRoute } from "./types/alarm";
 import type { MapMarker, MapPathSegment, PathType, MapPoint } from "../../types/map";
 import { fetchRoutePolylines } from "./apis/routes";
-import type { CandidateStep } from "./hooks/useAlarmFlow";
+import type { CandidateStep } from "./types/candidate";
 
 type Props = {
     routes: AlarmRoute[];
