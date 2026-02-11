@@ -1,4 +1,4 @@
-export type WaitingCategoryKey = "ALL" | "CAFE" | "PC_ROOM" | "RESTAURANT";
+export type WaitingCategoryKey = "ALL" | "CAFE" | "PC_ROOM" | "SAUNA";
 
 export type Origin = { id: string; name: string; lat: number; lng: number } | null;
 
