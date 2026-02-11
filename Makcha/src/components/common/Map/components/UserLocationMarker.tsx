@@ -58,13 +58,13 @@ const useSmartHeading = (currentPos: { lat: number; lng: number }) => {
     return () => window.removeEventListener("deviceorientation", handleOrientation, true);
   }, []);
 
-  // B. PC/GPS 이동 기반 방향 계산
+  // PC/GPS 이동 기반 방향 계산
   useEffect(() => {
     if (lastPos.current && !isSensorActive.current) {
       const { lat: prevLat, lng: prevLng } = lastPos.current;
       const { lat: curLat, lng: curLng } = currentPos;
 
-      // 미세한 GPS 튐 방지 (약 2~3미터 이상 움직였을 때만 갱신)
+      // 미세한 GPS 튐 방지
       const distLat = Math.abs(prevLat - curLat);
       const distLng = Math.abs(prevLng - curLng);
       
