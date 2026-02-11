@@ -11,7 +11,7 @@ export const PlaceList = ({ places, selectedPlaceId, onSelectPlaceId, sort, onCh
       {places.length === 0 ? (
         <EmptyState className="pointer-events-none" message="주변 대기 장소가 없습니다." />
       ) : (
-        <div className="space-y-6 py-2 px-2">
+        <div className="space-y-6 py-2 px-2 mb-20">
           {places.map((place) => (
             <PlaceCard
               key={place.id}
