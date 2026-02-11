@@ -6,6 +6,7 @@ import type { RouteConfirmDetail } from "../types/routeConfirm";
 import { api } from "../../../apis/api";
 import { formatHHMM, formatMinutesLeftText, formatEtaText } from "../utils/format";
 import { stepsToSegments, candidatesToRoutes } from "../utils/mapper";
+import { useCancelAlert } from "./useCancelAlert";
 
 export type Step = "INPUT" | "LOADING" | "RESULT" | "CONFIRM" | "SUCCESS";
 export type SearchTarget = "ORIGIN" | "DESTINATION";
@@ -93,6 +94,9 @@ type AlertDetailResult = {
     departure_at?: string;
     arrival_at?: string;
 
+    route_id?: string;
+    route_token: string;
+
     steps: CandidateStep[];
 };
 
@@ -126,21 +130,35 @@ export function useAlarmFlow() {
         detail: RouteConfirmDetail;
     } | null>(null);
 
-    const [deletingAlert, setDeletingAlert] = useState(false);
+    const { mutateAsync: cancelMutateAsync, isPending: deletingAlert } = useCancelAlert();
 
-    const fetchCandidates = async (o: OriginSearchItem, d: OriginSearchItem) => {
-        if (
-            typeof o.lat !== "number" ||
-            typeof o.lng !== "number" ||
-            typeof d.lat !== "number" ||
-            typeof d.lng !== "number"
-        ) {
+    type RouteCandidatesPointBody = {
+        lat: number;
+        lng: number;
+        title: string;
+        roadAddress: string;
+        detailAddress: string;
+    };
+
+    const toCandidatesPointBody = (p: OriginSearchItem): RouteCandidatesPointBody => {
+        if (typeof p.lat !== "number" || typeof p.lng !== "number") {
             throw new Error("출발/도착 좌표(lat/lng)가 없습니다.");
         }
 
+        const title = (p.title ?? "").trim();
+        const roadAddress = ((p.roadAddress ?? p.address) ?? "").trim();
+        const detailAddress = (p.detailAddress ?? "").trim();
+
+        if (!title) throw new Error("출발/도착 title(장소명)이 없습니다.");
+        if (!roadAddress) throw new Error("출발/도착 roadAddress(주소)가 없습니다.");
+
+        return { lat: p.lat, lng: p.lng, title, roadAddress, detailAddress };
+    };
+
+    const fetchCandidates = async (o: OriginSearchItem, d: OriginSearchItem) => {
         const body = {
-            origin: { lat: o.lat, lng: o.lng },
-            destination: { lat: d.lat, lng: d.lng },
+            origin: toCandidatesPointBody(o),
+            destination: toCandidatesPointBody(d),
         };
 
         const res = await api.post<BaseResponse<{ candidates: Candidate[] }>>(
@@ -265,24 +283,20 @@ export function useAlarmFlow() {
 
     const goAlarmList = () => navigate("/history");
 
-    // history confirm: 알림 삭제
     const deleteCurrentAlert = async () => {
         const notificationId = historyConfirm?.notificationId;
         if (!notificationId) return;
 
         try {
-            setDeletingAlert(true);
-            await api.delete(`/api/alerts/${notificationId}`); // 백엔드 endpoint에 맞게 조정
+            await cancelMutateAsync(notificationId);
             navigate("/history", { replace: true });
         } catch (e) {
-            console.error("[alerts:delete] failed", e);
-            alert("알림 삭제 실패");
-        } finally {
-            setDeletingAlert(false);
+            console.error("[alerts:cancel] failed", e);
+            alert("알림 취소 실패");
         }
     };
 
-    {/* History → Alarm(Confirm) 진입 처리 */}
+    // History → Alarm(Confirm) 진입 처리
     useEffect(() => {
         const open = navState?.openConfirm;
         const notificationId = navState?.notificationId;
@@ -300,10 +314,11 @@ export function useAlarmFlow() {
 
                 const route: AlarmRoute = {
                     id: `history-${notificationId}`,
-                    cacheKey: "",
-                    routeToken: "",
+                    cacheKey: data.route_token ?? "",
+                    routeToken: data.route_token ?? "",
                     isOptimal: Boolean(data.is_optimal),
-                    routeType: "SUBWAY",
+
+                    routeType: "BUS",
                     lines: data.lines ?? [],
 
                     minutesLeft: data.minutes_left ?? 0,
@@ -315,6 +330,7 @@ export function useAlarmFlow() {
                     segments,
                 };
 
+                setRoutes([route]);
                 setSelectedRoute(route);
 
                 setHistoryConfirm({
@@ -331,7 +347,7 @@ export function useAlarmFlow() {
                 setStep("INPUT");
                 alert("알림 상세 조회 실패");
             } finally {
-                navigate(".", { replace: true, state: null }); 
+                navigate(".", { replace: true, state: null });
             }
         })();
 

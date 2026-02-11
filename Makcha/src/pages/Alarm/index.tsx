@@ -136,6 +136,10 @@ const Alarm = () => {
                             goAlarmList: flow.goAlarmList,
 
                             goToSettingForSms,
+
+                            isFromHistory: flow.isFromHistory,
+                            deleteCurrentAlert: flow.deleteCurrentAlert,
+                            deletingAlert: flow.deletingAlert,
                         }}
                     />
                 </Panel>

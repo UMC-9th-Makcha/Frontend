@@ -60,17 +60,15 @@ export default function AlarmPanelSwitch({ flow }: Props) {
 
                 // history면 "확인"은 그냥 history로 돌아가도록
                 onConfirm={isHistory ? flow.goAlarmList : flow.confirmRoute}
-
                 mode={isHistory ? "history" : "alarm"}
-                onClickSms={flow.goToSettingForSms}
 
                 // history 삭제 버튼
+                onClickSms={flow.goToSettingForSms}
                 onDeleteAlert={isHistory ? flow.deleteCurrentAlert : undefined}
                 deleting={isHistory ? Boolean(flow.deletingAlert) : false}
             />
         );
     }
-
 
     if (flow.step === "SUCCESS" && flow.origin && flow.destination && flow.selectedRoute) {
         return (

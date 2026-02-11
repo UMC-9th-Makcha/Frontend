@@ -23,6 +23,14 @@ type BaseResponse<T> = {
     result: T;
 };
 
+export type RouteCandidatesPointBody = {
+    lat: number;
+    lng: number;
+    title: string;
+    roadAddress: string;
+    detailAddress?: string;
+};
+
 function toAlarmRoute(r: RouteCandidatesResponse): AlarmRoute {
     const minutesLeft = r.card.minutes_left;
 
@@ -49,15 +57,15 @@ function toAlarmRoute(r: RouteCandidatesResponse): AlarmRoute {
 }
 
 export async function postRouteCandidates(body: {
-    origin: { lat: number; lng: number };
-    destination: { lat: number; lng: number };
+    origin: RouteCandidatesPointBody;
+    destination: RouteCandidatesPointBody;
 }): Promise<AlarmRoute[]> {
-    const { data } = await api.post<{ result: RouteCandidatesResponse[] }>(
+    const { data } = await api.post<BaseResponse<{ candidates: RouteCandidatesResponse[] }>>(
         "/api/routes/candidates",
         body
     );
 
-    const list = data.result ?? [];
+    const list = data.result?.candidates ?? [];
     return list.map(toAlarmRoute);
 }
 
@@ -66,8 +74,8 @@ export type PolylinePoint = { lat: number; lng: number };
 export type PolylinePath = {
     class: number;
     type: number;
-    map_type?: string;   
-    order?: number;                
+    map_type?: string;
+    order?: number;
     points: PolylinePoint[];
 };
 
