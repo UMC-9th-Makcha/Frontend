@@ -1,42 +1,34 @@
-import React, { useEffect, useMemo, useState, useCallback, memo } from "react";
-import { Map, CustomOverlayMap, Polyline, useKakaoLoader } from "react-kakao-maps-sdk";
-import { MapPin, Navigation } from "lucide-react";
+import { useEffect, useMemo, useState, useCallback, memo, useRef } from "react";
+import { Map, CustomOverlayMap, Polyline } from "react-kakao-maps-sdk";
+import { MapPin } from "lucide-react";
 import { useCurrentLocation } from "../../../hooks/useCurrentLocation";
 import { useUIStore } from "../../../store/useUIStore";
 import { DEFAULT_MAP_CENTER, PATH_COLORS, MARKER_COLORS } from "./constant";
 import type { BaseMapProps, MapPathSegment, PathType, MapMarker } from "../../../types/map";
 
+import UserLocationMarker from "./components/UserLocationMarker";
+import MapReenterButton from "./components/MapReenterButton";
+
 interface ExtendedPathSegment extends MapPathSegment {
   routeId?: string;
-  type: PathType; 
+  type: PathType;
 }
 
-// 지도 다크모드 스타일
 const MapStyles = memo(({ isDarkMode }: { isDarkMode: boolean }) => {
   if (!isDarkMode) return null;
   return (
-    <style>{`
+    <style dangerouslySetInnerHTML={{ __html: `
       .map-dark-mode .kakao-map-wrapper [style*="background-color: white"],
       .map-dark-mode .kakao-map-wrapper canvas,
       .map-dark-mode .kakao-map-wrapper img[src*="t1.kakaocdn.net/mapjsapi"] {
         filter: invert(95%) hue-rotate(180deg) brightness(0.9) contrast(1.1) !important;
-        pointer-events: none !important;
       }
       .map-dark-mode .anti-invert { filter: invert(100%) hue-rotate(-180deg) !important; }
-    `}</style>
+    ` }} />
   );
 });
 
-// 경로 렌더링 분리
-const PathSegment = React.memo(({ 
-  seg, 
-  selectedPathId, 
-  isDarkMode 
-}: { 
-  seg: ExtendedPathSegment; 
-  selectedPathId?: string; 
-  isDarkMode: boolean; 
-}) => {
+const PathSegment = memo(({ seg, selectedPathId, isDarkMode }: { seg: ExtendedPathSegment; selectedPathId?: string; isDarkMode: boolean; }) => {
   const routeId = seg.routeId ?? seg.id;
   const isSelected = !selectedPathId || routeId === selectedPathId;
   const isWalk = seg.type === "WALK";
@@ -52,43 +44,20 @@ const PathSegment = React.memo(({
 
   return (
     <>
-      <Polyline
-        path={seg.points}
-        strokeWeight={isSelected ? 12 : 11}
-        strokeColor={colors.outer}
-        strokeOpacity={isSelected ? 0.55 : 0.45}
-        zIndex={isSelected ? 2 : 1}
-      />
-      <Polyline
-        path={seg.points}
-        strokeWeight={isSelected ? 7 : 6}
-        strokeColor={colors.inner}
-        strokeOpacity={seg.type === "WALK" ? 0.9 : (isSelected ? 0.9 : 0.2)}
-        zIndex={isSelected ? 4 : 3}
-        strokeStyle={isWalk ? "dash" : "solid"}
-      />
+      <Polyline path={seg.points} strokeWeight={isSelected ? 12 : 11} strokeColor={colors.outer} strokeOpacity={isSelected ? 0.55 : 0.45} zIndex={isSelected ? 2 : 1} />
+      <Polyline path={seg.points} strokeWeight={isSelected ? 7 : 6} strokeColor={colors.inner} strokeOpacity={seg.type === "WALK" ? 0.9 : (isSelected ? 0.9 : 0.2)} zIndex={isSelected ? 4 : 3} strokeStyle={isWalk ? "dash" : "solid"} />
     </>
   );
 });
 
-// 마커 렌더링
-const MapMarkerItem = React.memo(({ 
-  marker, 
-  isActive, 
-  onClick 
-}: { 
-  marker: MapMarker; 
-  isActive: boolean; 
-  onClick: (m: MapMarker) => void; 
-}) => {
+const MapMarkerItem = memo(({ marker, isActive, onClick }: { marker: MapMarker; isActive: boolean; onClick: (m: MapMarker) => void; }) => {
   const markerColor = isActive ? MARKER_COLORS.select : MARKER_COLORS[marker.variant];
+  const handleInternalClick = useCallback(() => onClick(marker), [onClick, marker]);
 
   return (
     <CustomOverlayMap position={marker.position} yAnchor={1.1} zIndex={isActive ? 30 : 20}>
-      <div className="flex flex-col items-center anti-invert cursor-pointer" onClick={() => onClick(marker)}>
-        <div className={`mb-1 rounded-md px-2 py-0.5 text-[10px] font-bold shadow-md transition-colors ${
-          isActive ? "bg-makcha-navy-600 text-white" : "bg-white dark:bg-makcha-navy-800 dark:text-white"
-        }`}>
+      <div className="flex flex-col items-center anti-invert cursor-pointer" onClick={handleInternalClick}>
+        <div className={`mb-1 rounded-md px-2 py-0.5 text-[10px] font-bold shadow-md transition-colors ${isActive ? "bg-makcha-navy-600 text-white" : "bg-white dark:bg-makcha-navy-800 dark:text-white"}`}>
           {marker.name}
         </div>
         <MapPin size={isActive ? 42 : 34} fill={markerColor} stroke="white" strokeWidth={1.5} />
@@ -97,20 +66,14 @@ const MapMarkerItem = React.memo(({
   );
 });
 
-const BaseMap = ({
-  markers = [],
-  activeId,
-  paths = [],
-  selectedPathId,
-  onMarkerClick,
-  onMapClick,
-}: BaseMapProps) => {
-  const [loading, sdkError] = useKakaoLoader({ appkey: import.meta.env.VITE_KAKAO_JS_KEY });
+const BaseMap = ({ markers = [], activeId, paths = [], selectedPathId, onMarkerClick, onMapClick }: BaseMapProps) => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
-  const { location: userLoc } = useCurrentLocation();
+  const { location: userLoc, refetch: mapRefetch } = useCurrentLocation();
   const isDarkMode = useUIStore((s) => s.isDarkMode);
 
-  // Bounds 계산
+  const [mapLevel, setMapLevel] = useState(3);
+  const isPositioned = useRef(false);
+
   const bounds = useMemo(() => {
     if (markers.length === 0 && paths.length === 0) return null;
     const b = new kakao.maps.LatLngBounds();
@@ -120,60 +83,90 @@ const BaseMap = ({
   }, [markers, paths]);
 
   useEffect(() => {
-    if (map && bounds) map.setBounds(bounds, 30);
-  }, [map, bounds]);
+    if (!map || isPositioned.current) return;
 
-  const handleMapClick = useCallback((_map: kakao.maps.Map, e: kakao.maps.event.MouseEvent) => {
-    onMapClick?.({ lat: e.latLng.getLat(), lng: e.latLng.getLng() });
-  }, [onMapClick]);
+    if (bounds) {
+      map.setBounds(bounds, 32);
+      isPositioned.current = true;
+    } else if (userLoc) {
+      map.panTo(new kakao.maps.LatLng(userLoc.lat, userLoc.lng));
+      isPositioned.current = true;
+    }
+  }, [map, bounds, userLoc]);
 
+  // 핸들러 최적화
   const handleMarkerClick = useCallback((m: MapMarker) => {
     onMarkerClick?.(m);
   }, [onMarkerClick]);
 
-  if (loading || sdkError) return <div className="h-full w-full bg-gray-100 animate-pulse" />;
+  const handleMapClick = useCallback((_t: kakao.maps.Map, e: kakao.maps.event.MouseEvent) => {
+    onMapClick?.({ lat: e.latLng.getLat(), lng: e.latLng.getLng() });
+  }, [onMapClick]);
+
+  const handleViewChange = useCallback((target: kakao.maps.Map) => {
+    const nextLevel = target.getLevel();
+    setMapLevel((prev) => (prev === nextLevel ? prev : nextLevel));
+  }, []);
+
+  const handleReenter = useCallback(() => {
+    if (!map || !userLoc) {
+      mapRefetch();
+      return;
+    }
+    map.panTo(new kakao.maps.LatLng(userLoc.lat, userLoc.lng));
+    setMapLevel(3);
+  }, [map, userLoc, mapRefetch]);
 
   return (
     <div className={`h-full w-full relative kakao-map-wrapper ${isDarkMode ? "map-dark-mode" : ""}`}>
       <MapStyles isDarkMode={isDarkMode} />
+      
+      <div className="absolute bottom-6 right-6 z-40">
+        <MapReenterButton onClick={handleReenter} isDarkMode={isDarkMode} />
+      </div>
 
       <Map
         center={DEFAULT_MAP_CENTER}
+        level={mapLevel}
         style={{ width: "100%", height: "100%" }}
         onCreate={setMap}
         onClick={handleMapClick}
+        onDragEnd={handleViewChange}
+        onZoomChanged={handleViewChange}
       >
-        {paths.map((seg, i) => (
-          <PathSegment 
-            key={`path-${(seg as ExtendedPathSegment).routeId ?? seg.id}-${i}`}
-            seg={seg as ExtendedPathSegment}
-            selectedPathId={selectedPathId ?? undefined}
-            isDarkMode={isDarkMode}
-          />
-        ))}
-
-        {markers.map((m) => (
-          <MapMarkerItem 
-            key={`${m.variant}-${m.id}`}
-            marker={m}
-            isActive={m.id === activeId}
-            onClick={handleMarkerClick}
-          />
-        ))}
-
-        {userLoc && (
-          <CustomOverlayMap position={userLoc} zIndex={15}>
-            <div className="relative flex h-8 w-8 items-center justify-center anti-invert">
-              <div className="absolute h-full w-full animate-ping rounded-full bg-makcha-navy-400 opacity-40" />
-              <div className="flex h-5 w-5 items-center justify-center rounded-full border-2 border-white bg-makcha-navy-600 shadow-lg">
-                <Navigation size={10} fill="white" className="text-white" />
-              </div>
-            </div>
-          </CustomOverlayMap>
+        {map && (
+          <>
+            {paths.map((seg, i) => (
+              <PathSegment 
+                key={`path-${(seg as ExtendedPathSegment).routeId ?? seg.id}-${i}`} 
+                seg={seg as ExtendedPathSegment} 
+                selectedPathId={selectedPathId ?? undefined} 
+                isDarkMode={isDarkMode} 
+              />
+            ))}
+            {markers.map((m) => (
+              <MapMarkerItem 
+                key={`marker-${m.id}`} 
+                marker={m} 
+                isActive={m.id === activeId} 
+                onClick={handleMarkerClick} 
+              />
+            ))}
+            {userLoc && <UserLocationMarker position={userLoc} />}
+          </>
         )}
       </Map>
+
+      {/* 로딩 인디케이터*/}
+      {(!userLoc && markers.length === 0 && paths.length === 0) && (
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-50 bg-white/90 dark:bg-makcha-navy-800/90 px-4 py-1.5 rounded-full shadow-md backdrop-blur-sm">
+          <p className="text-[12px] font-bold text-makcha-navy-600 dark:text-makcha-yellow-400 animate-pulse">
+            주변 정보를 불러오는 중...
+          </p>
+        </div>
+      )}
     </div>
   );
 };
 
-export default React.memo(BaseMap);
+export default memo(BaseMap);
