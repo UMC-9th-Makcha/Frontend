@@ -1,7 +1,7 @@
 import { ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import type { CurrentAlarm } from "../types/history";
-import { useCancelAlert } from "../hooks/useCancelAlert";
+import { getDisplayLineName } from "../utils/lineFormatter";
 
 type Props = {
     alarm: CurrentAlarm | null;
@@ -9,9 +9,8 @@ type Props = {
     onCancel?: () => void;
 };
 
-const CurrentAlarmCard = ({ alarm, onCreate, onCancel }: Props) => {
+const CurrentAlarmCard = ({ alarm, onCreate }: Props) => {
     const navigate = useNavigate();
-    const { mutate: cancelMutate, isPending } = useCancelAlert();
 
     // 1) 알림 없음
     if (!alarm) {
@@ -84,7 +83,7 @@ const CurrentAlarmCard = ({ alarm, onCreate, onCancel }: Props) => {
                                         dark:border-makcha-navy-700 dark:text-white/90
                                     "
                                 >
-                                    {line}
+                                    {getDisplayLineName(line)}
                                 </span>
                             ))}
                         </div>
@@ -97,6 +96,7 @@ const CurrentAlarmCard = ({ alarm, onCreate, onCancel }: Props) => {
                                 state: {
                                     from: "history",
                                     openConfirm: true,
+                                    notificationId: alarm.notificationId,
                                     routeId: alarm.routeId,
                                 },
                             });
@@ -134,31 +134,6 @@ const CurrentAlarmCard = ({ alarm, onCreate, onCancel }: Props) => {
                     총 {alarm.totalDurationMin}분 소요 &nbsp;·&nbsp; 환승 {alarm.transferCount}회
                     &nbsp;·&nbsp; 도보 {alarm.walkingTimeMin}분
                 </div>
-            </div>
-
-            {/* 알람 취소하기 */}
-            <div className="mt-5 flex justify-center">
-                <button
-                    type="button"
-                    disabled={isPending}
-                    onClick={() => {
-                        cancelMutate(alarm.notificationId, {
-                            onSuccess: () => {
-                                onCancel?.(); 
-                            },
-                            onError: () => {
-                                alert("알림 취소 실패");
-                            },
-                        });
-                    }}
-                    className="
-                        h-[50px] w-full rounded-[30px]
-                        bg-makcha-navy-400 text-[20px] font-medium text-white
-                        disabled:opacity-60
-                    "
-                >
-                    {isPending ? "취소 중..." : "알림 취소하기"}
-                </button>
             </div>
         </div>
     );
