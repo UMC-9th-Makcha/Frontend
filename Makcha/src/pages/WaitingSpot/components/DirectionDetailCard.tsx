@@ -1,4 +1,4 @@
-import type { DirectionDetailCardProps } from "../../../types/walking-direction";
+import type { DirectionDetailCardProps } from "../types/walking-direction";
 import { StepIcon } from "../common/StepIcon";
 
 export const DirectionDetailCard = ({ step }: DirectionDetailCardProps) => {

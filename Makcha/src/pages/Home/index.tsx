@@ -25,8 +25,8 @@ export default function Home() {
     <div className="flex flex-col gap-y-10 md:gap-y-16 p-6 md:p-10 max-w-7xl mx-auto w-full min-h-full">
 
       <header className="space-y-2">
-        <h1 className="text-2xl md:text-3xl font-bold dark:text-white leading-tight">
-          반가워요, <span className="text-blue-500">{user?.name}</span>님!<br className="md:hidden" /> 어디로 가시나요?
+        <h1 className="text-h2 md:text-title font-bold leading-tight">
+          반가워요, <span className="text-makcha-navy-600">{user?.name}</span>님!<br className="md:hidden" /> 어디로 가시나요?
         </h1>
         <p className="text-base text-gray-500 dark:text-makcha-navy-300 font-medium">
           오늘도 놓치지 않게 알림 보내드릴게요
@@ -53,13 +53,15 @@ export default function Home() {
                 hover:shadow-md active:bg-gray-50 dark:active:bg-white/10
 
                 ${item.variant === "primary"
-                  ? "bg-makcha-navy-800 border-makcha-navy-700 text-white hover:border-blue-400/50"
-                  : "bg-white border-gray-300 text-gray-900 dark:bg-white/5 dark:border-white/20 dark:text-white hover:border-blue-400 dark:hover:border-white/50"
+                  ? "bg-makcha-navy-800 border-makcha-navy-900 hover:bg-makcha-navy-600"
+                  : "bg-white border-gray-200 dark:bg-white/5 dark:border-white/20 hover:border-blue-400 dark:hover:border-white/50"
                 }
               `}
             >
               <div className="space-y-2">
-                <h2 className="text-lg md:text-xl font-extrabold leading-tight tracking-tight">
+              <h2 className={`text-lg md:text-xl font-semibold leading-tight tracking-tight ${
+                item.variant === "primary" ? "text-white" : "text-gray-900 dark:text-white"
+              }`}>
                   {item.title}
                 </h2>
                 <p className={`text-xs md:text-sm leading-snug font-medium ${
@@ -80,14 +82,14 @@ export default function Home() {
           className="relative bg-white dark:bg-white/5 border border-gray-300 dark:border-white/20 
                      p-8 md:p-12 rounded-3xl shadow-sm text-center 
                      cursor-pointer overflow-hidden transition-all duration-200
-                     hover:shadow-md hover:border-blue-400
+                     hover:shadow-md hover:border-makcha-navy-400
                      active:bg-gray-50 dark:active:bg-white/10"
         >
           <p className="text-sm text-gray-600 font-bold dark:text-makcha-navy-300 mb-2">
             최근 3개월간 아낀 택시비 🚕
           </p>
 
-          <p className="text-4xl md:text-6xl font-black text-amber-400 mb-2 tracking-tight">
+          <p className="text-4xl md:text-6xl font-black text-makcha-yellow-500 mb-2 tracking-tight">
             {isLoading ? "..." : `${totalAmount.toLocaleString()}원`}
           </p>
 

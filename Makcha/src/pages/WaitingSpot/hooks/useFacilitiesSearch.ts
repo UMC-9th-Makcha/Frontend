@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { facilitySearchService } from "../apis/waiting-spot";
-import type { FacilitySearchResponse, useFacilitiesSearchParams } from "../types/facilities-search";
+import type { FacilitySearchResponse, useFacilitiesSearchParams } from "../types/api";
 
 export function useFacilitiesSearch({ latitude, longitude, isHydrated, accessToken, keyword}: useFacilitiesSearchParams) {
 

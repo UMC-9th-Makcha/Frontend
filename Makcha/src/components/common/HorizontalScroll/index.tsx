@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { type ReactNode, memo } from "react";
 import { useDragScroll } from "./hooks/useDragScroll";
 
 interface HorizontalScrollProps<T> {
@@ -9,7 +9,7 @@ interface HorizontalScrollProps<T> {
   contentClassName?: string;
 }
 
-export function HorizontalScroll<T>({
+function HorizontalScrollBase<T>({
   items,
   renderItem,
   onItemClick,
@@ -28,7 +28,7 @@ export function HorizontalScroll<T>({
         {items.map((item, index) => (
           <div
             key={index}
-            className={contentClassName ? `${contentClassName}` : "shrink-0"}
+            className={`shrink-0 ${contentClassName}`}
             onClick={withDragCheck((moved) => onItemClick(item, moved))}
           >
             {renderItem(item)}
@@ -40,9 +40,11 @@ export function HorizontalScroll<T>({
       <div className="relative h-[2px] w-full bg-gray-100 dark:bg-white/5 overflow-hidden">
         <div
           {...indicatorProps}
-          className="absolute h-[2px] bg-blue-500 dark:bg-blue-300"
+          className="absolute h-[2px] bg-makcha-navy-600 dark:bg-makcha-navy-200"
         />
       </div>
     </div>
   );
 }
+
+export const HorizontalScroll = memo(HorizontalScrollBase) as typeof HorizontalScrollBase;

@@ -22,8 +22,49 @@ const Badge = ({ children }: { children: React.ReactNode }) => {
     );
 };
 
+const SUBWAY_CODE_TO_NAME: Record<string, string> = {
+    "91": "GTX-A",
+    "101": "공항철도",
+    "102": "자기부상철도",
+    "104": "경의중앙선",
+    "107": "에버라인",
+    "108": "경춘선",
+    "109": "신분당선",
+    "110": "의정부경전철",
+    "112": "경강선",
+    "113": "우이신설선",
+    "114": "서해선",
+    "115": "김포골드라인",
+    "116": "수인분당선",
+    "117": "신림선",
+};
+
+const LINE_SHORT_NAME: Record<string, string> = {
+    "GTX-A": "GTX",
+    "공항철도": "공항",
+    "자기부상철도": "자기부상",
+    "경의중앙선": "경의",
+    "에버라인": "에버",
+    "경춘선": "경춘",
+    "신분당선": "신분당",
+    "의정부경전철": "의정부",
+    "경강선": "경강",
+    "우이신설선": "우이",
+    "서해선": "서해",
+    "김포골드라인": "김포",
+    "수인분당선": "수인",
+    "신림선": "신림",
+};
+
+const normalizeLineForChip = (raw: string) => {
+    const code = raw.match(/\d+/)?.[0];
+    const named = code && SUBWAY_CODE_TO_NAME[code] ? SUBWAY_CODE_TO_NAME[code] : raw;
+    return LINE_SHORT_NAME[named] ?? named;
+};
+
 const RouteCard = ({ route, onSelect }: Props) => {
     const segments = route.segments ?? [];
+    const lines = (route.lines ?? []).map(normalizeLineForChip);
 
     return (
         <button
@@ -49,7 +90,7 @@ const RouteCard = ({ route, onSelect }: Props) => {
                     <div className="hidden md:block min-w-0 flex-1 overflow-x-auto no-scrollbar">
                         <div className="flex items-center gap-2 whitespace-nowrap">
                             {route.isOptimal ? <Badge>최적</Badge> : <Badge>{ROUTE_TYPE_LABEL[route.routeType]}</Badge>}
-                            {route.lines.map((l) => (
+                            {lines.map((l) => (
                                 <Badge key={l}>{l}</Badge>
                             ))}
                         </div>
@@ -57,7 +98,7 @@ const RouteCard = ({ route, onSelect }: Props) => {
 
                     <div className="md:hidden flex flex-wrap items-center gap-2">
                         {route.isOptimal ? <Badge>최적</Badge> : <Badge>{ROUTE_TYPE_LABEL[route.routeType]}</Badge>}
-                        {route.lines.map((l) => (
+                        {lines.map((l) => (
                             <Badge key={l}>{l}</Badge>
                         ))}
                     </div>

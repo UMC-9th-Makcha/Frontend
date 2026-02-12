@@ -2,22 +2,24 @@ import { useQuery } from "@tanstack/react-query";
 import useToastStore from "../../../store/useToastStore";
 import { waitingSpotService } from "../apis/waiting-spot";
 import { useEffect } from "react";
-import type { useWaitingSpotParams } from "../types/facilities-search";
+import type { useWaitingSpotParams } from "../types/api";
 
-export function useWaitingSpot({ lat, lng, isHydrated, accessToken, category}: useWaitingSpotParams) {
+export function useWaitingSpot({ lat, lng, isHydrated, accessToken, sort, category}: useWaitingSpotParams) {
   
   const addToast = useToastStore((s) => s.addToast);
+  const categoryParam = category === "ALL" ? undefined : category;
 
-  const { data: places, isLoading, isError, refetch: refetchAll } = useQuery({
-    queryKey: ["waiting-places", lat, lng, category],
+  const { data: places, isLoading, isError, refetch } = useQuery({
+    queryKey: ["waiting-places", lat, lng, sort, categoryParam ?? "ALL"],
     queryFn: () =>
       waitingSpotService.getPlaces({
         lat: lat!,
         lng: lng!,
         radius: 1000,
-        category: category === "all" ? "CAFE" : category,
+        sort: sort,
+        ...(categoryParam ? { category: categoryParam } : {}), //ALL이면 카테고리 파라미터 제거
       }),
-    enabled: lat != null && lng != null && isHydrated && !!accessToken,
+    enabled: !!lat && !!lng && isHydrated && !!accessToken,
     staleTime: 30_000,
     select: (res) =>
       res.places.map((p) => ({
@@ -42,6 +44,6 @@ export function useWaitingSpot({ lat, lng, isHydrated, accessToken, category}: u
     }
   }, [isError]);
 
-  return { places,isError,isLoading,refetchAll};
+  return { places,isError,isLoading,refetch};
 
 }
