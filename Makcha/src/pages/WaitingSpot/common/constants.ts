@@ -2,7 +2,7 @@ export const waitingCategories = [
     { key: "ALL", label: "전체" },
     { key: "CAFE", label: "카페" },
     { key: "PC_ROOM", label: "PC방" },
-    { key: "RESTAURANT", label: "식당" },
+    { key: "SAUNA", label: "찜질방" },
   ] as const;
 
   export const toggleLabel = {

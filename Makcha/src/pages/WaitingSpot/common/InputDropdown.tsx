@@ -13,7 +13,7 @@ export const InputDropdown = ({ open, showNoResult, items, onSelect }: InputDrop
 
   return (
     <ul className="absolute w-full bg-white dark:bg-makcha-navy-800 rounded-xl shadow-lg z-10
-      text-[14px] text-[#5F5F5F] font-light
+      text-small text-gray-500 font-light
       max-h-64 overflow-y-auto">
       {showNoResult && (
         <li className="px-4 py-2 opacity-70 cursor-default">검색 결과가 없어요</li>

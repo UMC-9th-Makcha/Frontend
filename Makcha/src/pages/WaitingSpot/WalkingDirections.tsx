@@ -1,5 +1,5 @@
 import LoadingSpinner from "../../components/common/loadingSpinner";
-import type { Direction, DirectionDetail, RouteCategoryKey,  } from "../../types/walking-direction";
+import type { Direction, DirectionDetail, RouteCategoryKey,  } from "./types/walking-direction";
 import { useEffect, useState } from "react";
 import { WaitingSpotHeader } from "./common/WaitingSpotHeader";
 import { CategoryTab } from "./common/CategoryTab";

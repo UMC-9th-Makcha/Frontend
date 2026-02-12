@@ -1,14 +1,15 @@
-import type { PlaceCardProps } from "../../../types/waitingspot";
+import type { PlaceCardProps } from "../types/waitingspot";
 import owl from "../../../assets/owl.png"
+import React from "react";
 
-export const PlaceCard = ({ place, onSelect }: PlaceCardProps) => {
+export const PlaceCard = React.memo(({ place, onSelect }: PlaceCardProps) => {
   const badge = place.isOpen24Hours ? "24시간 영업" : "영업시간 정보 없음";
 
   return (
     <button
       className="flex gap-4 rounded-xl bg-white
       dark:bg-makcha-navy-900"
-      onClick={onSelect} //setSelectedPlace에 선택 장소 저장
+      onClick={() => onSelect(place.id)} //setSelectedPlace에 선택 장소 저장
     >
       {place.thumbnailUrl ?
         <img className="w-24 h-24 rounded-[20px] shrink-0" src={place.thumbnailUrl} />
@@ -34,7 +35,7 @@ export const PlaceCard = ({ place, onSelect }: PlaceCardProps) => {
         </p>
 
         {badge && (
-          <span className="inline-block w-fit rounded-full bg-[#4F73C3] px-4 py-1 text-sm text-white whitespace-nowrap
+          <span className="inline-block w-fit rounded-full bg-makcha-navy-600 px-4 py-1 text-small text-white whitespace-nowrap
           dark:text-makcha-navy-200 dark:bg-makcha-navy-800 dark:border-makcha-navy-600">
             {badge}
           </span>
@@ -42,4 +43,4 @@ export const PlaceCard = ({ place, onSelect }: PlaceCardProps) => {
       </div>
     </button>
   );
-};
+});

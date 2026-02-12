@@ -1,4 +1,4 @@
-export type WaitingCategoryKey = "ALL" | "CAFE" | "PC_ROOM" | "RESTAURANT";
+export type WaitingCategoryKey = "ALL" | "CAFE" | "PC_ROOM" | "SAUNA";
 
 export type Origin = { id: string; name: string; lat: number; lng: number } | null;
 
@@ -54,7 +54,7 @@ export type PlaceListProps = {
 export type PlaceCardProps = {
   place: Place;
   isSelected?: boolean;
-  onSelect: () => void;
+  onSelect: (id:string) => void;
 };
 
 export type SortValue = "distance" | "24hour";

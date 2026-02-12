@@ -1,4 +1,4 @@
-import type { DirectionDetailPanelProps } from "../../../types/walking-direction";
+import type { DirectionDetailPanelProps } from "../types/walking-direction";
 import { DirectionDetailCard } from "../components/DirectionDetailCard";
 import { routeCategories } from "../common/constants";
 

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { SortToggleProps } from "../../../types/waitingspot";
+import type { SortToggleProps } from "../types/waitingspot";
 import { toggleLabel } from "../common/constants";
 
 export const SortToggle = ({ value, onChange }: SortToggleProps) => {
@@ -9,22 +9,23 @@ export const SortToggle = ({ value, onChange }: SortToggleProps) => {
     <div className="relative inline-block py-2 px-2">
       <button
         onClick={() => setOpen((prev) => !prev)}
-        className="flex items-center gap-2 text-gray-900"
+        className="flex items-center gap-2 text-small"
         aria-expanded={open}
         aria-haspopup="menu">
         {toggleLabel[value]}
-        <span className="text-sm">▼</span>
+        <span className="text-small">▼</span>
       </button>
 
       {open && (
-        <div className="absolute left-0 mt-2 w-36 rounded-lg border bg-white shadow-md z-10">
+        <div className="absolute left-0 mt-2 w-36 rounded-lg shadow-sm border border-gray-200 bg-white text-small z-10
+        dark:bg-makcha-navy-800">
           <button
-            className="w-full px-4 py-2 text-left hover:bg-gray-100"
+            className="w-full px-4 py-2 text-left border border-gray-200 hover:bg-gray-100"
             onClick={() => {
               onChange("distance");
               setOpen(false);
             }}>
-            가까운순
+            거리순
           </button>
           <button
             className="w-full px-4 py-2 text-left hover:bg-gray-100"

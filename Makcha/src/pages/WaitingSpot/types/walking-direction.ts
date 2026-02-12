@@ -1,4 +1,4 @@
-import type { MapMarker, MapPathSegment } from "./map";
+import type { MapMarker, MapPathSegment } from "../../../types/map";
 
 export type RouteCategoryKey = "shortest" | "safe" | "bright";
 

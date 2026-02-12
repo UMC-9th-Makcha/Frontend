@@ -1,8 +1,8 @@
 import BaseMap from "../../components/common/Map";
-import type { Origin, Place, SortValue, WaitingCategoryKey } from "../../types/waitingspot";
+import type { Origin, Place, SortValue, WaitingCategoryKey } from "./types/waitingspot";
 import type { MapMarker } from "../../types/map";
 import { useParams } from "react-router-dom";
-import { useEffect, useMemo, useState, useCallback } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { WaitingSpotLayout } from "./layouts/WaitingSpotLayout";
 import { WaitingSpotHeader } from "./common/WaitingSpotHeader";
 import { CategoryTab } from "./common/CategoryTab";
@@ -27,7 +27,7 @@ const stabilize = (val?: number) => (val ? parseFloat(val.toFixed(4)) : undefine
 export default function WaitingSpot() {
 
   // 1. 타입을 string으로 받거나, 명시적으로 단언하여 에러를 방지합니다.
-  const { type } = useParams() as { type: string };
+  const { type } = useParams<{ type: string }>();
 
   // 2. 잘못된 경로(예: /spot/abc)로 들어왔을 때를 대비한 방어 로직
   const isFirst = type === 'first';
@@ -132,16 +132,11 @@ export default function WaitingSpot() {
     return placeMarkers;
   }, [placeData, origin]);
 
-  const handleSelectList = (id: string) => {
-    setSelectedPlaceId(id);
-    setIsDetailOpen(true);
-  };
-
-  //마커 클릭 -> 선택, 상세 열기
-  const handleSelectMarker = (id: string) => {
-    setSelectedPlaceId(id);
-    setIsDetailOpen(true);
-  };
+  //장소 리스트 선택
+  const handleSelectPlace = useCallback((id: string) => {
+  setSelectedPlaceId(id);
+  setIsDetailOpen(true);
+}, []);
 
   // 카테고리 변경 시 한 번에 처리
   const handleCategoryChange = useCallback((newCategory: WaitingCategoryKey) => {
@@ -169,7 +164,7 @@ export default function WaitingSpot() {
   return (
     <div className="min-h-dvh w-full">
       <WaitingSpotLayout
-        header={<WaitingSpotHeader title={pageTitle} content={"막차를 놓쳐서 첫차까지 대기하시는 분들을 위한 추천 장소를 안내드립니다."} />}
+        header={<WaitingSpotHeader title={pageTitle} content={"막차를 놓쳐서 첫차까지 대기하시는 분들을\n위한 추천 장소를 안내드립니다."} />}
         search={<StartLocationSearch
           value={keyword}
           onChangeValue={setKeyword}
@@ -211,7 +206,7 @@ export default function WaitingSpot() {
             <PlaceList
               places={placeData}
               selectedPlaceId={selectedPlaceId}
-              onSelectPlaceId={handleSelectList}
+              onSelectPlaceId={handleSelectPlace}
               sort={sort}
               onChangeSort={setSort}
             />
@@ -229,7 +224,7 @@ export default function WaitingSpot() {
             onMarkerClick={
               (marker) => {
                 if (marker.variant === "current") return;
-                handleSelectMarker(String(marker.id)); }}
+                handleSelectPlace(String(marker.id)); }}
               />}
         detail={isDetailOpen && selectedPlaceId ?
           <PlaceDetailPanel
