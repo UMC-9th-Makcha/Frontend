@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import type { CurrentAlarm } from "../types/history";
 import { getDisplayLineName } from "../utils/lineFormatter";
 import { useForceCompleteAlert } from "../hooks/useForceCompleteAlert";
+import { useAuth } from "../../../hooks/useAuth";
 
 type Props = {
     alarm: CurrentAlarm | null;
@@ -12,6 +13,7 @@ type Props = {
 
 const CurrentAlarmCard = ({ alarm, onCreate }: Props) => {
     const navigate = useNavigate();
+    const { user } = useAuth();
     const { mutateAsync: forceComplete, isPending: forcing } = useForceCompleteAlert();
 
     if (!alarm) {
@@ -24,7 +26,11 @@ const CurrentAlarmCard = ({ alarm, onCreate }: Props) => {
                 "
             >
                 <h2 className="px-6 py-4 text-[26px] font-medium text-makcha-navy-900 dark:text-white">
-                    안녕하세요, 막차 님!
+                    안녕하세요,{" "}
+                    <span className="text-makcha-navy-600">
+                        {user?.name ?? "막차"}
+                    </span>
+                    님!
                 </h2>
 
                 <p className="mt-1 px-6 text-[16px] text-gray-500 dark:text-white/60">
