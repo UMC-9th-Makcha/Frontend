@@ -36,7 +36,10 @@ const AlarmPanel = ({ onOpenOrigin, onOpenDestination, onSelectDestination, orig
                         text={origin ? origin.address : "출발지"}
                         onClick={onOpenOrigin}
                     />
-                    <DestinationCarousel onSelectDestination={onSelectDestination} />
+                    <DestinationCarousel
+                        origin={origin}
+                        onSelectDestination={onSelectDestination}
+                    />
                     <RecentDestinations onSelectDestination={onSelectDestination} />
                     <SearchField
                         label="직접 검색하기"

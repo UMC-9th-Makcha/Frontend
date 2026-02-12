@@ -114,7 +114,7 @@ const CurrentAlarmCard = ({ alarm, onCreate }: Props) => {
                                 dark:border-makcha-navy-700 dark:text-white/60 dark:hover:text-white
                             "
                         >
-                            (테스트) 강제완료
+                            과거 알림 생성(테스트)
                         </button>
                     )}
 

@@ -2,29 +2,39 @@ import { Home, Plus } from "lucide-react";
 import type { OriginSearchItem } from "../types/search";
 import { HorizontalScroll } from "../../../components/common/HorizontalScroll";
 import { useQuery } from "@tanstack/react-query";
-import { getMyPlaces } from "../../../apis/place"; 
+import { getMyPlaces } from "../../../apis/place";
 import { useNavigate } from "react-router-dom";
+import { fetchCandidates, toCandidatesPointBody } from "../apis/routes"; 
 
 type Props = {
     onSelectDestination: (item: OriginSearchItem) => void;
+    origin?: OriginSearchItem | null;
 };
 
 type DestinationItem =
     | {
         kind: "HOME";
         id: string;
-        label: string; 
+        label: string;
         address: string;
         detailAddress?: string;
         lat: number;
         lng: number;
+        timeText?: string; 
     }
     | {
         kind: "EMPTY_HOME";
         id: "empty-home";
     };
 
-const DestinationCarousel = ({ onSelectDestination }: Props) => {
+const toHHMM = (iso: string) => {
+    const d = new Date(iso);
+    const hh = String(d.getHours()).padStart(2, "0");
+    const mm = String(d.getMinutes()).padStart(2, "0");
+    return `${hh}:${mm}`;
+};
+
+const DestinationCarousel = ({ onSelectDestination, origin }: Props) => {
     const navigate = useNavigate();
 
     const { data } = useQuery({
@@ -32,17 +42,53 @@ const DestinationCarousel = ({ onSelectDestination }: Props) => {
         queryFn: getMyPlaces,
     });
 
+    const homeAsSearchItem: OriginSearchItem | null = data?.home
+        ? {
+            id: data.home.provider_place_id ?? data.home.myplace_id,
+            title: "집으로",
+            address: data.home.place_address,
+            roadAddress: data.home.place_address,
+            detailAddress: data.home.place_detail_address ?? "",
+            lat: data.home.latitude,
+            lng: data.home.longitude,
+        }
+        : null;
+
+    const { data: homeCandidates } = useQuery({
+        queryKey: [
+            "homeCandidatesPreview",
+            origin?.lat,
+            origin?.lng,
+            homeAsSearchItem?.lat,
+            homeAsSearchItem?.lng,
+        ],
+        enabled: !!origin && !!homeAsSearchItem,
+        queryFn: () =>
+            fetchCandidates({
+                origin: toCandidatesPointBody(origin!),
+                destination: toCandidatesPointBody(homeAsSearchItem!),
+            }),
+        staleTime: 30_000,
+    });
+
+    const best =
+        homeCandidates?.find((c) => c.is_optimal) ?? homeCandidates?.[0];
+
+    const timeText =
+        best?.card?.deadline_at ? `${toHHMM(best.card.deadline_at)} 출발` : undefined;
+
     const items: DestinationItem[] = [];
 
-    if (data?.home) {
+    if (data?.home && homeAsSearchItem) {
         items.push({
             kind: "HOME",
-            id: data.home.provider_place_id ?? data.home.myplace_id,
-            label: "집",
+            id: homeAsSearchItem.id,
+            label: "집으로",
             address: data.home.place_address,
             detailAddress: data.home.place_detail_address ?? "",
             lat: data.home.latitude,
             lng: data.home.longitude,
+            timeText,
         });
     } else {
         items.push({ kind: "EMPTY_HOME", id: "empty-home" });
@@ -76,7 +122,10 @@ const DestinationCarousel = ({ onSelectDestination }: Props) => {
                             >
                                 <div className="flex items-center gap-2">
                                     <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gray-100 dark:bg-white/10">
-                                        <Plus className="h-4 w-4 text-gray-500 dark:text-white/70" strokeWidth={2.5} />
+                                        <Plus
+                                            className="h-4 w-4 text-gray-500 dark:text-white/70"
+                                            strokeWidth={2.5}
+                                        />
                                     </div>
                                     <span className="text-sm font-semibold text-gray-700 dark:text-white/80 max-md:text-[13px]">
                                         집을 설정해보세요
@@ -110,14 +159,17 @@ const DestinationCarousel = ({ onSelectDestination }: Props) => {
                             "
                         >
                             <div className="flex items-center gap-2">
-                                <Home className="h-5 w-5 text-makcha-navy-600" strokeWidth={1.5} />
+                                <Home
+                                    className="h-5 w-5 text-makcha-navy-600"
+                                    strokeWidth={1.5}
+                                />
                                 <span className="text-sm font-semibold text-makcha-navy-600 max-md:text-[13px]">
                                     {d.label}
                                 </span>
                             </div>
 
-                            <div className="mt-2 text-[22px] font-bold leading-none text-makcha-navy-900 dark:text-white">
-                                집
+                            <div className="mt-2 text-[28px] font-bold leading-none text-makcha-navy-900 dark:text-white">
+                                {d.timeText ?? "경로 계산 중..."}
                             </div>
 
                             <div className="mt-2 text-xs text-gray-500 max-md:truncate max-md:text-[12px]">
@@ -128,16 +180,15 @@ const DestinationCarousel = ({ onSelectDestination }: Props) => {
                 }}
                 onItemClick={(d) => {
                     if (d.kind === "EMPTY_HOME") {
-                        // Setting의 집 편집 화면으로 이동
                         navigate("/setting", {
-                            state: { from: "ALARM", open: "EDIT_HOME" }, // <- Setting에서 이 state로 뷰 열어주면 베스트
+                            state: { from: "ALARM", open: "EDIT_HOME" },
                         });
                         return;
                     }
 
                     onSelectDestination({
                         id: d.id,
-                        title: "집",
+                        title: "집으로",
                         address: d.address,
                         roadAddress: d.address,
                         detailAddress: d.detailAddress ?? "",

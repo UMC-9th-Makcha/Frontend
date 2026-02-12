@@ -1,4 +1,4 @@
-import { Search } from "lucide-react";
+import { Search, AlertTriangle } from "lucide-react";
 import type { OriginSearchItem } from "../types/search";
 import RouteCard from "../components/RouteCard";
 import type { AlarmRoute } from "../types/alarm";
@@ -8,9 +8,20 @@ type Props = {
     destination: OriginSearchItem;
     routes: AlarmRoute[];
     onSelectRoute: (route: AlarmRoute) => void;
+    onOpenOrigin?: () => void;
+    onOpenDestination?: () => void;
 };
 
-const RouteResultPanel = ({ origin, destination, routes, onSelectRoute }: Props) => {
+const RouteResultPanel = ({
+    origin,
+    destination,
+    routes,
+    onSelectRoute,
+    onOpenOrigin,
+    onOpenDestination,
+}: Props) => {
+    const hasRoutes = (routes ?? []).length > 0;
+
     return (
         <div className="pt-7 md:pt-2">
             <div className="flex items-center">
@@ -24,6 +35,7 @@ const RouteResultPanel = ({ origin, destination, routes, onSelectRoute }: Props)
             <div className="mt-6 space-y-[14px] max-md:mt-5 max-md:space-y-3">
                 <button
                     type="button"
+                    onClick={onOpenOrigin}
                     className="
                         flex h-[42px] w-full items-center gap-3
                         rounded-[20px] border border-gray-200 bg-white
@@ -45,6 +57,7 @@ const RouteResultPanel = ({ origin, destination, routes, onSelectRoute }: Props)
 
                 <button
                     type="button"
+                    onClick={onOpenDestination}
                     className="
                         flex h-[42px] w-full items-center gap-3
                         rounded-[20px] border border-gray-200 bg-white
@@ -65,10 +78,68 @@ const RouteResultPanel = ({ origin, destination, routes, onSelectRoute }: Props)
                 </button>
             </div>
 
-            <div className="mt-10 w-full min-w-0 space-y-6 max-md:mt-5 max-md:space-y-4">
-                {routes.map((route) => (
-                    <RouteCard key={route.id} route={route} onSelect={onSelectRoute} />
-                ))}
+            {/* 결과 영역 */}
+            <div className="mt-10 w-full min-w-0 max-md:mt-5">
+                {hasRoutes ? (
+                    <div className="space-y-6 max-md:space-y-4">
+                        {routes.map((route) => (
+                            <RouteCard key={route.id} route={route} onSelect={onSelectRoute} />
+                        ))}
+                    </div>
+                ) : (
+                    // Empty
+                    <div
+                        className="
+                        mt-5 rounded-[20px] border border-gray-200 bg-white p-6 text-center shadow-sm
+                        dark:border-makcha-navy-800 dark:bg-makcha-navy-900
+                    "
+                    >
+                        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 dark:bg-white/10">
+                            <AlertTriangle className="h-6 w-6 text-gray-500 dark:text-white/70" />
+                        </div>
+
+                        <h2 className="mt-5 text-[20px] font-semibold text-makcha-navy-900 dark:text-white">
+                            막차 시간이 지났어요
+                        </h2>
+
+                        <p className="mt-2 text-[14px] leading-relaxed text-gray-500 dark:text-white/60">
+                            현재 경로로는 막차 알림을 만들 수 없어요.
+                            <br />
+                            대기장소를 찾아주세요
+                        </p>
+
+                        <div className="mt-3 flex flex-col gap-2">
+                            {onOpenDestination && (
+                                <button
+                                    type="button"
+                                    onClick={onOpenDestination}
+                                    className="
+                    h-11 w-full rounded-[14px]
+                    bg-makcha-navy-400 text-white font-semibold
+                    hover:bg-makcha-navy-500 transition
+                  "
+                                >
+                                    도착지 다시 선택
+                                </button>
+                            )}
+
+                            {onOpenOrigin && (
+                                <button
+                                    type="button"
+                                    onClick={onOpenOrigin}
+                                    className="
+                    h-11 w-full rounded-[14px]
+                    border border-gray-200 bg-white text-gray-700 font-semibold
+                    hover:bg-gray-50 transition
+                    dark:border-makcha-navy-700 dark:bg-makcha-navy-900 dark:text-white/80 dark:hover:bg-white/5
+                  "
+                                >
+                                    출발지 변경
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
