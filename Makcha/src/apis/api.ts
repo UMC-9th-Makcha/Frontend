@@ -1,16 +1,10 @@
-import axios, { AxiosError } from 'axios';
-import type { InternalAxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosError, type AxiosResponse, type InternalAxiosRequestConfig } from 'axios';
 import { useAuthStore } from '../store/useAuthStore';
-import type { BaseResponse, ApiError } from '../types/api';
-import type { LoginResult } from '../types/auth';
+import { authService } from './auth'; // [중요] 위에서 만든 authService 임포트
+import type { ApiError } from '../types/api';
 
 interface CustomConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
-}
-
-interface RetryQueueItem {
-  resolve: (token: string | null) => void;
-  reject: (error: unknown) => void;
 }
 
 export const api = axios.create({
@@ -19,17 +13,6 @@ export const api = axios.create({
   withCredentials: true,
   headers: { 'Content-Type': 'application/json' },
 });
-
-let isRefreshing = false;
-let failedQueue: RetryQueueItem[] = [];
-
-const processQueue = (error: unknown, token: string | null = null): void => {
-  failedQueue.forEach((prom) => {
-    if (error) prom.reject(error);
-    else prom.resolve(token);
-  });
-  failedQueue = [];
-};
 
 // 요청 인터셉터
 api.interceptors.request.use((config) => {
@@ -48,59 +31,35 @@ api.interceptors.response.use(
     const errorData = err.response?.data as ApiError | undefined;
     const status = err.response?.status;
 
-    // 요청 취소, 네트워크 중단 에러 무시
-    if (axios.isCancel(err) || err.code === 'ECONNABORTED' || err.code === 'ERR_NETWORK') {
+    // 네트워크 에러 등 처리
+    if (!err.response || axios.isCancel(err) || err.code === 'ECONNABORTED' || err.code === 'ERR_NETWORK') {
       return Promise.reject(err);
     }
 
-    // 401 (토큰 만료) 에러 처리
-    if ((status === 401 || errorData?.errorCode === 'AUTH-401-001') && !originalRequest._retry) {
-      
-      // 이미 갱신 중이라면 대기열에 추가
-      if (isRefreshing) {
-        try {
-          const token = await new Promise<string | null>((resolve, reject) => {
-            failedQueue.push({ resolve, reject });
-          });
-          if (token && originalRequest.headers) {
-            originalRequest.headers.Authorization = `Bearer ${token}`;
-          }
-          originalRequest._retry = true; 
-          return await api(originalRequest);
-        } catch (queueError) {
-          return Promise.reject(queueError);
-        }
-      }
+    // 무한루프 방지
+    if (originalRequest.url?.includes('/auth/refresh')) {
+       return Promise.reject(err);
+    }
 
-      // 갱신 시작
+    // 401 에러 (토큰 만료) 처리
+    if ((status === 401 || errorData?.errorCode === 'AUTH-401-001') && !originalRequest._retry) {
       originalRequest._retry = true;
-      isRefreshing = true;
 
       try {
-        const { data } = await axios.post<BaseResponse<LoginResult>>(
-          `${import.meta.env.VITE_API_BASE_URL}/auth/refresh`,
-          {},
-          { withCredentials: true }
-        );
+        const newAccessToken = await authService.refreshAccessToken();
 
-        const { accessToken } = data.result;
-        useAuthStore.getState().setLogin(accessToken);
-
+        // 성공 시 스토어 업데이트 및 재요청 헤더 설정
+        useAuthStore.getState().setLogin(newAccessToken);
         if (originalRequest.headers) {
-          originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         }
+        
+        // 원래 요청 재실행
+        return api(originalRequest);
 
-        // 대기열 처리
-        processQueue(null, accessToken);
-        isRefreshing = false;
-
-        return await api(originalRequest);
-
-      } catch (refreshError: unknown) {
-        // 재발급 실패 시 로그아웃
-        processQueue(refreshError, null);
+      } catch (refreshError) {
+        // 실패 시 로그아웃
         useAuthStore.getState().setLogout();
-        isRefreshing = false;
         return Promise.reject(refreshError);
       }
     }

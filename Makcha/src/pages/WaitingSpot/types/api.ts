@@ -1,6 +1,4 @@
-import type { Place } from "../../../types/waitingspot";
-
-export type FacilityCategoryKey = "ALL" | "CAFE" | "PC_ROOM" | "RESTAURANT";
+import type { Place, WaitingCategoryKey } from "./waitingspot";
 
 export interface WaitingSpotResponse {
     places: PlaceApi[];
@@ -24,6 +22,7 @@ export interface PlaceApi {
 export type useWaitingSpotParams = {
   lat?: number;
   lng?: number;
+  sort?: string;
   category?: string;
   isHydrated: boolean;
   accessToken?: string | null;
@@ -37,23 +36,19 @@ export interface useFacilitiesSearchParams {
   accessToken?: string | null;
 };
 
-export interface useFacilityCategoryParams {
-  category: FacilityCategoryKey;
-  latitude?: number;
-  longitude?: number;
-  isHydrated: boolean;
-  accessToken?: string | null;
-}
 export interface GetPlacesParams {
   lat: number;
   lng: number;
   radius?: number;
+  sort?: string;
   category?: string;
   keyword?: string;
 }
 
 export interface GetPlaceDetailParams {
   placeId: string;
+  lat: number;
+  lng: number;
 }
 
 export interface GetSearchParams {
@@ -63,15 +58,10 @@ export interface GetSearchParams {
   keyword?: string;
 }
 
-export interface GetCategoryParams {
-  category: FacilityCategoryKey;
-  latitude: number;
-  longitude: number;
-  radius: number;
-};
-
 export interface useWaitingSpotDetailParams {
   placeId?: string | null;
+  lat?: number;
+  lng?: number;
   isHydrated: boolean;
   accessToken?: string | null;
 };
@@ -88,6 +78,6 @@ export interface FacilitySearchResponse {
 };
 
 export interface FacilityCategoryResponse {
-  category: FacilityCategoryKey;
+  category: WaitingCategoryKey;
   facilities: Place[];
 }

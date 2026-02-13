@@ -1,4 +1,4 @@
-import { useState, useCallback, memo, useEffect } from "react";
+import { useState, useCallback, memo } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import { Trash2 } from "lucide-react";
 import type { Place, PlaceSettingProps } from "../types/setting"; 
@@ -12,19 +12,17 @@ const PlaceSetting = memo(({ place, onBack, onSave, onDelete }: PlaceSettingProp
   const [isSearching, setIsSearching] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { addToast } = useToastStore();
+  const addToast = useToastStore((state) => state.addToast);
   
   const isHome = place.id === 'home';
-  const canDelete = !isHome && onDelete; 
-
-  useEffect(() => { setTemp(place); }, [place]);
+  const canDelete = !isHome && !!onDelete; 
 
   const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setTemp((prev) => ({ ...prev, [name]: value }));
   }, []);
 
-  const handleAddressSelect = (result: SearchResult) => {
+  const handleAddressSelect = useCallback((result: SearchResult) => {
     setTemp((prev) => ({
       ...prev,
       provider_place_id: result.id,
@@ -34,9 +32,9 @@ const PlaceSetting = memo(({ place, onBack, onSave, onDelete }: PlaceSettingProp
       longitude: result.longitude,
     }));
     setIsSearching(false);
-  };
+  }, []);
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = useCallback(async (e: FormEvent) => {
     e.preventDefault();
 
     if (!temp.place_address) {
@@ -53,9 +51,9 @@ const PlaceSetting = memo(({ place, onBack, onSave, onDelete }: PlaceSettingProp
       addToast("저장에 실패했습니다. 다시 시도해주세요.", "error");
       setIsSubmitting(false);
     }
-  };
+  }, [temp, onSave, onBack, addToast]);
 
-  const handleDelete = async () => {
+  const handleDeleteClick = useCallback(async () => {
     if (!onDelete) return;
     
     setIsSubmitting(true);
@@ -67,7 +65,7 @@ const PlaceSetting = memo(({ place, onBack, onSave, onDelete }: PlaceSettingProp
       addToast("삭제에 실패했습니다.", "error");
       setIsSubmitting(false);
     }
-  };
+  }, [onDelete, place.id, onBack, addToast]);
 
   if (isSearching) {
     return (
@@ -85,9 +83,10 @@ const PlaceSetting = memo(({ place, onBack, onSave, onDelete }: PlaceSettingProp
       rightAction={
         canDelete && (
           <button 
-            onClick={handleDelete} 
+            type="button"
+            onClick={handleDeleteClick} 
             disabled={isSubmitting}
-            className="p-1 text-red-400 hover:text-red-500 disabled:opacity-50"
+            className="p-1 text-red-500 hover:text-red-600 disabled:opacity-50 transition-colors"
           >
             <Trash2 size={20} />
           </button>
@@ -98,24 +97,27 @@ const PlaceSetting = memo(({ place, onBack, onSave, onDelete }: PlaceSettingProp
           type="submit"
           form="place-setting-form"
           disabled={isSubmitting}
-          className="w-full rounded-xl border border-gray-400 py-4 font-bold text-gray-600 hover:bg-gray-50 dark:border-white dark:text-white dark:hover:bg-white/10 transition-all md:border-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full rounded-xl border border-gray-400 py-4 text-body font-bold text-gray-600 hover:bg-gray-50 dark:border-white dark:text-white dark:hover:bg-white/10 transition-all md:border-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isSubmitting ? "저장 중..." : "설정 저장하기"}
         </button>
       }
     >
-      <form id="place-setting-form" onSubmit={handleSubmit} className="space-y-8">
+      <form id="place-setting-form" onSubmit={handleSubmit} className="space-y-8 px-1">
         
+        {/* 주소 섹션 */}
         <section>
-          <label className="mb-2 block text-xs font-bold uppercase text-gray-500 dark:text-makcha-navy-300">주소</label>
-          <div className="flex items-center justify-between gap-2 font-medium text-gray-900 dark:text-white">
-            <span className={`truncate text-base ${!temp.place_address && 'text-gray-400'}`}>
+          <label className="mb-3 block text-body font-bold uppercase text-gray-500 dark:text-makcha-navy-300">
+            주소
+          </label>
+          <div className="flex items-center justify-between gap-4">
+            <span className={`text-body font-medium truncate ${!temp.place_address ? 'text-gray-400' : 'text-gray-900 dark:text-white'}`}>
               {temp.place_address || '주소를 검색해주세요'}
             </span>
             <button 
               type="button" 
               disabled={isSubmitting}
-              className="shrink-0 rounded-full bg-gray-100 px-4 py-2 text-xs font-bold dark:bg-white/10 hover:bg-gray-200 dark:hover:bg-white/20 transition-colors" 
+              className="shrink-0 rounded-full bg-gray-100 px-5 py-2 text-caption font-bold dark:bg-white/10 hover:bg-gray-200 dark:hover:bg-white/20 transition-colors" 
               onClick={() => setIsSearching(true)}
             >
               검색
@@ -123,15 +125,18 @@ const PlaceSetting = memo(({ place, onBack, onSave, onDelete }: PlaceSettingProp
           </div>
         </section>
 
+        {/* 상세 주소 섹션 */}
         <section>
-          <label className="mb-2 block text-xs font-bold uppercase text-gray-500 dark:text-makcha-navy-300">상세 주소 (선택)</label>
+          <label className="mb-3 block text-body font-bold uppercase text-gray-500 dark:text-makcha-navy-300">
+            상세 주소 (선택)
+          </label>
           <input 
             name="place_detail_address" 
-            value={temp.place_detail_address || ''} 
+            value={temp.place_detail_address ?? ""} 
             onChange={handleChange} 
             disabled={isSubmitting}
             placeholder="예: 101동 203호" 
-            className="w-full rounded-2xl bg-gray-100 p-4 outline-none dark:bg-makcha-navy-800 dark:text-white placeholder:text-gray-400" 
+            className="w-full rounded-2xl bg-gray-100 p-4 text-body outline-none dark:bg-makcha-navy-800 dark:text-white placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500/20 transition-all" 
           />
         </section>
       </form>

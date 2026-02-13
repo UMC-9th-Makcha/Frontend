@@ -1,4 +1,4 @@
-import type { WaitingSpotLayoutProps } from "../../../types/waitingspot";
+import type { WaitingSpotLayoutProps } from "../types/waitingspot";
 import Panel from "../../../components/common/Panel";
 import SubPanel from "../../../components/common/Panel/SubPanel";
 
