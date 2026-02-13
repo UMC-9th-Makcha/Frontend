@@ -1,7 +1,7 @@
 import BaseMap from "../../components/common/Map";
 import type { Origin, Place, SortValue, WaitingCategoryKey } from "./types/waitingspot";
 import type { MapMarker } from "../../types/map";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { WaitingSpotLayout } from "./layouts/WaitingSpotLayout";
 import { WaitingSpotHeader } from "./common/WaitingSpotHeader";
@@ -25,6 +25,10 @@ import { useCurrentLocation } from "../../hooks/useCurrentLocation";
 const stabilize = (val?: number) => (val ? parseFloat(val.toFixed(4)) : undefined);
 
 export default function WaitingSpot() {
+
+  // 도보 길안내
+  const navigate = useNavigate();
+  const { placeId } = useParams<{placeId: string}>();
 
   // 1. 타입을 string으로 받거나, 명시적으로 단언하여 에러를 방지합니다.
   const { type } = useParams<{ type: string }>();
@@ -147,19 +151,13 @@ export default function WaitingSpot() {
 
   //길찾기 시작 -> 도보 안내 
   const onStartDirection = () => {
+    if(!selectedPlaceId) return;
     setIsDetailOpen(false);
-    setShowDirections(true);
+    navigate(`/spot/${type}/${selectedPlaceId}`);
   }
-
-  //도보 안내 페이지 렌더링 유무
-  const [showDirections, setShowDirections] = useState(false);
 
   //좌표 사용 가능 여부 기준으로 분기
   const hasMapPoint = typeof baseLat === "number" && typeof baseLng === "number";
-
-  if (showDirections) {
-    return <WalkingDirections onBack={() => setShowDirections(false)} />;
-  }
 
   return (
     <div className="min-h-dvh w-full">

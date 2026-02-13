@@ -12,12 +12,12 @@ import { ChevronLeft } from "lucide-react";
 import { FooterButton } from "./common/FooterButton";
 import { routeCategories } from "./common/constants";
 import { DirectionSearch } from "./components/DirectionSearch";
+import { useNavigate } from "react-router-dom";
 
-type WalkingDirectionsProps = {
-  onBack?: () => void;
-};
+export default function WalkingDirections() {
 
-export default function WalkingDirections({onBack}: WalkingDirectionsProps) {
+  const navigate = useNavigate();
+
   //임시 데이터 저장
   const [direction, setDirection] = useState<Direction | null>(null);
   const [routeDetail,setRouteDetail] = useState<DirectionDetail | null>(null);
@@ -62,7 +62,7 @@ export default function WalkingDirections({onBack}: WalkingDirectionsProps) {
           <div className="relative flex items-start mt-4">
             <button
               type="button"
-              onClick={onBack}
+              onClick={() => navigate(-1)}
               className="absolute -top-8 text-[#5F5F5F] transition-all duration-200 ease-in-out active:scale-95 dark:text-white hover:opacity-60"
               aria-label="뒤로가기">
                 <ChevronLeft size={24} />
