@@ -1,6 +1,7 @@
 import type { MapMarker, MapPathSegment } from "../../../types/map";
 import type { LatLng } from "../../Alarm/mocks/routePathsMock";
 import type { Instruction } from "../apis/walking-direction";
+import type { Place } from "./waitingspot";
 
 export type RouteCategoryKey = "shortest" | "safe" | "bright";
 
@@ -50,7 +51,12 @@ export type DirectionCardProps = {
 export type DirectionSummaryProps = {
   origin: string;
   destination: string;
-  onSubmitOrigin?: (value: string) => void;
+  value: string;
+  onChangeValue: (v: string) => void;
+  items: Place[];
+  loading: boolean;
+  error: boolean;
+  onSelect: (place: Place) => void;
 }
 
 export type DirectionDetailPanelProps = {

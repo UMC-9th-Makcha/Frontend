@@ -141,13 +141,14 @@ export default function WaitingSpot() {
   //길찾기 시작 -> 도보 안내
   const endLat = placeDetail?.location.lat;
   const endLng = placeDetail?.location.lng;
+  const startName = origin?.name ?? "현위치";
   const endName = placeDetail?.name;
 
   const onStartDirection = () => {
     if (!selectedPlaceId || !baseLat || !baseLng || !placeDetail) return;
     setIsDetailOpen(false);
     navigate(
-      `/walking-direction/${selectedPlaceId}?startLat=${baseLat}&startLng=${baseLng}&endLat=${endLat}&endLng=${endLng}&endName=${endName}`,
+      `/walking-direction/${selectedPlaceId}?startLat=${baseLat}&startLng=${baseLng}&endLat=${endLat}&endLng=${endLng}&endName=${endName}&startName=${startName}`,
       { replace: true }
     );
   }

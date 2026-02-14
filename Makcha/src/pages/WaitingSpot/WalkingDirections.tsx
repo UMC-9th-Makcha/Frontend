@@ -15,6 +15,9 @@ import { useWalkingRoute } from "./hooks/useWalkingRoute";
 import { useAuthStore } from "../../store/useAuthStore";
 import type { MapMarker } from "../../types/map";
 import { DirectionList } from "./components/DirectionList";
+import { useDebounce } from "./hooks/useDebounce";
+import { useFacilitiesSearch } from "./hooks/useFacilitiesSearch";
+import type { Origin } from "./types/waitingspot";
 
 export default function WalkingDirections() {
   const navigate = useNavigate();
@@ -26,9 +29,20 @@ export default function WalkingDirections() {
 
   const startLat = Number(searchParams.get("startLat"));
   const startLng = Number(searchParams.get("startLng"));
+  const startName = searchParams.get("startName") ?? "현위치";
   const endLat = Number(searchParams.get("endLat"));
   const endLng = Number(searchParams.get("endLng"));
   const endName = String(searchParams.get("endName"));
+
+  const [origin, setOrigin] = useState<Origin>({
+  id: "start",
+  name: startName,
+  lat: startLat,
+  lng: startLng,
+});
+
+  const baseLat = origin?.lat ?? startLat;
+  const baseLng = origin?.lng ?? startLng;
 
   const [routeCategory, setRouteCategory] = useState<RouteCategoryKey>("shortest");
 
@@ -39,13 +53,23 @@ export default function WalkingDirections() {
     setIsDetailOpen(true);
   };
 
-  //검색창 현위치
-  const origin = "현위치";
+  //검색 API
+  const [keyword, setKeyword] = useState("");
+  const debouncedKeyword = useDebounce(keyword, 300);
+
+  const { facilities, facilitiesLoading, facilitiesError } = useFacilitiesSearch({
+    latitude: baseLat,
+    longitude: baseLng,
+    keyword: debouncedKeyword.trim(),
+    isHydrated,
+    accessToken,
+  });
+  const items = facilities?.facilities ?? [];
 
   //도보 상세 패널 API
   const { routeData, routeLoading, routeError, routeRefetch } = useWalkingRoute({
-    startLat,
-    startLng,
+    startLat: baseLat,
+    startLng: baseLng,
     endLat,
     endLng,
     isHydrated,
@@ -60,7 +84,7 @@ export default function WalkingDirections() {
       {
         id: "start",
         name: "출발지",
-        position: { lat: startLat, lng: startLng },
+        position: { lat: baseLat, lng: baseLng },
         variant: "start",
       },
       {
@@ -70,13 +94,21 @@ export default function WalkingDirections() {
         variant: "end",
       },
     ];
-  }, [routeData, startLat, startLng, endLat, endLng, endName]);
+  }, [origin, baseLat, baseLng, endLat, endLng, endName]);
 
   useEffect(() => console.log(routeData),[routeData]);
 
-  if(!routeData){
+  if(routeLoading){
     return <LoadingSpinner />
   }
+
+  if (routeError || !routeData) {
+  return (
+    <div className="flex items-center justify-center h-full">
+      길 정보를 불러오지 못했어요.
+    </div>
+  );
+}
 
   return (
     <div className="min-h-dvh w-full overflow-hidden">
@@ -94,7 +126,24 @@ export default function WalkingDirections() {
             <WaitingSpotHeader title="도보 안내" />
           </div>
         }
-        search={<DirectionSearch origin={origin} destination={endName} />}
+        search={<DirectionSearch
+          origin={origin?.name ?? "출발지"}
+          destination={endName}
+          value={keyword}
+          onChangeValue={setKeyword}
+          items={items}
+          loading={facilitiesLoading}
+          error={facilitiesError}
+          onSelect={(facility) => {
+            setOrigin({
+              id: facility.id,
+              name: facility.name,
+              lat: facility.lat,
+              lng: facility.lng,
+            });
+          }}
+        />
+        }
         controls={<CategoryTab selected={routeCategory} onChange={setRouteCategory} categories={routeCategories} />}
         list={<DirectionList route={routeData.route}/>}
         footer={<FooterButton onClick={onDirectionStart} content={`길 안내`}/>}
