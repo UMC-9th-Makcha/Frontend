@@ -18,6 +18,7 @@ import { DirectionList } from "./components/DirectionList";
 import { useDebounce } from "./hooks/useDebounce";
 import { useFacilitiesSearch } from "./hooks/useFacilitiesSearch";
 import type { Origin } from "./types/waitingspot";
+import { EmptyState } from "./common/EmptyState";
 
 export default function WalkingDirections() {
   const navigate = useNavigate();
@@ -98,18 +99,6 @@ export default function WalkingDirections() {
 
   useEffect(() => console.log(routeData),[routeData]);
 
-  if(routeLoading){
-    return <LoadingSpinner />
-  }
-
-  if (routeError || !routeData) {
-  return (
-    <div className="flex items-center justify-center h-full">
-      길 정보를 불러오지 못했어요.
-    </div>
-  );
-}
-
   return (
     <div className="min-h-dvh w-full overflow-hidden">
       <WalkingDirectionLayout
@@ -145,8 +134,23 @@ export default function WalkingDirections() {
         />
         }
         controls={<CategoryTab selected={routeCategory} onChange={setRouteCategory} categories={routeCategories} />}
-        list={<DirectionList route={routeData.route}/>}
-        footer={<FooterButton onClick={onDirectionStart} content={`길 안내`}/>}
+        list={
+          routeLoading ? (
+            <div className="flex h-full items-center justify-center">
+              <LoadingSpinner />
+            </div>
+          ) : routeError || !routeData ? (
+              <EmptyState
+                message="길 정보를 불러오지 못했어요."
+                actionLabel="다시 시도"
+                className="mt-20"
+                onRetry={routeRefetch}
+              />
+          ) : (
+            <DirectionList route={routeData.route} />
+          )
+        }
+        footer={<FooterButton onClick={onDirectionStart} content={`길 안내`} />}
         detail={
           isDetailOpen && routeData ? <DirectionDetailPanel route={routeData.route} instructions={routeData.navigation.instructions} /> : null
         }
