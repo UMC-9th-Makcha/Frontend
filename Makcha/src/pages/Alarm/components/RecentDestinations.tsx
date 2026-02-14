@@ -1,4 +1,5 @@
 import { X } from "lucide-react";
+import { useMemo } from "react";
 import type { OriginSearchItem } from "../types/search";
 import { HorizontalScroll } from "../../../components/common/HorizontalScroll";
 import { useRecentDestinations } from "../hooks/useRecentDestinations";
@@ -11,7 +12,29 @@ type Props = {
 
 const RecentDestinations = ({ onSelectDestination }: Props) => {
     const { data, isLoading } = useRecentDestinations(10);
-    const items: RecentDestinationDto[] = data ?? [];
+    const uniqueItems = useMemo(() => {
+        const raw: RecentDestinationDto[] = data ?? [];
+        const seen = new Set<string>();
+        const result: RecentDestinationDto[] = [];
+
+        for (const item of raw) {
+            const title = (item.title ?? "").trim();
+            const road = (item.roadAddress ?? "").trim();
+            const detail = (item.detailAddress ?? "").trim();
+            const lat = Number(item.latitude);
+            const lng = Number(item.longitude);
+
+            const key =
+                (item.placeId && String(item.placeId).trim()) ||
+                `${title}|${road}|${detail}|${lat.toFixed(6)}|${lng.toFixed(6)}`;
+
+            if (seen.has(key)) continue;
+            seen.add(key);
+            result.push(item);
+        }
+
+        return result;
+    }, [data]);
 
     const { mutate: removeRecent, isPending } = useDeleteRecentDestination();
 
@@ -23,11 +46,11 @@ const RecentDestinations = ({ onSelectDestination }: Props) => {
 
             {isLoading ? (
                 <div className="mt-3 text-sm text-gray-500">불러오는 중…</div>
-            ) : items.length === 0 ? (
+            ) : uniqueItems.length === 0 ? (
                 <div className="mt-3 text-sm text-gray-500">최근 목적지가 없어요.</div>
             ) : (
                 <HorizontalScroll<RecentDestinationDto>
-                    items={items}
+                    items={uniqueItems}
                     className="mt-3"
                     renderItem={(item) => (
                         <button
@@ -82,12 +105,19 @@ const RecentDestinations = ({ onSelectDestination }: Props) => {
                     onItemClick={(item, moved) => {
                         if (moved) return;
 
+                        const road = (item.roadAddress ?? "").trim();
+                        const detail = (item.detailAddress ?? "").trim();
+
+                        const addressText = (road || detail) ? `${road} ${detail}`.trim() : "주소 정보 없음";
+
                         onSelectDestination({
-                            id: item.placeId,
-                            title: item.title,
-                            address: `${item.roadAddress} ${item.detailAddress ?? ""}`.trim(),
-                            lat: item.latitude,
-                            lng: item.longitude,
+                            id: item.placeId || item.recentId,
+                            title: (item.title ?? "").trim(),
+                            roadAddress: road || "주소 정보 없음",
+                            address: addressText,
+                            detailAddress: detail,
+                            lat: Number(item.latitude),
+                            lng: Number(item.longitude),
                         });
                     }}
                 />

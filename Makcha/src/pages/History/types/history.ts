@@ -18,6 +18,7 @@ export type PastSummary = {
 
 export type HistoryItem = {
     id: string;
+    notificationId?: string;
     routeId: string;
     date: string;
     from: string;
@@ -67,6 +68,7 @@ export type AlertsHistoryDto = {
 
     history: Array<{
         id: string;
+        notification_id?: string;
         origin: string;
         destination: string;
         departure_time: string;

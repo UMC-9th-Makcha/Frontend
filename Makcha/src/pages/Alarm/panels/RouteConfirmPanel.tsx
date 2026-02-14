@@ -1,8 +1,14 @@
+// src/pages/Alarm/panels/RouteConfirmPanel.tsx
 import { ChevronLeft, ChevronRight, Bell } from "lucide-react";
 import type { AlarmRoute } from "../types/alarm";
 import type { RouteConfirmDetail } from "../types/routeConfirm";
 import SegmentBar from "../components/SegmentBar";
 import { RouteTimeline } from "../components/RouteTimeline";
+import {
+    buildChipGroupsFromSteps,
+    normalizeRouteLineFallback,
+    type RouteStep,
+} from "../utils/routeChips";
 
 type Props = {
     route: AlarmRoute;
@@ -15,50 +21,6 @@ type Props = {
     deleting?: boolean;
 };
 
-const SUBWAY_CODE_TO_NAME: Record<string, string> = {
-    "91": "GTX-A",
-    "101": "공항철도",
-    "102": "자기부상철도",
-    "104": "경의중앙선",
-    "107": "에버라인",
-    "108": "경춘선",
-    "109": "신분당선",
-    "110": "의정부경전철",
-    "112": "경강선",
-    "113": "우이신설선",
-    "114": "서해선",
-    "115": "김포골드라인",
-    "116": "수인분당선",
-    "117": "신림선",
-};
-
-const LINE_SHORT_NAME: Record<string, string> = {
-    "GTX-A": "GTX",
-    "공항철도": "공항",
-    "자기부상철도": "자기부상",
-    "경의중앙선": "경의",
-    "에버라인": "에버",
-    "경춘선": "경춘",
-    "신분당선": "신분당",
-    "의정부경전철": "의정부",
-    "경강선": "경강",
-    "우이신설선": "우이",
-    "서해선": "서해",
-    "김포골드라인": "김포",
-    "수인분당선": "수인",
-    "신림선": "신림",
-};
-
-const normalizeLineForChip = (raw: string) => {
-    const code = raw.match(/\d+/)?.[0];
-    const named =
-        code && SUBWAY_CODE_TO_NAME[code]
-            ? SUBWAY_CODE_TO_NAME[code]
-            : raw;
-
-    return LINE_SHORT_NAME[named] ?? named;
-};
-
 export default function RouteConfirmPanel({
     route,
     detail,
@@ -69,7 +31,22 @@ export default function RouteConfirmPanel({
     onDeleteAlert,
     deleting = false,
 }: Props) {
-    const chips: string[] = (route.lines ?? []).map(normalizeLineForChip);
+    type DetailMaybeNestedSteps = RouteConfirmDetail & { steps?: RouteStep[]; detail?: { steps?: RouteStep[] } };
+    const d = detail as unknown as DetailMaybeNestedSteps;
+
+    const steps: RouteStep[] = d.steps ?? d.detail?.steps ?? [];
+    const chipGroups = buildChipGroupsFromSteps(steps);
+
+    const fallbackLines = Array.from(
+        new Set(
+            (route.lines ?? [])
+                .map(normalizeRouteLineFallback)
+                .filter((v) => v.length > 0)
+        )
+    );
+
+    const showTransferChevron = (route.transferCount ?? 0) > 0;
+
     const isHistory = mode === "history";
     const isHistoryPast = mode === "historyPast";
 
@@ -92,34 +69,56 @@ export default function RouteConfirmPanel({
                                 {route.totalDurationMin}분
                             </h1>
 
-                            <div className="flex flex-wrap items-center gap-1">
-                                {chips.map((c, idx) => (
-                                    <div key={`${c}-${idx}`} className="flex items-center gap-1">
-                                        <span className="rounded-full border border-gray-200 bg-white px-2 py-1 text-[12px] font-semibold text-gray-800 dark:border-white/10 dark:bg-white/5 dark:text-white/80">
-                                            {c}
-                                        </span>
+                            <div className="flex flex-wrap items-center gap-1 mt-1">
+                                {chipGroups.length > 0 ? (
+                                    chipGroups.map((g, idx) => (
+                                        <div key={idx} className="flex items-center gap-1">
+                                            {g.labels.map((label, j) => (
+                                                <span
+                                                    key={`${label}-${j}`}
+                                                    className="rounded-full border border-gray-200 bg-white px-2 py-1 text-[12px] font-semibold text-gray-800 dark:border-white/10 dark:bg-white/5 dark:text-white/80"
+                                                >
+                                                    {label}
+                                                </span>
+                                            ))}
 
-                                        {idx < chips.length - 1 && (
-                                            <ChevronRight
-                                                className="h-4 w-4 translate-y-[1px] text-gray-400 dark:text-white/40"
-                                                strokeWidth={2}
-                                            />
-                                        )}
+                                            {idx < chipGroups.length - 1 && (
+                                                <ChevronRight
+                                                    className="h-4 w-4 translate-y-[1px] text-gray-400 dark:text-white/40"
+                                                    strokeWidth={2}
+                                                />
+                                            )}
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="flex flex-wrap items-center gap-1">
+                                        {fallbackLines.map((label, idx) => (
+                                            <div key={`${label}-${idx}`} className="flex items-center gap-1">
+                                                <span className="rounded-full border border-gray-200 bg-white px-2 py-1 text-[12px] font-semibold text-gray-800 dark:border-white/10 dark:bg-white/5 dark:text-white/80">
+                                                    {label}
+                                                </span>
+
+                                                {showTransferChevron && idx < fallbackLines.length - 1 && (
+                                                    <ChevronRight
+                                                        className="h-4 w-4 translate-y-[1px] text-gray-400 dark:text-white/40"
+                                                        strokeWidth={2}
+                                                    />
+                                                )}
+                                            </div>
+                                        ))}
                                     </div>
-                                ))}
+                                )}
                             </div>
                         </div>
 
-                        <p className="mt-2 text-[14px] text-gray-500 dark:text-white/60">
-                            {detail.etaText}
-                        </p>
+                        <p className="mt-2 text-[14px] text-gray-500 dark:text-white/60">{detail.etaText}</p>
 
                         <div className="-ml-12">
-                            <SegmentBar segments={detail.segments} />
+                            <SegmentBar segments={(detail as unknown as { segments: unknown }).segments as never} />
                         </div>
 
                         <div className="-ml-9">
-                            <RouteTimeline segments={detail.segments} />
+                            <RouteTimeline segments={(detail as unknown as { segments: unknown }).segments as never} />
                         </div>
                     </div>
                 </div>
@@ -145,7 +144,7 @@ export default function RouteConfirmPanel({
                         >
                             확인
                         </button>
-                        
+
                         <button
                             type="button"
                             onClick={onDeleteAlert}

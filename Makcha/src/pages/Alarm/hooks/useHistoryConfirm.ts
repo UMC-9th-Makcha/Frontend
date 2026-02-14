@@ -1,25 +1,25 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchAlertDetail } from "../apis/alerts";
-import { stepsToSegments } from "../utils/mapper";
-import { formatHHMM, formatMinutesLeftText, formatEtaText } from "../utils/format";
 import type { AlarmRoute } from "../types/alarm";
 import type { RouteConfirmDetail } from "../types/routeConfirm";
+import { stepsToSegments } from "../utils/mapper";
+import { formatHHMM, formatMinutesLeftText, formatEtaText } from "../utils/format";
+import { fetchAlertDetail } from "../apis/alerts";
+import type { Step } from "./useAlarmFlow";
 
 type NavState = {
     from?: "history";
     openConfirm?: boolean;
+    routeId?: string;
     notificationId?: number;
 };
-
-type Step = "INPUT" | "LOADING" | "RESULT" | "CONFIRM" | "SUCCESS";
 
 export function useHistoryConfirm(params: {
     navState: NavState | null;
     setStep: (s: Step) => void;
+    setRoutes: (r: AlarmRoute[]) => void;
     setSelectedRoute: (r: AlarmRoute | null) => void;
     setHistoryConfirm: (v: { notificationId: number; detail: RouteConfirmDetail } | null) => void;
-    setRoutes?: (routes: AlarmRoute[]) => void;
     cameFromHistoryRef: React.MutableRefObject<boolean>;
 }) {
     const navigate = useNavigate();
@@ -40,11 +40,13 @@ export function useHistoryConfirm(params: {
 
                 const route: AlarmRoute = {
                     id: `history-${notificationId}`,
-                    cacheKey: "",
-                    routeToken: "",
+                    cacheKey: data.route_token ?? "",
+                    routeToken: data.route_token ?? "",
                     isOptimal: Boolean(data.is_optimal),
-                    routeType: "SUBWAY",
+
+                    routeType: "BUS",
                     lines: data.lines ?? [],
+
                     minutesLeft: data.minutes_left ?? 0,
                     timeUntilDeparture: formatMinutesLeftText(data.minutes_left ?? 0),
                     departureTime: formatHHMM(data.departure_at),
@@ -54,8 +56,8 @@ export function useHistoryConfirm(params: {
                     segments,
                 };
 
+                params.setRoutes([route]);
                 params.setSelectedRoute(route);
-                params.setRoutes?.([route]);
 
                 params.setHistoryConfirm({
                     notificationId,
@@ -74,6 +76,7 @@ export function useHistoryConfirm(params: {
                 navigate(".", { replace: true, state: null });
             }
         })();
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [params.navState?.openConfirm, params.navState?.notificationId]);
 }

@@ -35,6 +35,9 @@ export type AlertDetailResult = {
     departure_at?: string;
     arrival_at?: string;
 
+    route_id?: string;
+    route_token: string;
+
     steps: CandidateStep[];
 };
 
@@ -43,8 +46,4 @@ export async function fetchAlertDetail(notificationId: number) {
         `/api/alerts/${notificationId}/detail`
     );
     return res.data.result;
-}
-
-export async function deleteAlert(notificationId: number) {
-    await api.delete(`/api/alerts/${notificationId}`);
 }
