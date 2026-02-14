@@ -8,7 +8,6 @@ export const DirectionSearch = ({origin, destination, value, onChangeValue, item
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   const [dropdown,setDropdown] = useState<boolean>(false);
-  const [submitted, setSubmitted] = useState<boolean>(false);
 
   // 바깥 클릭 시 닫기
   useEffect(() => {
@@ -27,13 +26,18 @@ export const DirectionSearch = ({origin, destination, value, onChangeValue, item
 
   const names = useMemo(() => items.map((x) => x.name), [items]);
 
-  const showNoResult = submitted && dropdown && items.length === 0;
+  const showNoResult =
+  dropdown &&
+  !loading &&
+  !error &&
+  value.trim().length > 0 &&
+  items.length === 0;
 
   const handleSelectByName = (name: string) => {
     const picked = items.find((x) => x.name === name);
     if (!picked) return;
 
-    onSelect(picked); // 🔥 부모에 좌표 포함 객체 전달
+    onSelect(picked);
     onChangeValue(picked.name);
     setDropdown(false);
   };
