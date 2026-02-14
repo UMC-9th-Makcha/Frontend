@@ -1,5 +1,6 @@
 import { api } from "../../../apis/api";
 import type { BaseResponse } from "../../../types/api";
+import type { DirectionStepType } from "../types/walking-direction";
 
 export interface GetRouteParams {
   startLat : number;
@@ -9,7 +10,7 @@ export interface GetRouteParams {
 }
 
 export interface Instruction {
-  direction: string;
+  direction: DirectionStepType;
   distance: number;
   duration: number;
   guidance: string;
@@ -41,7 +42,6 @@ export interface GetRouteResponse {
     transportType: string;
   };
 }
-
 
 export const walkingDirectionService = {
   getRoute: async (params: GetRouteParams): Promise<GetRouteResponse> => {

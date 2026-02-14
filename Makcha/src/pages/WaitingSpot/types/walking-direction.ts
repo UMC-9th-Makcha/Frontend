@@ -68,6 +68,7 @@ export type DirectionDetailPanelProps = {
     transportType: string;
   };
   instructions : Instruction[];
+  isUpdating: boolean;
 };
 
 export type DirectionStepType =

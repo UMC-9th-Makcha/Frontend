@@ -15,7 +15,7 @@ export const DirectionDetailCard = ({ instruction }: DirectionDetailCardProps) =
           {instruction.guidance}
         </p>
 
-        {instruction.distance && (
+        {instruction.distance > 0 && (
           <span className="text-sm text-gray-500 dark:text-makcha-navy-400">
             {instruction.distance}m 이동
           </span>

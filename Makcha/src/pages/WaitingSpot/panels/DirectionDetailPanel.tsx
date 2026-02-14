@@ -1,7 +1,8 @@
 import type { DirectionDetailPanelProps } from "../types/walking-direction";
 import { DirectionDetailCard } from "../components/DirectionDetailCard";
+import LoadingSpinner from "../../../components/common/loadingSpinner";
 
-export const DirectionDetailPanel = ({ route, instructions }: DirectionDetailPanelProps) => {
+export const DirectionDetailPanel = ({ route, instructions, isUpdating }: DirectionDetailPanelProps) => {
 
   return (
     <div className="flex flex-col h-full">
@@ -25,9 +26,15 @@ export const DirectionDetailPanel = ({ route, instructions }: DirectionDetailPan
 
       {/* 스크롤 영역 */}
       <div className="flex flex-col gap-2 mt-4">
-        {instructions.map((instruction) => (
+        {isUpdating ? (
+          <div className="absolute inset-0 bg-white/70 flex flex-col items-center justify-center z-50">
+            <LoadingSpinner />
+            <span className="ml-3 text-sm">경로를 업데이트 중입니다…</span>
+          </div>
+        ) : (instructions.map((instruction) => (
           <DirectionDetailCard key={instruction.step} instruction={instruction} />
-        ))}
+        )))
+        }
       </div>
     </div>
   );

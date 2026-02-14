@@ -63,7 +63,7 @@ function App() {
             <Route element={<ProtectedRoute />}>
               <Route path="/home" element={<Home />} />
               <Route path="/spot/:type" element={<WaitingSpot />} />
-              <Route path="/spot/:type/:placeId" element={<WalkingDirections />} />
+              <Route path="/walking-direction/:placeId" element={<WalkingDirections />} />
               <Route path="/history" element={<History />} />
               <Route path="/setting" element={<Settings />} />
             </Route>

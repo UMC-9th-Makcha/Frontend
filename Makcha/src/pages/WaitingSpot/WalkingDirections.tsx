@@ -1,6 +1,6 @@
 import LoadingSpinner from "../../components/common/loadingSpinner";
 import type { RouteCategoryKey } from "./types/walking-direction";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { WaitingSpotHeader } from "./common/WaitingSpotHeader";
 import { CategoryTab } from "./common/CategoryTab";
 import BaseMap from "../../components/common/Map";
@@ -19,6 +19,13 @@ import { useDebounce } from "./hooks/useDebounce";
 import { useFacilitiesSearch } from "./hooks/useFacilitiesSearch";
 import type { Origin } from "./types/waitingspot";
 import { EmptyState } from "./common/EmptyState";
+import { useCurrentLocation } from "../../hooks/useCurrentLocation";
+
+function getDistance(lat1: number, lng1: number, lat2: number, lng2: number) {
+  const dx = lat1 - lat2;
+  const dy = lng1 - lng2;
+  return Math.sqrt(dx * dx + dy * dy) * 111000;
+}
 
 export default function WalkingDirections() {
   const navigate = useNavigate();
@@ -97,7 +104,40 @@ export default function WalkingDirections() {
     ];
   }, [origin, baseLat, baseLng, endLat, endLng, endName]);
 
-  useEffect(() => console.log(routeData),[routeData]);
+  const { location } = useCurrentLocation();
+  const [isUpdating, setIsUpdating] = useState(false);
+  const prevDistanceRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (!location) return;
+
+    const currentDistance = getDistance(
+      location.lat,
+      location.lng,
+      endLat,
+      endLng
+    );
+
+    if (prevDistanceRef.current === null) {
+      prevDistanceRef.current = currentDistance;
+      return;
+    }
+
+    if (
+      currentDistance > prevDistanceRef.current + 20 &&
+      !isUpdating
+    ) {
+      setIsUpdating(true);
+
+      routeRefetch().finally(() => {
+        setIsUpdating(false);
+        prevDistanceRef.current = currentDistance;
+      });
+    } else {
+      prevDistanceRef.current = currentDistance;
+    }
+
+  }, [location, endLat, endLng, isUpdating, routeRefetch]);
 
   return (
     <div className="min-h-dvh w-full overflow-hidden">
@@ -152,7 +192,12 @@ export default function WalkingDirections() {
         }
         footer={<FooterButton onClick={onDirectionStart} content={`길 안내`} />}
         detail={
-          isDetailOpen && routeData ? <DirectionDetailPanel route={routeData.route} instructions={routeData.navigation.instructions} /> : null
+          isDetailOpen && routeData ? 
+          <DirectionDetailPanel 
+          route={routeData.route} 
+          instructions={routeData.navigation.instructions} 
+          isUpdating={isUpdating}
+          /> : null
         }
         onDetailBack={() => setIsDetailOpen(false)}
         map={<BaseMap
