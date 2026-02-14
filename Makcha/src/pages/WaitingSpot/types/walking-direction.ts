@@ -1,4 +1,7 @@
 import type { MapMarker, MapPathSegment } from "../../../types/map";
+import type { LatLng } from "../../Alarm/mocks/routePathsMock";
+import type { Instruction } from "../apis/walking-direction";
+import type { Place } from "./waitingspot";
 
 export type RouteCategoryKey = "shortest" | "safe" | "bright";
 
@@ -26,27 +29,46 @@ export type Direction = {
 };
 
 export type DirectionListProps = {
-  direction: Direction;
+  route: {
+    distance: number;
+    estimatedDuration: number;
+    start: LatLng;
+    end: LatLng;
+    transportType: string;
+  };
 };
 
 export type DirectionCardProps = {
-  summary: {
-    category: string;
-    durationSeconds: number;
-    distanceMeters: number;
-    crosswalkCount: number;
+  route: {
+    distance: number;
+    estimatedDuration: number;
+    start: LatLng;
+    end: LatLng;
+    transportType: string;
   };
 }
 
 export type DirectionSummaryProps = {
   origin: string;
   destination: string;
-  onSubmitOrigin?: (value: string) => void;
+  value: string;
+  onChangeValue: (v: string) => void;
+  items: Place[];
+  loading: boolean;
+  error: boolean;
+  onSelect: (place: Place) => void;
 }
 
 export type DirectionDetailPanelProps = {
-  direction: Direction;
-  routeDetail: DirectionDetail;
+  route: {
+    distance: number;
+    estimatedDuration: number;
+    start: LatLng;
+    end: LatLng;
+    transportType: string;
+  };
+  instructions : Instruction[];
+  isUpdating: boolean;
 };
 
 export type DirectionStepType =
@@ -75,6 +97,5 @@ export type DirectionDetail = {
 };
 
 export type DirectionDetailCardProps = {
-  step: DirectionStep;
+  instruction: Instruction;
 };
-
