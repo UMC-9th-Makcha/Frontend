@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { WaitingSpotHeader } from "./common/WaitingSpotHeader";
 import { CategoryTab } from "./common/CategoryTab";
 import { DirectionList } from "./components/DirectionList";
-import { DirectionMap } from "./maps/DirectionMap";
+import BaseMap from "../../components/common/Map";
 import { mockCategories, mockRouteDetail } from "./common/mock";
 import { WalkingDirectionLayout } from "./layouts/WalkingDirectionLayout";
 import { DirectionDetailPanel } from "./panels/DirectionDetailPanel";
@@ -12,11 +12,22 @@ import { ChevronLeft } from "lucide-react";
 import { FooterButton } from "./common/FooterButton";
 import { routeCategories } from "./common/constants";
 import { DirectionSearch } from "./components/DirectionSearch";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useWalkingRoute } from "./hooks/useWalkingRoute";
+import { useAuthStore } from "../../store/useAuthStore";
 
 export default function WalkingDirections() {
-
   const navigate = useNavigate();
+
+  const accessToken = useAuthStore((s) => s.accessToken);
+  const isHydrated = useAuthStore((s) => s.isHydrated);
+
+  const [searchParams] = useSearchParams();
+
+  const startLat = Number(searchParams.get("startLat"));
+  const startLng = Number(searchParams.get("startLng"));
+  const endLat = Number(searchParams.get("endLat"));
+  const endLng = Number(searchParams.get("endLng"));
 
   //임시 데이터 저장
   const [direction, setDirection] = useState<Direction | null>(null);
@@ -51,6 +62,16 @@ export default function WalkingDirections() {
     setRouteDetail(detail);
   })
 
+  const { routeData, routeLoading, routeError, routeRefetch } = useWalkingRoute({
+    startLat,
+    startLng,
+    endLat,
+    endLng,
+    isHydrated,
+    accessToken,
+  });
+
+  useEffect(() => console.log(routeData));
   if(!direction){
     return <LoadingSpinner />
   }
@@ -79,12 +100,13 @@ export default function WalkingDirections() {
           isDetailOpen && routeDetail ? <DirectionDetailPanel direction={direction} routeDetail={routeDetail} /> : null
         }
         onDetailBack={() => setIsDetailOpen(false)}
-        map={<DirectionMap
+        map={<BaseMap
           markers={direction.markers}
           paths={direction.paths}
           activeId={activeId}
           onMarkerClick={(m) => setActiveId(m.id)}
-        />}
+        />
+      }
       />
     </div>
   );
