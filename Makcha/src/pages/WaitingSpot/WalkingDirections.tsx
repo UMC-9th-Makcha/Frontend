@@ -106,38 +106,42 @@ export default function WalkingDirections() {
 
   const { location } = useCurrentLocation();
   const [isUpdating, setIsUpdating] = useState(false);
-  const prevDistanceRef = useRef<number | null>(null);
+  const prevLocationRef = useRef<{ lat: number; lng: number } | null>(null);
+  const accumulatedDistanceRef = useRef(0);
+
 
   useEffect(() => {
     if (!location) return;
 
-    const currentDistance = getDistance(
-      location.lat,
-      location.lng,
-      endLat,
-      endLng
-    );
-
-    if (prevDistanceRef.current === null) {
-      prevDistanceRef.current = currentDistance;
+    if (!prevLocationRef.current) {
+      prevLocationRef.current = location;
       return;
     }
 
-    if (
-      currentDistance > prevDistanceRef.current + 20 &&
-      !isUpdating
-    ) {
+    const movedDistance = getDistance(
+      prevLocationRef.current.lat,
+      prevLocationRef.current.lng,
+      location.lat,
+      location.lng
+    );
+
+    accumulatedDistanceRef.current += movedDistance;
+
+    // 예: 50m 이동하면 재요청
+    if (accumulatedDistanceRef.current > 50 && !isUpdating) {
       setIsUpdating(true);
 
       routeRefetch().finally(() => {
         setIsUpdating(false);
-        prevDistanceRef.current = currentDistance;
+        accumulatedDistanceRef.current = 0;
+        prevLocationRef.current = location;
       });
-    } else {
-      prevDistanceRef.current = currentDistance;
     }
 
-  }, [location, endLat, endLng, isUpdating, routeRefetch]);
+    prevLocationRef.current = location;
+
+  }, [location, routeRefetch, isUpdating]);
+
 
   return (
     <div className="min-h-dvh w-full overflow-hidden">
