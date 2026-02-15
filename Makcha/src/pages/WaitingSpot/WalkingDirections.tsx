@@ -35,6 +35,7 @@ export default function WalkingDirections() {
 
   const [searchParams] = useSearchParams();
 
+  const type = searchParams.get("type");
   const startLat = Number(searchParams.get("startLat"));
   const startLng = Number(searchParams.get("startLng"));
   const startName = searchParams.get("startName") ?? "현위치";
@@ -148,7 +149,7 @@ export default function WalkingDirections() {
           <div className="relative flex items-start mt-4">
             <button
               type="button"
-              onClick={() => navigate(-1)}
+              onClick={() => navigate(`/spot/${type}`)}
               className="absolute -top-8 text-[#5F5F5F] transition-all duration-200 ease-in-out active:scale-95 dark:text-white hover:opacity-60"
               aria-label="뒤로가기">
                 <ChevronLeft size={24} />
