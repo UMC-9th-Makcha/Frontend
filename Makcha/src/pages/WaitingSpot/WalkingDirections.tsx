@@ -86,8 +86,6 @@ export default function WalkingDirections() {
 
   // 마커 데이터 변환 
   const mapMarkers = useMemo<MapMarker[]>(() => {
-    if (!routeData) return [];
-
     return [
       {
         id: "start",
