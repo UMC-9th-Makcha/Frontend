@@ -4,11 +4,34 @@ import React from "react";
 
 export const PlaceCard = React.memo(({ place, onSelect }: PlaceCardProps) => {
   //const badge = place.isOpen24Hours ? "24시간 영업" : "영업시간 정보 없음";
+  // 오늘 요일에 맞는 영업시간 찾기
+  const getTodayHours = (operatingHours: string) => {
+    const days = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
+    const today = days[new Date().getDay()];
+    
+    const lines = operatingHours.split('\n');
+    const todayLine = lines.find(line => line.startsWith(today));
+    
+    if (todayLine) {
+      if (todayLine.includes('휴무')) return '오늘 휴무';
+      
+      // "월요일: AM 11:00 ~ PM 8:00" → "오늘 11:00 ~ 20:00"
+      const timeMatch = todayLine.match(/(\d{1,2}:\d{2})\s*[~-]\s*.*?(\d{1,2}:\d{2})/);
+      if (timeMatch) {
+        return `영업중 · ${timeMatch[1]} ~ ${timeMatch[2]}`;
+      }
+      
+      // 시간 파싱 실패시 요일 제거하고 표시
+      return todayLine.replace(`${today}: `, '영업중 · ');
+    }
+    return '영업시간 확인 필요';
+  };
+
   const badge = place.isOpen24Hours 
-  ? "24시간 영업" 
-  : place.operatingHours 
-    ? place.operatingHours.split('\n')[0]
-    : "영업시간 정보 없음"; //영업시간 정보가 있으면 보이도록 수정함.
+    ? "24시간 영업" 
+    : place.operatingHours 
+      ? getTodayHours(place.operatingHours)
+      : "영업시간 정보 없음";
   return (
     <button
       className="flex gap-4 rounded-xl bg-white
