@@ -41,6 +41,11 @@ export interface MapPathSegment {
   type: PathType;
 }
 
+interface FocusPosition {
+  lat: number;
+  lng: number;
+}
+
 export interface BaseMapProps {
   markers?: MapMarker[];
   activeId?: string | number | null;
@@ -48,4 +53,5 @@ export interface BaseMapProps {
   selectedPathId?: string | null;
   onMarkerClick?: (marker: MapMarker) => void;
   onMapClick?: (pos: MapPoint) => void;
+  focusPosition?: FocusPosition | null;
 }
