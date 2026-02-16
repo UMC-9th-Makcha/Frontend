@@ -3,8 +3,12 @@ import owl from "../../../assets/owl.png"
 import React from "react";
 
 export const PlaceCard = React.memo(({ place, onSelect }: PlaceCardProps) => {
-  const badge = place.isOpen24Hours ? "24시간 영업" : "영업시간 정보 없음";
-
+  //const badge = place.isOpen24Hours ? "24시간 영업" : "영업시간 정보 없음";
+  const badge = place.isOpen24Hours 
+  ? "24시간 영업" 
+  : place.operatingHours 
+    ? place.operatingHours.split('\n')[0]
+    : "영업시간 정보 없음"; //영업시간 정보가 있으면 보이도록 수정함.
   return (
     <button
       className="flex gap-4 rounded-xl bg-white
