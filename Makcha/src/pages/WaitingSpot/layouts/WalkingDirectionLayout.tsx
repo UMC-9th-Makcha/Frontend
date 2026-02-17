@@ -16,9 +16,9 @@ export const WalkingDirectionLayout = ({ header, controls, map, search, list, de
           width="md:w-100"
           isMobileFull={true}
           className={`pointer-events-auto h-full ${detail ? "hidden md:flex" : "md:flex"}`}
-          contentClassName="h-full min-h-0 flex flex-col"
+          contentClassName="h-full flex flex-col"
         >
-          <div className="flex flex-col flex-1">
+          <div>
             {header}
             {search}
             {controls}
@@ -26,7 +26,7 @@ export const WalkingDirectionLayout = ({ header, controls, map, search, list, de
           </div>
 
           {footer && (
-            <div className="shrink-0">
+            <div className="absolute bottom-0 left-0 right-0 bg-white p-3 pb-36 md:pb-12 dark:bg-makcha-navy-900">
               {footer}
             </div>
           )}

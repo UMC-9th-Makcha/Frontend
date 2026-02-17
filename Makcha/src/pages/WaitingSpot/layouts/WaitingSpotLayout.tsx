@@ -32,8 +32,8 @@ export const WaitingSpotLayout = ({
           isOpen={!!detail}
           onBack={onDetailBack}
           title="상세 정보"
-          width="md:w-[400px]"
-          className="pointer-events-auto"
+          width="md:w-100"
+          className="pb-12 md:pb-0 pointer-events-auto"
           footer={footer}
         >
           {detail}
