@@ -15,8 +15,8 @@ export interface PlaceApi {
   distance?: number;
   isOpen24Hours?: boolean;
   source?: string;
-  thumbnailUrl: string;
-  operatingHours: string;
+  thumbnailUrl?: string | null;   // 백엔드 수정
+  operatingHours?: string | null; // 백엔드 수정
 };
 
 export type useWaitingSpotParams = {
