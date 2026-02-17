@@ -132,7 +132,7 @@ export const MobileBottomSheet = ({ top, children, title = "첫차 대기 장소
             }}
           >
             <div className="mx-auto h-1.5 w-12 rounded-full bg-gray-300" />
-            <span className="block mt-2 text-gray-900 font-semibold text-xl">
+            <span className="block mt-2 text-gray-900 font-semibold text-xl dark:text-white">
               {title}
             </span>
           </div>

@@ -51,10 +51,10 @@ export const PlaceDetailPanel = ({ place, loading, error, refetch }: PlaceDetail
       {/* 본문 */}
       <div className="px-2 pt-6">
         <div className="flex items-end gap-2">
-          <h2 className="text-h1 font-extrabold">
+          <h2 className="text-h1 font-bold">
             {place.name}
           </h2>
-          <span className="pb-1 text-title text-gray-500 
+          <span className="pb-1 text-xl text-gray-500 
           dark:text-makcha-navy-400">
             {place.category}
           </span>
@@ -79,17 +79,17 @@ export const PlaceDetailPanel = ({ place, loading, error, refetch }: PlaceDetail
             <span>{place.distance}m</span>
           </div>
           <div className="flex items-center gap-2">
-            <MapPin className="w-5 h-5 text-gray-500" />
+            <MapPin className="w-5 h-5 text-gray-500 dark:text-makcha-navy-400" />
             <div>{place.address}</div>
           </div>
           {place.phoneNumber ? (
             <div className="flex items-center gap-2">
-              <Phone className="w-5 h-5 text-gray-500" />
+              <Phone className="w-5 h-5 text-gray-500 dark:text-makcha-navy-400" />
               <div>{place.phoneNumber}</div>
             </div>
           ) : (
             <div className="flex items-center gap-2">
-              <Phone className="w-5 h-5 text-gray-500" />
+              <Phone className="w-5 h-5 text-gray-500 dark:text-makcha-navy-400" />
               <div className="text-gray-400">전화번호 정보 없음</div>
             </div>
           )}

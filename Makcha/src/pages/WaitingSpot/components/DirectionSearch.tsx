@@ -45,7 +45,7 @@ export const DirectionSearch = ({origin, destination, value, onChangeValue, item
   return (
     <section className='mt-2 mb-2'>
       <dl className="relative rounded-[20px] bg-white border border-gray-200 shadow-sm text-sm text-gray-600 font-light
-      dark:bg-makcha-navy-900 dark:text-makcha-navy-200">
+      dark:bg-makcha-navy-900 dark:text-makcha-navy-200 dark:border-makcha-navy-600">
         <div className="flex items-center px-4 py-3 gap-2">
           <dt className="sr-only">출발지</dt>
           <div className="relative flex items-center justify-center w-4 h-4 shrink-0">
@@ -72,7 +72,7 @@ export const DirectionSearch = ({origin, destination, value, onChangeValue, item
           items={names}
           onSelect={handleSelectByName}
         />
-        <hr className="text-[#DCDCDC] dark:text-makcha-navy-800" />
+        <hr className="text-[#DCDCDC] dark:text-makcha-navy-600" />
         <div className="flex items-center px-4 py-3 gap-2">
           <dt className="sr-only">도착지</dt>
           <div className="relative flex items-center justify-center w-4 h-4 shrink-0">

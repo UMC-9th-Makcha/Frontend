@@ -12,7 +12,7 @@ const directionMapper: Record<string, DirectionStepType> = {
 
 export const StepIcon = ({ type }: { type: DirectionStepType }) => {
   const mappedType = directionMapper[type] ?? "STRAIGHT";
-  const cls = "w-5 h-5 text-makcha-navy-600";
+  const cls = "w-5 h-5 text-makcha-navy-600 dark:text-makcha-navy-400";
 
   switch (mappedType) {
     case "START":

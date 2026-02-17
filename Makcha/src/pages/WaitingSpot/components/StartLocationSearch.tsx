@@ -68,10 +68,10 @@ export const StartLocationSearch = ({value,onChangeValue,items,loading,error,onS
               }
             }
           }
-          className="w-full h-10 pr-4 pl-10 bg-white border border-gray-200 shadow-sm rounded-[30px] 
+          className="w-full h-[42px] pr-4 pl-10 bg-white border border-gray-200 shadow-sm rounded-[30px] 
           text-gray-600 font-light text-sm outline-none
           placeholder:text-gray-600 placeholder:font-light placeholder:text-small
-          dark:border-makcha-navy-700 dark:bg-makcha-navy-900 dark:placeholder-makcha-navy-200"
+          dark:border-makcha-navy-600 dark:bg-makcha-navy-900 dark:placeholder-makcha-navy-200"
         />
 
         <button

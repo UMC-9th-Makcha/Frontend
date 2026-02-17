@@ -4,7 +4,7 @@ import { StepIcon } from "../common/StepIcon";
 export const DirectionDetailCard = ({ instruction }: DirectionDetailCardProps) => {
   return (
     <div className="flex items-start gap-4 rounded-xl border border-gray-200 bg-white px-4 py-3 shadow-sm
-      dark:bg-makcha-navy-900">
+      dark:bg-makcha-navy-900 dark:border-makcha-navy-400">
 
       <div className="mt-1 shrink-0">
         <StepIcon type={instruction.direction} />
