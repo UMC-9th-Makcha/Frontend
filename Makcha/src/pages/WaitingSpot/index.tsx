@@ -1,14 +1,13 @@
 import BaseMap from "../../components/common/Map";
 import type { Origin, Place, SortValue, WaitingCategoryKey } from "./types/waitingspot";
 import type { MapMarker } from "../../types/map";
-import { useParams } from "react-router-dom";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useCallback, useMemo, useState } from "react";
 import { WaitingSpotLayout } from "./layouts/WaitingSpotLayout";
 import { WaitingSpotHeader } from "./common/WaitingSpotHeader";
 import { CategoryTab } from "./common/CategoryTab";
 import { PlaceDetailPanel } from "./panels/PlaceDetailPanel";
 import { waitingCategories } from "./common/constants";
-import WalkingDirections from "./WalkingDirections";
 import { FooterButton } from "./common/FooterButton";
 import { StartLocationSearch } from "./components/StartLocationSearch";
 import { PlaceList } from "./components/PlaceList";
@@ -25,6 +24,9 @@ import { useCurrentLocation } from "../../hooks/useCurrentLocation";
 const stabilize = (val?: number) => (val ? parseFloat(val.toFixed(4)) : undefined);
 
 export default function WaitingSpot() {
+
+  // 도보 길안내
+  const navigate = useNavigate();
 
   // 1. 타입을 string으로 받거나, 명시적으로 단언하여 에러를 방지합니다.
   const { type } = useParams<{ type: string }>();
@@ -71,10 +73,6 @@ export default function WaitingSpot() {
     accessToken,
   });
 
-  useEffect(() => {
-    console.log("useWaitingSpot : ", places);
-  },[places])
-
   //검색 API
   const [keyword, setKeyword] = useState("");
   const debouncedKeyword = useDebounce(keyword, 300);
@@ -106,11 +104,6 @@ export default function WaitingSpot() {
     isHydrated,
     accessToken,
   });
-
-  useEffect(() => {
-    console.log("useDetail : ", placeDetail);
-  },[placeDetail])
-
 
   // 마커 데이터 변환 
   const mapMarkers = useMemo<MapMarker[]>(() => {
@@ -145,21 +138,23 @@ export default function WaitingSpot() {
     setIsDetailOpen(false);
   }, []);
 
-  //길찾기 시작 -> 도보 안내 
-  const onStartDirection = () => {
-    setIsDetailOpen(false);
-    setShowDirections(true);
-  }
+  //길찾기 시작 -> 도보 안내
+  const endLat = placeDetail?.location.lat;
+  const endLng = placeDetail?.location.lng;
+  const startName = origin?.name ?? "현위치";
+  const endName = placeDetail?.name;
 
-  //도보 안내 페이지 렌더링 유무
-  const [showDirections, setShowDirections] = useState(false);
+  const onStartDirection = () => {
+    if (!selectedPlaceId || !baseLat || !baseLng || !placeDetail) return;
+    setIsDetailOpen(false);
+    navigate(
+      `/walking-direction/${selectedPlaceId}?startLat=${baseLat}&startLng=${baseLng}&endLat=${endLat}&endLng=${endLng}&endName=${endName}&startName=${startName}`,
+      { replace: true }
+    );
+  }
 
   //좌표 사용 가능 여부 기준으로 분기
   const hasMapPoint = typeof baseLat === "number" && typeof baseLng === "number";
-
-  if (showDirections) {
-    return <WalkingDirections onBack={() => setShowDirections(false)} />;
-  }
 
   return (
     <div className="min-h-dvh w-full">
