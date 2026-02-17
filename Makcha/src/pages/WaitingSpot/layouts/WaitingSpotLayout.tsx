@@ -20,7 +20,7 @@ export const WaitingSpotLayout = ({
           isMobileFull={false}
           className="hidden md:flex pointer-events-auto h-full"
         >
-           <div className="flex flex-col h-full px-4">
+           <div className="flex flex-col h-full">
               {header}
               {search}
               {controls}

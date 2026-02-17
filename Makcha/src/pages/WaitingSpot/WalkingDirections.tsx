@@ -38,7 +38,7 @@ export default function WalkingDirections() {
   const type = searchParams.get("type");
   const startLat = Number(searchParams.get("startLat"));
   const startLng = Number(searchParams.get("startLng"));
-  const startName = searchParams.get("startName") ?? "현위치";
+  const startName = String(searchParams.get("startName") ?? "현위치");
   const endLat = Number(searchParams.get("endLat"));
   const endLng = Number(searchParams.get("endLng"));
   const endName = String(searchParams.get("endName"));
@@ -150,7 +150,7 @@ export default function WalkingDirections() {
             <button
               type="button"
               onClick={() => navigate(`/spot/${type}`)}
-              className="absolute -top-8 text-[#5F5F5F] transition-all duration-200 ease-in-out active:scale-95 dark:text-white hover:opacity-60"
+              className="absolute -top-8 text-gray-600 transition-all duration-200 ease-in-out active:scale-95 dark:text-white hover:opacity-60"
               aria-label="뒤로가기">
                 <ChevronLeft size={24} />
             </button>

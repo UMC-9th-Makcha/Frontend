@@ -43,8 +43,8 @@ export const DirectionSearch = ({origin, destination, value, onChangeValue, item
   };
 
   return (
-    <section className='mt-4 mb-4'>
-      <dl className="relative rounded-[20px] bg-white shadow-[0_0_4px_0_#88888840] text-[14px] text-[#5F5F5F] font-light
+    <section className='mt-2 mb-2'>
+      <dl className="relative rounded-[20px] bg-white border border-gray-200 shadow-sm text-sm text-gray-600 font-light
       dark:bg-makcha-navy-900 dark:text-makcha-navy-200">
         <div className="flex items-center px-4 py-3 gap-2">
           <dt className="sr-only">출발지</dt>
@@ -61,8 +61,8 @@ export const DirectionSearch = ({origin, destination, value, onChangeValue, item
               }}
               onFocus={() => setDropdown(true)}
               placeholder={`${origin}`}
-              className="w-full bg-transparent border-0 p-0 m-0 outline-none text-[14px] text-[#5F5F5F] font-light truncate
-              dark:text-makcha-navy-200 placeholder:text-[#5F5F5F] placeholder:font-light dark:placeholder:text-makcha-navy-200"
+              className="w-full bg-transparent border-0 p-0 m-0 outline-none text-sm text-gray-600 font-light truncate
+              dark:text-makcha-navy-200 placeholder:text-gray-600 placeholder:font-light dark:placeholder:text-makcha-navy-200"
             />
           </dd>
         </div>

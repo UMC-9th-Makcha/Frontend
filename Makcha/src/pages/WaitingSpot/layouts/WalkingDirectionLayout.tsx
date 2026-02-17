@@ -16,11 +16,9 @@ export const WalkingDirectionLayout = ({ header, controls, map, search, list, de
           width="md:w-100"
           isMobileFull={true}
           className={`pointer-events-auto h-full ${detail ? "hidden md:flex" : "md:flex"}`}
-          disablePadding
           contentClassName="h-full min-h-0 flex flex-col"
         >
-          <div
-            className="flex-1 min-h-0 overflow-y-auto px-[16px] pt-[40px] pb-6">
+          <div className="flex flex-col flex-1">
             {header}
             {search}
             {controls}
@@ -28,7 +26,7 @@ export const WalkingDirectionLayout = ({ header, controls, map, search, list, de
           </div>
 
           {footer && (
-            <div className="shrink-0 px-[16px]">
+            <div className="shrink-0">
               {footer}
             </div>
           )}

@@ -65,7 +65,7 @@ export const PlaceDetailPanel = ({ place, loading, error, refetch }: PlaceDetail
             <span
               key={idx}
               className="flex items-center h-10 px-4 text-small rounded-[20px] shadow-sm
-              text-makcha-navy-600 bg-[#F3F7FF] border border-[0.5px] border-makcha-navy-400
+              text-makcha-navy-600 bg-[#F3F7FF] border border-makcha-navy-400
               dark:text-makcha-navy-200 dark:bg-makcha-navy-800 dark:border-makcha-navy-600"
             >
               {badge}
