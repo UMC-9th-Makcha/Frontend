@@ -91,6 +91,7 @@ const BaseMap = ({ markers = [], activeId, paths = [], selectedPathId, onMarkerC
 
   useEffect(() => {
     if (!map || isPositioned.current) return;
+    if (markers.length <= 1) return;
 
     if (bounds) {
       map.setBounds(bounds, 32);
