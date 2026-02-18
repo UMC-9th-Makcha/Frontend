@@ -216,7 +216,6 @@ export default function WaitingSpot() {
           <BaseMap
             markers={mapMarkers}
             activeId={selectedPlaceId}
-            focusPosition={origin ?? null}
             onMarkerClick={
               (marker) => {
                 if (marker.variant === "current") return;

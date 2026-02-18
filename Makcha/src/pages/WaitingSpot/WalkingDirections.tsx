@@ -1,14 +1,11 @@
 import LoadingSpinner from "../../components/common/loadingSpinner";
-import type { RouteCategoryKey } from "./types/walking-direction";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { WaitingSpotHeader } from "./common/WaitingSpotHeader";
-import { CategoryTab } from "./common/CategoryTab";
 import BaseMap from "../../components/common/Map";
 import { WalkingDirectionLayout } from "./layouts/WalkingDirectionLayout";
 import { DirectionDetailPanel } from "./panels/DirectionDetailPanel";
 import { ChevronLeft } from "lucide-react";
 import { FooterButton } from "./common/FooterButton";
-import { routeCategories } from "./common/constants";
 import { DirectionSearch } from "./components/DirectionSearch";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useWalkingRoute } from "./hooks/useWalkingRoute";
@@ -20,12 +17,7 @@ import { useFacilitiesSearch } from "./hooks/useFacilitiesSearch";
 import type { Origin } from "./types/waitingspot";
 import { EmptyState } from "./common/EmptyState";
 import { useCurrentLocation } from "../../hooks/useCurrentLocation";
-
-function getDistance(lat1: number, lng1: number, lat2: number, lng2: number) {
-  const dx = lat1 - lat2;
-  const dy = lng1 - lng2;
-  return Math.sqrt(dx * dx + dy * dy) * 111000;
-}
+import { getDistance, getLevelByDistance } from "./utils/mapUtils";
 
 export default function WalkingDirections() {
   const navigate = useNavigate();
@@ -52,6 +44,8 @@ export default function WalkingDirections() {
 
   const baseLat = origin.lat;
   const baseLng = origin.lng;
+
+  const [mapLevel, setMapLevel] = useState<number>(3);
 
   //const [routeCategory, setRouteCategory] = useState<RouteCategoryKey>("shortest");
 
@@ -110,7 +104,18 @@ export default function WalkingDirections() {
     lat: facility.lat,
     lng: facility.lng,
   });
-}, []);
+  }, []);
+
+  // 출발지 재검색 -> 맵 레벨 변경
+  useEffect(() => {
+    if (!baseLat || !baseLng || !endLat || !endLng) return;
+
+    const distance = getDistance(baseLat, baseLng, endLat, endLng);
+
+    const nextLevel = getLevelByDistance(distance);
+    setMapLevel(nextLevel);
+
+  }, [baseLat, baseLng, endLat, endLng]);
 
   // 경로 안내 패널 새로고침
   const { location } = useCurrentLocation();
@@ -206,7 +211,9 @@ export default function WalkingDirections() {
         }
         onDetailBack={() => setIsDetailOpen(false)}
         map={<BaseMap
-          markers={mapMarkers} />
+          markers={mapMarkers} 
+          level={mapLevel}
+          />
         }
       />
     </div>

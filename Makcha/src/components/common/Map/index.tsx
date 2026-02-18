@@ -66,13 +66,20 @@ const MapMarkerItem = memo(({ marker, isActive, onClick }: { marker: MapMarker; 
   );
 });
 
-const BaseMap = ({ markers = [], activeId, paths = [], selectedPathId, onMarkerClick, onMapClick, focusPosition }: BaseMapProps) => {
+const BaseMap = ({ markers = [], activeId, paths = [], selectedPathId, onMarkerClick, onMapClick, level = 3 }: BaseMapProps) => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const { location: userLoc, refetch: mapRefetch } = useCurrentLocation();
   const isDarkMode = useUIStore((s) => s.isDarkMode);
 
-  const [mapLevel, setMapLevel] = useState(3);
+  const [mapLevel, setMapLevel] = useState(level);
+  
   const isPositioned = useRef(false);
+
+  // marker 바뀌면 지도 정렬 허용
+  useEffect(() => {
+    if (markers.length === 0) return;
+    isPositioned.current = false;
+  }, [markers]);
 
   const bounds = useMemo(() => {
     if (markers.length === 0 && paths.length === 0) return null;
@@ -93,15 +100,6 @@ const BaseMap = ({ markers = [], activeId, paths = [], selectedPathId, onMarkerC
       isPositioned.current = true;
     }
   }, [map, bounds, userLoc]);
-
-  // 외부에서 전달된 lat/lng로 지도 이동
-  useEffect(() => {
-    if (!map || !focusPosition) return;
-
-    map.panTo(
-      new kakao.maps.LatLng(focusPosition.lat, focusPosition.lng)
-    );
-  }, [map, focusPosition]);
 
   // 핸들러 최적화
   const handleMarkerClick = useCallback((m: MapMarker) => {
