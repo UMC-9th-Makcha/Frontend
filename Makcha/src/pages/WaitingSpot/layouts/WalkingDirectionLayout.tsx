@@ -3,7 +3,7 @@ import Panel from "../../../components/common/Panel";
 import SubPanel from "../../../components/common/Panel/SubPanel";
 import { MobileBottomSheet } from "../common/MobileBottomSheet";
 
-export const WalkingDirectionLayout = ({ header, controls, map, search, list, detail, footer, onDetailBack }: WaitingSpotLayoutProps) => {
+export const WalkingDirectionLayout = ({ header, map, search, list, detail, footer, onDetailBack }: WaitingSpotLayoutProps) => {
   return (
     <div className="relative h-dvh w-full">
       {/* map */}
