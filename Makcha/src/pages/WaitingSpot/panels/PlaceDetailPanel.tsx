@@ -11,7 +11,7 @@ export const PlaceDetailPanel = ({ place, loading, error, refetch }: PlaceDetail
 
   if (loading) {
     return (
-      <div className="flex h-full items-center justify-center">
+      <div className="flex items-center justify-center min-h-[70vh]">
         <LoadingSpinner />
       </div>
     );
@@ -19,11 +19,13 @@ export const PlaceDetailPanel = ({ place, loading, error, refetch }: PlaceDetail
 
   if (error) {
     return (
-      <EmptyState
-        className="pointer-events-none"
-        message="상세 정보를 불러오지 못했어요."
-        actionLabel="다시 불러오기"
-        onRetry={refetch} />
+      <div className="flex items-center justify-center min-h-[70vh]">
+        <EmptyState
+          className="pointer-events-none"
+          message="상세 정보를 불러오지 못했어요."
+          actionLabel="다시 불러오기"
+          onRetry={refetch} />
+      </div>
     );
   }
 

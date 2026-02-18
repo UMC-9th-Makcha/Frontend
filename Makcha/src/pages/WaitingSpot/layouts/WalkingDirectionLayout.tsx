@@ -21,7 +21,7 @@ export const WalkingDirectionLayout = ({ header, controls, map, search, list, de
           <div>
             {header}
             {search}
-            {controls}
+            {/*controls*/}
             {list}
           </div>
 

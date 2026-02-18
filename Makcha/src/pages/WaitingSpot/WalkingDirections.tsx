@@ -1,6 +1,6 @@
 import LoadingSpinner from "../../components/common/loadingSpinner";
 import type { RouteCategoryKey } from "./types/walking-direction";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { WaitingSpotHeader } from "./common/WaitingSpotHeader";
 import { CategoryTab } from "./common/CategoryTab";
 import BaseMap from "../../components/common/Map";
@@ -50,10 +50,10 @@ export default function WalkingDirections() {
   lng: startLng,
 });
 
-  const baseLat = origin?.lat ?? startLat;
-  const baseLng = origin?.lng ?? startLng;
+  const baseLat = origin.lat;
+  const baseLng = origin.lng;
 
-  const [routeCategory, setRouteCategory] = useState<RouteCategoryKey>("shortest");
+  //const [routeCategory, setRouteCategory] = useState<RouteCategoryKey>("shortest");
 
   //detail 창 open, close
   const [isDetailOpen, setIsDetailOpen] = useState(false);
@@ -101,13 +101,22 @@ export default function WalkingDirections() {
         variant: "end",
       },
     ];
-  }, [origin, baseLat, baseLng, endLat, endLng, endName]);
+  }, [baseLat, baseLng, endLat, endLng, endName]);
 
+  const handleSelectFacility = useCallback((facility: any) => {
+  setOrigin({
+    id: facility.id,
+    name: facility.name,
+    lat: facility.lat,
+    lng: facility.lng,
+  });
+}, []);
+
+  // 경로 안내 패널 새로고침
   const { location } = useCurrentLocation();
   const [isUpdating, setIsUpdating] = useState(false);
   const prevLocationRef = useRef<{ lat: number; lng: number } | null>(null);
   const accumulatedDistanceRef = useRef(0);
-
 
   useEffect(() => {
     if (!location) return;
@@ -159,27 +168,20 @@ export default function WalkingDirections() {
           </div>
         }
         search={<DirectionSearch
-          origin={origin?.name ?? "출발지"}
+          origin={origin.name}
           destination={endName}
           value={keyword}
           onChangeValue={setKeyword}
           items={items}
           loading={facilitiesLoading}
           error={facilitiesError}
-          onSelect={(facility) => {
-            setOrigin({
-              id: facility.id,
-              name: facility.name,
-              lat: facility.lat,
-              lng: facility.lng,
-            });
-          }}
+          onSelect={handleSelectFacility}
         />
         }
-        controls={<CategoryTab selected={routeCategory} onChange={setRouteCategory} categories={routeCategories} />}
+        /*controls={<CategoryTab selected={routeCategory} onChange={setRouteCategory} categories={routeCategories} />}*/
         list={
           routeLoading ? (
-            <div className="flex h-full items-center justify-center">
+            <div className="flex h-full items-center justify-center mt-4">
               <LoadingSpinner />
             </div>
           ) : routeError || !routeData ? (

@@ -48,7 +48,7 @@ export default function WaitingSpot() {
   const { location, loading: mapLoading, refetch: mapRefetch } = useCurrentLocation();
 
   //출발지 검색
-  const [origin, setOrigin] = useState<Origin>(null);
+  const [origin, setOrigin] = useState<Origin | null>(null);
 
   //카테고리
   const [category, setCategory] = useState<WaitingCategoryKey>("ALL");
