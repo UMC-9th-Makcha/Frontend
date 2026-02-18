@@ -22,7 +22,7 @@ const HistoryHome = () => {
   const finalPastSummary = USE_MOCK ? PAST_SUMMARY_MOCK : saveReport.pastSummary;
 
   return (
-    <div className="relative h-dvh w-full overflow-hidden bg-white dark:bg-makcha-navy-900">
+    <div className="relative w-full bg-white dark:bg-makcha-navy-900">
       {/* 절약 리포트 패널 */}
       <SaveReportPanel
         open={saveReport.isOpen}
@@ -34,7 +34,7 @@ const HistoryHome = () => {
         chartData={saveReport.chartData}
       />
 
-      <main className="h-full w-full overflow-y-auto px-5 pb-5 pt-3 md:p-10 md:pt-24">
+      <main className="w-full px-5 pb-5 pt-3 md:p-10 md:pt-24">
         <div className="relative grid grid-cols-1 gap-10 md:grid-cols-2">
           {/* PC 구분선 */}
           <div className="pointer-events-none absolute top-0 bottom-0 left-1/2 translate-x-[20px] hidden w-px bg-[#E2E2E2] dark:bg-makcha-navy-800 md:block" />

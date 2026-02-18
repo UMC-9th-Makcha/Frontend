@@ -164,7 +164,7 @@ const SearchSheet = ({ open, onClose, title, onSelect, onPickCurrent }: Props) =
     }
 
     return createPortal(
-        <div className="fixed inset-0 z-[9999] flex h-dvh w-screen flex-col overflow-hidden overscroll-contain bg-white dark:bg-makcha-navy-900">
+        <div className="fixed inset-0 z-[9999] flex min-h-dvh w-screen flex-col overflow-hidden overscroll-contain bg-white dark:bg-makcha-navy-900">
             <header className="sticky top-0 z-10 bg-white px-5 pt-[env(safe-area-inset-top)] dark:bg-makcha-navy-900">
                 <div className="pt-4 pb-2">
                     <div className="relative flex items-center justify-center">
