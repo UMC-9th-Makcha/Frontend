@@ -16,14 +16,14 @@ export const InputDropdown = ({ open, showNoResult, items, onSelect }: InputDrop
       text-small text-gray-500 font-light
       max-h-64 overflow-y-auto">
       {showNoResult && (
-        <li className="px-4 py-2 opacity-70 cursor-default">검색 결과가 없어요</li>
+        <li className="px-4 py-2 opacity-70 cursor-default dark:text-white">검색 결과가 없어요</li>
       )}
 
       {visibleItems.map((item) => (
         <li
           key={item}
           onMouseDown={() => onSelect(item)}
-          className="px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-makcha-navy-700"
+          className="px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-makcha-navy-700 dark:text-white"
         >
           {item}
         </li>
