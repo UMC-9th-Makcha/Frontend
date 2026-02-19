@@ -64,7 +64,6 @@ export const PlaceCard = React.memo(({ place, onSelect }: PlaceCardProps) => {
             alt="기본 이미지"/>
         </div>}
 
-
       {/* 오른쪽 콘텐츠 */}
       <div className="flex flex-col gap-2 min-w-0">
         <div className="flex items-center gap-2 min-w-0">
