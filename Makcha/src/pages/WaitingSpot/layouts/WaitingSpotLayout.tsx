@@ -20,7 +20,7 @@ export const WaitingSpotLayout = ({
           isMobileFull={false}
           className="hidden md:flex pointer-events-auto h-full"
         >
-           <div className="flex flex-col h-full px-4">
+           <div className="flex flex-col h-full">
               {header}
               {search}
               {controls}
@@ -32,8 +32,8 @@ export const WaitingSpotLayout = ({
           isOpen={!!detail}
           onBack={onDetailBack}
           title="상세 정보"
-          width="md:w-[400px]"
-          className="pointer-events-auto"
+          width="md:w-100"
+          className="pb-12 md:pb-0 pointer-events-auto"
           footer={footer}
         >
           {detail}

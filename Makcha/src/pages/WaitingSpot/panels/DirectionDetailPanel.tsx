@@ -7,22 +7,22 @@ export const DirectionDetailPanel = ({ route, instructions, isUpdating }: Direct
   return (
     <div className="flex flex-col h-full">
       <div className="pb-4">
-        <div className="font-medium text-base leading-[1.2] text-makcha-navy-600 pb-1">
+        <div className="font-medium text-base text-makcha-navy-600 pt-1 dark:text-makcha-navy-400">
           <span>최단 거리</span>
         </div>
         <div className="flex gap-3">
-          <div className="font-medium text-[32px] leading-[1.2] text-[#262626]">
+          <div className="text-3xl text-gray-700 dark:text-makcha-navy-200">
             {Math.ceil(route.estimatedDuration)}분
           </div>
-          <div className="font-normal text-[32px] leading-[1.2] text-[#262626]">
+          <div className="text-3xl text-gray-700 dark:text-makcha-navy-200">
             {route.distance}m
           </div>
         </div>
-        <div className="font-normal text-[16px] leading-[1.2] text-[#262626]">
+        <div className="font-normal text-sm text-gray-500 dark:text-gray-400">
           {route.transportType}
         </div>
       </div>
-      <hr className="text-[#E2E2E2] -mx-4" />
+      <hr className="text-gray-200 -mx-4 dark:text-makcha-navy-800" />
 
       {/* 스크롤 영역 */}
       <div className="flex flex-col gap-2 mt-4">

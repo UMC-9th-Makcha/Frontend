@@ -3,7 +3,7 @@ import Panel from "../../../components/common/Panel";
 import SubPanel from "../../../components/common/Panel/SubPanel";
 import { MobileBottomSheet } from "../common/MobileBottomSheet";
 
-export const WalkingDirectionLayout = ({ header, controls, map, search, list, detail, footer, onDetailBack }: WaitingSpotLayoutProps) => {
+export const WalkingDirectionLayout = ({ header, map, search, list, detail, footer, onDetailBack }: WaitingSpotLayoutProps) => {
   return (
     <div className="relative h-dvh w-full">
       {/* map */}
@@ -16,19 +16,17 @@ export const WalkingDirectionLayout = ({ header, controls, map, search, list, de
           width="md:w-100"
           isMobileFull={true}
           className={`pointer-events-auto h-full ${detail ? "hidden md:flex" : "md:flex"}`}
-          disablePadding
-          contentClassName="h-full min-h-0 flex flex-col"
+          contentClassName="h-full flex flex-col"
         >
-          <div
-            className="flex-1 min-h-0 overflow-y-auto px-[16px] pt-[40px] pb-6">
+          <div>
             {header}
             {search}
-            {controls}
+            {/*controls*/}
             {list}
           </div>
 
           {footer && (
-            <div className="shrink-0 px-[16px]">
+            <div className="absolute bottom-0 left-0 right-0 bg-white p-3 pb-36 md:pb-12 dark:bg-makcha-navy-900">
               {footer}
             </div>
           )}

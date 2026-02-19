@@ -48,7 +48,7 @@ export default function WaitingSpot() {
   const { location, loading: mapLoading, refetch: mapRefetch } = useCurrentLocation();
 
   //출발지 검색
-  const [origin, setOrigin] = useState<Origin>(null);
+  const [origin, setOrigin] = useState<Origin | null>(null);
 
   //카테고리
   const [category, setCategory] = useState<WaitingCategoryKey>("ALL");
@@ -174,7 +174,7 @@ export default function WaitingSpot() {
         controls={<CategoryTab selected={category} onChange={handleCategoryChange} categories={waitingCategories} />}
         list={!hasMapPoint ? (
           mapLoading ? (
-            <div className="flex flex-col h-full items-center justify-center">
+            <div className="flex flex-col items-center justify-center">
               <LoadingSpinner />
               <p className="mt-2 text-sm text-gray-500">현재 위치를 찾는 중이에요…</p>
             </div>
@@ -187,7 +187,7 @@ export default function WaitingSpot() {
           )
         ) :
           isLoading ? (
-            <div className="flex h-full items-center justify-center">
+            <div className="flex h-full items-center justify-center mt-4">
               <LoadingSpinner />
             </div>
           ) : isError ? (

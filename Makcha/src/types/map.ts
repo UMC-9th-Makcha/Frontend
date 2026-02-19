@@ -48,4 +48,5 @@ export interface BaseMapProps {
   selectedPathId?: string | null;
   onMarkerClick?: (marker: MapMarker) => void;
   onMapClick?: (pos: MapPoint) => void;
+  level?: number;
 }

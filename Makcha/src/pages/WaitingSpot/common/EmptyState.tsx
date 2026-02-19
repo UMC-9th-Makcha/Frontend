@@ -12,7 +12,7 @@ export const EmptyState = ({ message, actionLabel, onRetry, className = "" }: Em
   const showAction = !!actionLabel && !!onRetry;
 
   return (
-    <div className={`flex h-full flex-col items-center justify-center gap-4 ${className}`}>
+    <div className={`flex h-full flex-col items-center justify-center gap-4 mt-8 ${className}`}>
       <img className="w-30 h-30 object-contain" src={owl} alt="" />
       <p className="text-sm text-gray-600">{message}</p>
 

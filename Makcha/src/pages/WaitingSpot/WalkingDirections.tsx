@@ -1,14 +1,11 @@
 import LoadingSpinner from "../../components/common/loadingSpinner";
-import type { RouteCategoryKey } from "./types/walking-direction";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { WaitingSpotHeader } from "./common/WaitingSpotHeader";
-import { CategoryTab } from "./common/CategoryTab";
 import BaseMap from "../../components/common/Map";
 import { WalkingDirectionLayout } from "./layouts/WalkingDirectionLayout";
 import { DirectionDetailPanel } from "./panels/DirectionDetailPanel";
 import { ChevronLeft } from "lucide-react";
 import { FooterButton } from "./common/FooterButton";
-import { routeCategories } from "./common/constants";
 import { DirectionSearch } from "./components/DirectionSearch";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useWalkingRoute } from "./hooks/useWalkingRoute";
@@ -20,12 +17,7 @@ import { useFacilitiesSearch } from "./hooks/useFacilitiesSearch";
 import type { Origin } from "./types/waitingspot";
 import { EmptyState } from "./common/EmptyState";
 import { useCurrentLocation } from "../../hooks/useCurrentLocation";
-
-function getDistance(lat1: number, lng1: number, lat2: number, lng2: number) {
-  const dx = lat1 - lat2;
-  const dy = lng1 - lng2;
-  return Math.sqrt(dx * dx + dy * dy) * 111000;
-}
+import { getDistance, getLevelByDistance } from "./utils/mapUtils";
 
 export default function WalkingDirections() {
   const navigate = useNavigate();
@@ -38,7 +30,7 @@ export default function WalkingDirections() {
   const type = searchParams.get("type");
   const startLat = Number(searchParams.get("startLat"));
   const startLng = Number(searchParams.get("startLng"));
-  const startName = searchParams.get("startName") ?? "현위치";
+  const startName = String(searchParams.get("startName") ?? "현위치");
   const endLat = Number(searchParams.get("endLat"));
   const endLng = Number(searchParams.get("endLng"));
   const endName = String(searchParams.get("endName"));
@@ -50,10 +42,12 @@ export default function WalkingDirections() {
   lng: startLng,
 });
 
-  const baseLat = origin?.lat ?? startLat;
-  const baseLng = origin?.lng ?? startLng;
+  const baseLat = origin.lat;
+  const baseLng = origin.lng;
 
-  const [routeCategory, setRouteCategory] = useState<RouteCategoryKey>("shortest");
+  const [mapLevel, setMapLevel] = useState<number>(3);
+
+  //const [routeCategory, setRouteCategory] = useState<RouteCategoryKey>("shortest");
 
   //detail 창 open, close
   const [isDetailOpen, setIsDetailOpen] = useState(false);
@@ -101,13 +95,33 @@ export default function WalkingDirections() {
         variant: "end",
       },
     ];
-  }, [origin, baseLat, baseLng, endLat, endLng, endName]);
+  }, [baseLat, baseLng, endLat, endLng, endName]);
 
+  const handleSelectFacility = useCallback((facility: any) => {
+  setOrigin({
+    id: facility.id,
+    name: facility.name,
+    lat: facility.lat,
+    lng: facility.lng,
+  });
+  }, []);
+
+  // 출발지 재검색 -> 맵 레벨 변경
+  useEffect(() => {
+    if (!baseLat || !baseLng || !endLat || !endLng) return;
+
+    const distance = getDistance(baseLat, baseLng, endLat, endLng);
+
+    const nextLevel = getLevelByDistance(distance);
+    setMapLevel(nextLevel);
+
+  }, [baseLat, baseLng, endLat, endLng]);
+
+  // 경로 안내 패널 새로고침
   const { location } = useCurrentLocation();
   const [isUpdating, setIsUpdating] = useState(false);
   const prevLocationRef = useRef<{ lat: number; lng: number } | null>(null);
   const accumulatedDistanceRef = useRef(0);
-
 
   useEffect(() => {
     if (!location) return;
@@ -150,7 +164,7 @@ export default function WalkingDirections() {
             <button
               type="button"
               onClick={() => navigate(`/spot/${type}`)}
-              className="absolute -top-8 text-[#5F5F5F] transition-all duration-200 ease-in-out active:scale-95 dark:text-white hover:opacity-60"
+              className="absolute -top-8 text-gray-600 transition-all duration-200 ease-in-out active:scale-95 dark:text-white hover:opacity-60"
               aria-label="뒤로가기">
                 <ChevronLeft size={24} />
             </button>
@@ -159,27 +173,20 @@ export default function WalkingDirections() {
           </div>
         }
         search={<DirectionSearch
-          origin={origin?.name ?? "출발지"}
+          origin={origin.name}
           destination={endName}
           value={keyword}
           onChangeValue={setKeyword}
           items={items}
           loading={facilitiesLoading}
           error={facilitiesError}
-          onSelect={(facility) => {
-            setOrigin({
-              id: facility.id,
-              name: facility.name,
-              lat: facility.lat,
-              lng: facility.lng,
-            });
-          }}
+          onSelect={handleSelectFacility}
         />
         }
-        controls={<CategoryTab selected={routeCategory} onChange={setRouteCategory} categories={routeCategories} />}
+        /*controls={<CategoryTab selected={routeCategory} onChange={setRouteCategory} categories={routeCategories} />}*/
         list={
           routeLoading ? (
-            <div className="flex h-full items-center justify-center">
+            <div className="flex h-full items-center justify-center mt-4">
               <LoadingSpinner />
             </div>
           ) : routeError || !routeData ? (
@@ -204,7 +211,9 @@ export default function WalkingDirections() {
         }
         onDetailBack={() => setIsDetailOpen(false)}
         map={<BaseMap
-          markers={mapMarkers} />
+          markers={mapMarkers} 
+          level={mapLevel}
+          />
         }
       />
     </div>
