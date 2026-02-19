@@ -64,6 +64,15 @@ const Alarm = () => {
         }
     }, [location.state, flow, navigate]);
 
+    useEffect(() => {
+        if (!flow.isSearchOpen) return;
+        const prev = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+        return () => {
+            document.body.style.overflow = prev;
+        };
+    }, [flow.isSearchOpen]);
+
     const goToSettingForSms = () => {
         if (!user?.phone) {
             navigate("/setting", {
@@ -81,8 +90,8 @@ const Alarm = () => {
     });
 
     return (
-        <div className="h-dvh w-full overflow-x-hidden bg-white dark:bg-makcha-navy-900">
-            <div className="relative h-dvh w-full md:flex md:overflow-hidden">
+        <div className="min-h-dvh w-full overflow-x-hidden bg-white dark:bg-makcha-navy-900">
+            <div className="relative min-h-dvh w-full md:flex md:h-dvh md:overflow-hidden">
                 <Panel
                     width="md:w-100"
                     isMobileFull
@@ -104,9 +113,7 @@ const Alarm = () => {
                             backFromConfirm: flow.backFromConfirm,
                             confirmRoute: flow.confirmRoute,
                             goAlarmList: flow.goAlarmList,
-
                             goToSettingForSms,
-
                             isFromHistory: flow.isFromHistory,
                             deleteCurrentAlert: flow.deleteCurrentAlert,
                             deletingAlert: flow.deletingAlert,
@@ -114,7 +121,7 @@ const Alarm = () => {
                     />
                 </Panel>
 
-                <section className="hidden md:block min-w-0 flex-1 h-dvh">
+                <section className="hidden md:block min-w-0 flex-1 h-full">
                     <KakaoMapView routes={flow.routes} selectedRouteId={flow.selectedRoute?.id ?? null} />
                 </section>
 

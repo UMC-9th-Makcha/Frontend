@@ -1,5 +1,5 @@
 import type { HistoryItem } from "../types/history";
-import SaveReportPanelShell from "./SaceReportPanelShell";
+import SaveReportPanelShell from "./SaveReportPanelShell";
 import SaveReportPanelContent from "./SaveReportPanelContent";
 
 type ChartPoint = { month: string; value: number; highlight?: boolean };
