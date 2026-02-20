@@ -7,6 +7,7 @@ import Main from "./pages/Main";
 import Home from "./pages/Home";
 import Alarm from "./pages/Alarm";
 import WaitingSpot from "./pages/WaitingSpot";
+import WalkingDirections from "./pages/WaitingSpot/WalkingDirections";
 import History from "./pages/History";
 import Settings from "./pages/Setting";
 import Download from "./pages/Download";
@@ -62,6 +63,7 @@ function App() {
             <Route element={<ProtectedRoute />}>
               <Route path="/home" element={<Home />} />
               <Route path="/spot/:type" element={<WaitingSpot />} />
+              <Route path="/walking-direction/:placeId" element={<WalkingDirections />} />
               <Route path="/history" element={<History />} />
               <Route path="/setting" element={<Settings />} />
             </Route>

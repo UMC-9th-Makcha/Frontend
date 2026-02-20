@@ -1,6 +1,6 @@
 import { api } from "../../../apis/api";
 import type { OriginSearchItem } from "../types/search";
-import type { Candidate } from "../types/candidate"
+import type { Candidate } from "../types/candidate";
 
 type BaseResponse<T> = {
     successCode: string;
@@ -17,18 +17,29 @@ export type RouteCandidatesPointBody = {
     detailAddress: string;
 };
 
+const normalizeText = (v?: string | null) => (v ?? "").trim();
 
 export const toCandidatesPointBody = (p: OriginSearchItem): RouteCandidatesPointBody => {
     if (typeof p.lat !== "number" || typeof p.lng !== "number") {
         throw new Error("출발/도착 좌표(lat/lng)가 없습니다.");
     }
 
-    const title = (p.title ?? "").trim();
-    const roadAddress = ((p.roadAddress ?? p.address) ?? "").trim();
-    const detailAddress = (p.detailAddress ?? "").trim();
+    const title = normalizeText(p.title);
+    const roadAddressRaw = normalizeText(p.roadAddress) || normalizeText(p.address);
+    const detailAddress = normalizeText(p.detailAddress);
 
     if (!title) throw new Error("출발/도착 title(장소명)이 없습니다.");
-    if (!roadAddress) throw new Error("출발/도착 roadAddress(주소)가 없습니다.");
+
+    const roadAddress = roadAddressRaw || "주소 정보 없음";
+
+    if (!roadAddressRaw) {
+        console.warn("[routes] roadAddress missing. fallback applied:", {
+            id: p.id,
+            title: p.title,
+            roadAddress: p.roadAddress,
+            address: p.address,
+        });
+    }
 
     return { lat: p.lat, lng: p.lng, title, roadAddress, detailAddress };
 };

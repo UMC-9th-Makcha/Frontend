@@ -1,36 +1,40 @@
 import type { DirectionDetailPanelProps } from "../types/walking-direction";
 import { DirectionDetailCard } from "../components/DirectionDetailCard";
-import { routeCategories } from "../common/constants";
+import LoadingSpinner from "../../../components/common/loadingSpinner";
 
-export const DirectionDetailPanel = ({ direction, routeDetail }: DirectionDetailPanelProps) => {
-  const getRouteCategoryLabel = (key: string) =>
-    routeCategories.find((v) => v.key === key)?.label;
-
-  const steps = routeDetail?.steps ?? [];
+export const DirectionDetailPanel = ({ route, instructions, isUpdating }: DirectionDetailPanelProps) => {
 
   return (
     <div className="flex flex-col h-full">
       <div className="pb-4">
-        <div className="font-medium text-base leading-[1.2] text-makcha-navy-600 pb-1">
-        {getRouteCategoryLabel(direction.summary.category)}
-      </div>
-      <div className="flex gap-3">
-        <div className="font-medium text-[32px] leading-[1.2] text-[#262626]">
-          {Math.ceil(direction.summary.durationSeconds / 60)}분
+        <div className="font-medium text-base text-makcha-navy-600 pt-1 dark:text-makcha-navy-400">
+          <span>최단 거리</span>
         </div>
-        <div className="font-normal text-[32px] leading-[1.2] text-[#262626]">
-          {direction.summary.distanceMeters}m
+        <div className="flex gap-3">
+          <div className="text-3xl text-gray-700 dark:text-makcha-navy-200">
+            {Math.ceil(route.estimatedDuration)}분
+          </div>
+          <div className="text-3xl text-gray-700 dark:text-makcha-navy-200">
+            {route.distance}m
+          </div>
+        </div>
+        <div className="font-normal text-sm text-gray-500 dark:text-gray-400">
+          {route.transportType}
         </div>
       </div>
-      <div className="font-normal text-[16px] leading-[1.2] text-[#262626]">
-        횡단보도 {direction.summary.crosswalkCount}회
-      </div>
-      </div>
-      <hr className="text-[#E2E2E2] -mx-4" />
+      <hr className="text-gray-200 -mx-4 dark:text-makcha-navy-800" />
+
+      {/* 스크롤 영역 */}
       <div className="flex flex-col gap-2 mt-4">
-        {steps.map((step) => (
-          <DirectionDetailCard key={step.order} step={step} />
-        ))}
+        {isUpdating ? (
+          <div className="absolute inset-0 bg-white/70 flex flex-col items-center justify-center z-50">
+            <LoadingSpinner />
+            <span className="ml-3 text-sm">경로를 업데이트 중입니다…</span>
+          </div>
+        ) : (instructions.map((instruction) => (
+          <DirectionDetailCard key={instruction.step} instruction={instruction} />
+        )))
+        }
       </div>
     </div>
   );

@@ -45,6 +45,8 @@ export default function AlarmPanelSwitch({ flow }: Props) {
                 destination={flow.destination}
                 routes={flow.routes}
                 onSelectRoute={flow.handleSelectRoute}
+                onOpenOrigin={flow.openOriginSheet}         
+                onOpenDestination={flow.openDestinationSheet}
             />
         );
     }

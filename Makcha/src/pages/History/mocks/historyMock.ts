@@ -38,4 +38,3 @@ export const MONTH_SECTIONS_MOCK: MonthSectionData[] = [
         ],
     },
 ];
-

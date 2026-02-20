@@ -3,7 +3,7 @@ import { animate, motion, useDragControls, useMotionValue } from "framer-motion"
 import type { ReactNode } from "react";
 
 type MobileBottomSheetProps = {
-  top: ReactNode;
+  top?: ReactNode;
   children: ReactNode;
   title?: string;
 };
@@ -27,7 +27,7 @@ export const MobileBottomSheet = ({ top, children, title = "첫차 대기 장소
       const sheetH = sheetRef.current?.clientHeight ?? 0;
       const topH = topRef.current?.clientHeight ?? 0;
 
-      const open = topH - 150;
+      const open = Math.max(0, topH - 150);
       const closed = Math.max(0, sheetH - PEEK_HEIGHT);
       const mid = Math.max(open, closed - CARD_HEIGHT * MID_VISIBLE_COUNT);
 
@@ -132,7 +132,7 @@ export const MobileBottomSheet = ({ top, children, title = "첫차 대기 장소
             }}
           >
             <div className="mx-auto h-1.5 w-12 rounded-full bg-gray-300" />
-            <span className="block mt-2 text-gray-900 font-semibold text-xl">
+            <span className="block mt-2 text-gray-900 font-semibold text-xl dark:text-white">
               {title}
             </span>
           </div>

@@ -1,6 +1,6 @@
 export type WaitingCategoryKey = "ALL" | "CAFE" | "PC_ROOM" | "SAUNA";
 
-export type Origin = { id: string; name: string; lat: number; lng: number } | null;
+export type Origin = { id: string; name: string; lat: number; lng: number };
 
 export type CategoryTabItem<T extends string> = {
   key: T;
@@ -14,7 +14,7 @@ export type CategoryTabProps<T extends string> = {
 
 export type WaitingSpotLayoutProps = {
   header: React.ReactNode;
-  controls: React.ReactNode;
+  controls?: React.ReactNode;
   map: React.ReactNode;
   search: React.ReactNode;
   list: React.ReactNode;

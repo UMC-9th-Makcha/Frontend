@@ -66,13 +66,20 @@ const MapMarkerItem = memo(({ marker, isActive, onClick }: { marker: MapMarker; 
   );
 });
 
-const BaseMap = ({ markers = [], activeId, paths = [], selectedPathId, onMarkerClick, onMapClick }: BaseMapProps) => {
+const BaseMap = ({ markers = [], activeId, paths = [], selectedPathId, onMarkerClick, onMapClick, level = 3 }: BaseMapProps) => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const { location: userLoc, refetch: mapRefetch } = useCurrentLocation();
   const isDarkMode = useUIStore((s) => s.isDarkMode);
 
-  const [mapLevel, setMapLevel] = useState(3);
+  const [mapLevel, setMapLevel] = useState(level);
+  
   const isPositioned = useRef(false);
+
+  // marker 바뀌면 지도 정렬 허용
+  useEffect(() => {
+    if (markers.length === 0) return;
+    isPositioned.current = false;
+  }, [markers]);
 
   const bounds = useMemo(() => {
     if (markers.length === 0 && paths.length === 0) return null;
@@ -84,6 +91,7 @@ const BaseMap = ({ markers = [], activeId, paths = [], selectedPathId, onMarkerC
 
   useEffect(() => {
     if (!map || isPositioned.current) return;
+    if (markers.length <= 1) return;
 
     if (bounds) {
       map.setBounds(bounds, 32);
