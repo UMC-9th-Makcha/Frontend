@@ -1,4 +1,4 @@
-import { Clock, MapPin, Phone } from "lucide-react";
+import { MapPin, Phone, Clock } from "lucide-react";
 import type { PlaceDetailProps } from "../types/waitingspot";
 import owl from "../../../assets/owl.png"
 import LoadingSpinner from "../../../components/common/loadingSpinner";
@@ -57,6 +57,7 @@ export const PlaceDetailPanel = ({ place, loading, error, refetch }: PlaceDetail
     <div className="flex flex-col h-full">
       {/* 상단 이미지 */}
       <div className="relative h-80 w-full shrink-0 bg-gray-100 overflow-hidden rounded-[20px]">
+        {/* imageUrl로 교체 */}
         {imageUrl ? (
           <img src={imageUrl} alt="place" className="h-full w-full object-cover" />
         ) : (
@@ -81,8 +82,8 @@ export const PlaceDetailPanel = ({ place, loading, error, refetch }: PlaceDetail
           </span>
         </div>
 
-        {/* 배지: 오늘 영업시간만 */}
-        <div className="mt-4 flex gap-2">
+         {/* 배지: 오늘 영업시간만 */}
+         <div className="mt-4 flex gap-2">
           <span className="flex items-center h-10 px-4 text-small rounded-[20px] shadow-sm
             text-makcha-navy-600 bg-[#F3F7FF] border border-makcha-navy-400
             dark:text-makcha-navy-200 dark:bg-makcha-navy-800 dark:border-makcha-navy-600">
