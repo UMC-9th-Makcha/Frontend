@@ -37,9 +37,9 @@ export type Place = {
   category?: string;
   distance?: number;
   phoneNumber?: string | null;
-  thumbnailUrl?: string;
+  thumbnailUrl?: string | null;
   isOpen24Hours?: boolean;
-  operatingHours?: string;
+  operatingHours?: string | null;
   source?: string;
 };
 

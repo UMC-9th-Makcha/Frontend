@@ -4,42 +4,59 @@ import React from "react";
 
 export const PlaceCard = React.memo(({ place, onSelect }: PlaceCardProps) => {
   //const badge = place.isOpen24Hours ? "24시간 영업" : "영업시간 정보 없음";
-  // 오늘 요일에 맞는 영업시간 찾기
-  const getTodayHours = (operatingHours: string) => {
-    const days = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
-    const today = days[new Date().getDay()];
+  //  이미지 URL에 도메인 붙이기
+  const imageUrl = place.thumbnailUrl 
+    ? `https://api.makcha.store${place.thumbnailUrl}` 
+    : null;
+
+  //  오늘 요일 영업시간만 파싱
+  const getTodayHours = () => {
+    if (!place.operatingHours) {
+      return place.isOpen24Hours ? "24시간 영업" : "영업시간 정보 없음";
+    }
+    if (place.operatingHours.includes("24시간")) return "24시간 영업";
+
+    // "매일" 케이스 추가
+    if (place.operatingHours.startsWith("매일")) {
+      const hours = place.operatingHours.split(": ").slice(1).join(": ");
+      return `영업 중 · ${hours}`;
+    }
+
+    const dayMap: Record<number, string> = {
+      0: "일", 1: "월", 2: "화", 3: "수", 4: "목", 5: "금", 6: "토"
+    };
+    const today = dayMap[new Date().getDay()];
     
-    const lines = operatingHours.split('\n');
+    // "월: 07:30 - 16:00\n화: ..." 형태에서 오늘 줄만 찾기
+    const lines = place.operatingHours.split("\n");
     const todayLine = lines.find(line => line.startsWith(today));
     
-    if (todayLine) {
-      if (todayLine.includes('휴무')) return '오늘 휴무';
-      
-      // "월요일: AM 11:00 ~ PM 8:00" → "오늘 11:00 ~ 20:00"
-      const timeMatch = todayLine.match(/(\d{1,2}:\d{2})\s*[~-]\s*.*?(\d{1,2}:\d{2})/);
-      if (timeMatch) {
-        return `영업중 · ${timeMatch[1]} ~ ${timeMatch[2]}`;
-      }
-      
-      // 시간 파싱 실패시 요일 제거하고 표시
-      return todayLine.replace(`${today}: `, '영업중 · ');
-    }
-    return '영업시간 확인 필요';
+    if (!todayLine) return "오늘 휴무";
+    
+    // "월: 07:30 - 16:00" → "07:30 - 16:00"
+    const hours = todayLine.split(": ").slice(1).join(": ");
+    return `영업 중 · ${hours}`;
   };
 
-  const badge = place.isOpen24Hours 
-    ? "24시간 영업" 
-    : place.operatingHours 
-      ? getTodayHours(place.operatingHours)
-      : "영업시간 정보 없음";
+  const badge = getTodayHours();
+
   return (
     <button
       className="flex gap-4 rounded-xl bg-white
       dark:bg-makcha-navy-900"
       onClick={() => onSelect(place.id)} //setSelectedPlace에 선택 장소 저장
     >
-      {place.thumbnailUrl ?
+      {/* {place.thumbnailUrl ?
         <img className="w-24 h-24 rounded-[20px] shrink-0" src={place.thumbnailUrl} />
+        : <div className="w-24 h-24 rounded-[20px] shrink-0 bg-gray-200 flex items-center justify-center">
+          <img
+            className="w-12 h-12 object-contain"
+            src={owl}
+            alt="기본 이미지"/>
+        </div>} */}
+      {/* imageUrl로 교체 */}
+      {imageUrl ?
+        <img className="w-24 h-24 rounded-[20px] shrink-0" src={imageUrl} />
         : <div className="w-24 h-24 rounded-[20px] shrink-0 bg-gray-200 flex items-center justify-center">
           <img
             className="w-12 h-12 object-contain"
